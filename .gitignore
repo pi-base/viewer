@@ -3,3 +3,5 @@ node_modules
 npm-debug.log
 data/schema.graphql
 .idea/
+
+js/formula/parser.js

@@ -1,26 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-const State = connect(
-    (state) => { return { state } }
-)(({ state }) => {
-    return (
-        <pre>{JSON.stringify(state, null, 2)}</pre>
-    )
-})
+import { fetchCache } from '../actions'
+import State from './state'
 
 class App extends React.Component {
-  handleClick() {
-    let traits = this.props.space.traits.edges
-    console.log('cursor', traits)
-
-    this.props.relay.setVariables({after: traits[traits.length - 1].cursor})
+  componentDidMount() {
+    this.props.fetchCache()
   }
 
   render() {
     return (
       <div>
-        <h1>Pi-Base</h1>
         {this.props.children}
 
         <State/>
@@ -29,4 +20,9 @@ class App extends React.Component {
   }
 }
 
-export default App
+export default connect(
+    (state)    => ({}),
+    (dispatch) => ({
+        fetchCache: () => { dispatch(fetchCache()) }
+    })
+)(App)

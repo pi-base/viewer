@@ -2,14 +2,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
+import Json from './Json'
+
 import { search } from '../actions'
+import * as queries from '../queries'
 
 const ExampleSearches = ({ runSearch }) => {
   return (
     <div>
       <ul>
-        <li><a onClick={() => runSearch('a')}>a</a></li>
-        <li><a onClick={() => runSearch('b')}>b</a></li>
+        <li><a onClick={() => runSearch('compact + connected')}>a</a></li>
+        <li><a onClick={() => runSearch('first countable + separable + ~second countable')}>b</a></li>
       </ul>
     </div>
   )
@@ -25,7 +28,8 @@ class Search extends React.Component {
       <form className="search row">
           <div className="col-md-4">
               <Field name="q" component="input" type="text" placeholder="search"/>
-              <pre>q: {q}</pre>
+              <p>Formula: <Json value={formula}/></p>
+
               <li><a onClick={() => runSearch('a')}>a</a></li>
               <li><a onClick={() => runSearch('b')}>b</a></li>
           </div>
@@ -46,11 +50,11 @@ const SearchForm = reduxForm({
 export default connect(
   (state) => ({
       initialValues: {
-          q: 'test'
-      }
-      // q:       searchQuery(state),
-      // results: searchResults(state),
-      // formula: null
+          q: queries.searchQ(state)
+      },
+      q:       queries.searchQ(state),
+      results: queries.searchResults(state),
+      formula: queries.searchFormula(state)
   }),
   { runSearch: search }
 )(SearchForm)

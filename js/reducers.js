@@ -7,9 +7,16 @@ import * as queries from './queries'
 const search = (state, action) => {
     return state || { q: '', results: [], formula: null }
 }
+const noop = (state, action) => (state || {})
+
 const reducers = combineReducers({
     search: search,
-    form:   formReducer
+    form:   formReducer,
+
+    // TODO: ...
+    spaces:     noop,
+    properties: noop,
+    traits:     noop
 })
 
 const reducer = (state, action) => {
@@ -27,6 +34,11 @@ const reducer = (state, action) => {
             state.search.formula = formula
             state.search.results = queries.runSearch(state, formula)
         }
+        return state
+    case 'FETCH_DONE':
+        state.spaces     = action.payload.spaces
+        state.properties = action.payload.properties
+        state.traits     = action.payload.traits
         return state
     default:
         return state

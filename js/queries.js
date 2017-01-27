@@ -1,6 +1,11 @@
+import * as Formula from './formula'
+
 export const parseSearchFormula = (state, q) => {
-    console.log('parseSearchFormula state', state)
-    return { parsed: q }
+    const parsed = Formula.parse(q)
+    if (!parsed) { return }
+
+    const formula = parsed // TODO: hydrate with property objects / show error if not found
+    return formula
 }
 
 export const runSearch = (state, formula) => {
@@ -10,3 +15,7 @@ export const runSearch = (state, formula) => {
         formula.parsed
     ]
 }
+
+export const searchQ = (state) => (state.search.q)
+export const searchFormula = (state) => (state.search.formula)
+export const searchResults = (state) => (['TODO'])
