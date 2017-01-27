@@ -16,18 +16,22 @@ let appServer;
 function startAppServer(callback) {
   // Serve the Relay app
   const compiler = webpack({
-    entry: path.resolve(__dirname, 'js', 'app.js'),
+    entry: path.resolve(__dirname, 'js', 'app.jsx'),
     module: {
       loaders: [
         {
           exclude: /node_modules/,
           loader: 'babel',
-          test: /\.js$/,
+          test: /\.js|\.jsx$/,
         }
       ]
     },
+    resolve: {
+        extensions: ['', '.js', '.jsx']
+    },
     output: {filename: '/app.js', path: '/', publicPath: '/js/'}
   });
+
   appServer = new WebpackDevServer(compiler, {
     contentBase: '/public/',
     proxy: {'/graphql': `http://localhost:${GRAPHQL_PORT}`},
@@ -83,7 +87,8 @@ function startServers(callback) {
         callback();
       }
     }
-    startGraphQLServer(handleTaskDone);
+    //startGraphQLServer(handleTaskDone);
+    handleTaskDone();
     startAppServer(handleTaskDone);
   });
 }

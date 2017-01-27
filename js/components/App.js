@@ -1,34 +1,21 @@
 import React from 'react';
-import Relay from 'react-relay';
 
 class App extends React.Component {
+  handleClick() {
+    let traits = this.props.space.traits.edges
+    console.log('cursor', traits)
+
+    this.props.relay.setVariables({after: traits[traits.length - 1].cursor})
+  }
+
   render() {
     return (
       <div>
-        <h1>Widget list</h1>
-        <ul>
-          {this.props.viewer.widgets.edges.map(edge =>
-            <li key={edge.node.id}>{edge.node.name} (ID: {edge.node.id})</li>
-          )}
-        </ul>
+        <h1>Pi-Base</h1>
+        {this.props.children}
       </div>
     );
   }
 }
 
-export default Relay.createContainer(App, {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on User {
-        widgets(first: 10) {
-          edges {
-            node {
-              id,
-              name,
-            },
-          },
-        },
-      }
-    `,
-  },
-});
+export default App;
