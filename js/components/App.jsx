@@ -1,4 +1,13 @@
-import React from 'react';
+import React from 'react'
+import { connect } from 'react-redux'
+
+const State = connect(
+    (state) => { return { state } }
+)(({ state }) => {
+    return (
+        <pre>{JSON.stringify(state, null, 2)}</pre>
+    )
+})
 
 class App extends React.Component {
   handleClick() {
@@ -13,9 +22,11 @@ class App extends React.Component {
       <div>
         <h1>Pi-Base</h1>
         {this.props.children}
+
+        <State/>
       </div>
     );
   }
 }
 
-export default App;
+export default App

@@ -17,7 +17,7 @@ const ViewerQueries = {
 const routes = <Route path="/" component={App}>
   <Route path="spaces" component={Spaces} queries={ViewerQueries}/>
   <Route path="spaces/:spaceSlug" component={Space} queries={SpaceQueries}/>
-  <Route path="search" component={Search} queries={ViewerQueries}/>
+  <Route path="search" component={Search}/>
 </Route>
 
 export default routes
