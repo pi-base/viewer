@@ -28,6 +28,13 @@ export class Conjunction extends Formula {
     toJSON() {
         return { and: this.subs.map(f => f.toJSON()) }
     }
+
+    check(pred) {
+      for (let sub of this.subs) {
+        if (sub.check(pred) === false) { return false }
+      }
+      return true
+    }
 }
 
 class Disjunction extends Formula {
@@ -35,6 +42,13 @@ class Disjunction extends Formula {
 
     toJSON() {
         return { or: this.subs.map(f => f.toJSON()) }
+    }
+
+    check(pred) {
+      for (let sub of this.subs) {
+        if (sub.check(pred) === true) { return true }
+      }
+      return false
     }
 }
 
@@ -51,6 +65,10 @@ class Atom extends Formula {
 
     toJSON() {
         return { property: this.property, value: this.value }
+    }
+
+    check(pred) {
+      return pred(this.property, this.value)
     }
 }
 

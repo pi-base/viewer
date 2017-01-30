@@ -1,26 +1,27 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
-
-import JSONTree from 'react-json-tree'
+import { reduxForm } from 'redux-form'
 
 import { search } from '../actions'
 import * as queries from '../queries'
 
+import SearchResults from './search/Results'
 import Formula from './Formula'
+import FormulaInput from './FormulaInput'
 
 const ExampleSearches = ({ runSearch }) => {
+  const example = (label) => (
+    <li><a onClick={() => runSearch(label)}>{label}</a></li>
+  )
   return (
     <div>
       <ul>
-        <li><a onClick={() => runSearch('compact + connected')}>a</a></li>
-        <li><a onClick={() => runSearch('first countable + separable + ~second countable')}>b</a></li>
+        {example('compact + connected')}
+        {example('first countable + separable + ~second countable')}
       </ul>
     </div>
   )
 }
-
-// <FormulaInput {...query} onKeyUp={(e) => doSearch(e.target.value)}/>
 
 class Search extends React.Component {
   render() {
@@ -29,21 +30,17 @@ class Search extends React.Component {
     return (
       <form className="search row">
         <div className="col-md-4">
-          <Field name="q" component="input" type="text" placeholder="search"/>
-
-          <li><a onClick={() => runSearch('a')}>a</a></li>
-          <li><a onClick={() => runSearch('b')}>b</a></li>
+          <FormulaInput name="q"/>
         </div>
         <div className="col-md-8">
-          <Formula formula={formula}></Formula>
+          { q && formula
+          ? <SearchResults formula={formula}/>
+          : <ExampleSearches runSearch={runSearch}/>}
         </div>
       </form>
     )
   }
 }
-
-const searchQuery   = (state) => { return state.search.q }
-const searchResults = (state) => { return state.search.results }
 
 const SearchForm = reduxForm({
   form: 'search'
@@ -55,7 +52,6 @@ export default connect(
       q: queries.searchQ(state)
     },
     q:       queries.searchQ(state),
-    results: queries.searchResults(state),
     formula: queries.searchFormula(state)
   }),
   { runSearch: search }

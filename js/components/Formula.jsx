@@ -4,8 +4,8 @@ import { Link } from 'react-router'
 const sepWith = (delimiter) => (componentArray) => {
     let result = []
     componentArray.map((comp,i) => {
-        result.push(comp)
-        result.push(<span key={'sepWith' + i}> {delimiter} </span>)
+      result.push(comp)
+      result.push(<span key={'sepWith' + i}> {delimiter} </span>)
     })
     result.pop()
     return result
@@ -13,12 +13,11 @@ const sepWith = (delimiter) => (componentArray) => {
 
 // TODO: use Formula.map (or something similar)
 const Formula = ({ formula, link }) => {
-  console.log('formula', formula)
     if (!formula) { return (<span/>) }
 
     // TODO: check formula type and make sure that we have attached ids
     if (formula.property) {
-        var label = formula.property
+        var label = formula.property.name
         if (formula.value === false) {
             label = "¬" + label
         }

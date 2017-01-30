@@ -1,12 +1,24 @@
 import * as Formula from './models/Formula'
 
 
-const matches = (traits, formula) => (true)
+const matches = (traits, formula) => {
+  return formula.check((prop, targetValue) => {
+    let realValue = traits[prop.id]
+
+    return targetValue === realValue
+  })
+}
 
 const findAll = (hash, keys) => {
   let results = []
   for (let key in keys) {
-    results.push(hash[key])
+    let found = hash[key]
+    if (found) {
+      results.push({
+        id:   key,
+        name: hash[key]
+      })
+    } // TODO: else?
   }
   return results
 }
@@ -15,24 +27,24 @@ export const parseSearchFormula = (state, q) => {
     const parsed = Formula.parse(q)
     if (!parsed) { return }
 
-    const formula = parsed
-    // TODO: hydrate with property objects / show error if not found
+    const formula = parsed.mapProperty(p => state.properties.finder.resolve(p))
+    // TODO: show error if properties not found
+
     return formula
 }
 
 export const runSearch = (state, formula) => {
-    const resolved = formula.mapProperty(p => state.properties.finder.resolve(p))
-    console.log('resolved', resolved);
-    // TODO: what about properties that aren't found?
+    formula = formula || searchFormula(state)
+
     let spaceIds = []
     for (let spaceId in state.traits) {
-      if (matches(state.traits[spaceId], resolved)) {
+      if (matches(state.traits[spaceId], formula)) {
         spaceIds.push(spaceId)
       }
     }
+
     return findAll(state.spaces, spaceIds)
 }
 
 export const searchQ = (state) => (state.search.q)
 export const searchFormula = (state) => (state.search.formula)
-export const searchResults = (state) => (['TODO'])

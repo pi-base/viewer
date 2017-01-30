@@ -2,15 +2,14 @@ import Fuse from 'fuse.js'
 
 export default class PropertyFinder {
     constructor(properties) {
-      this.names = []
-      for (var id in properties) {
-        this.names.push({ id: id, name: properties[id] })
-      }
-      console.log(
-        'names', this.names
-      )
+      this.properties = properties
 
-      this.fuse = new Fuse(this.names, {
+      let names = []
+      for (var id in properties) {
+        names.push({ id: id, name: properties[id] })
+      }
+
+      this.fuse = new Fuse(names, {
         caseSensitive: false,
         shouldSort:    true,
         keys:          ['name'],
@@ -20,10 +19,8 @@ export default class PropertyFinder {
     }
 
     resolve(str) {
-        const id = this.fuse.search(str)[0]
-        return {
-          id:   id,
-          name: this.names[id]
-        }
+        const id   = this.fuse.search(str)[0]
+        const name = this.properties[id]
+        return { id, name }
     }
 }

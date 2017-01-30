@@ -37,11 +37,13 @@ const reducer = (state, action) => {
         }
         return state
     case 'FETCH_DONE':
-        state.spaces     = action.payload.spaces
-        state.properties = action.payload.properties
-        state.traits     = action.payload.traits
-        state.properties.finder = new PropertyFinder(action.payload.properties)
-        return state
+        let next = Object.assign({}, state, {
+          spaces: action.payload.spaces,
+          properties: action.payload.properties,
+          traits: action.payload.traits
+        })
+        next.properties.finder = new PropertyFinder(next.properties)
+        return next
     default:
         return state
     }

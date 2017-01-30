@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { fetchCache } from '../actions'
 import State from './state'
 
+import Navbar from './navbar'
+
 class App extends React.Component {
   componentDidMount() {
     this.props.fetchCache()
@@ -12,6 +14,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        <Navbar/>
         <div className="container">
           {this.props.children}
         </div>
