@@ -1,12 +1,17 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
+import JSONTree from 'react-json-tree'
+
 const State = ({ state }) => {
-    return (
-        <pre>{JSON.stringify(state, null, 2)}</pre>
-    )
+  return (
+    <div>
+      <strong>Redux State</strong>
+      <JSONTree data={state}/>
+    </div>
+  )
 }
 
 export default connect(
-    (state) => { return { state } }
+  (state) => { return { state } }
 )(State)

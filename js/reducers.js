@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
 
+import PropertyFinder from './models/PropertyFinder'
 import * as actions from './actions'
 import * as queries from './queries'
 
@@ -39,6 +40,7 @@ const reducer = (state, action) => {
         state.spaces     = action.payload.spaces
         state.properties = action.payload.properties
         state.traits     = action.payload.traits
+        state.properties.finder = new PropertyFinder(action.payload.properties)
         return state
     default:
         return state

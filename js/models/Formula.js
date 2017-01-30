@@ -10,12 +10,12 @@ export const NORMALIZED_TEXT         = 'NORMALIZED_TEXT'
 class Formula {
     constructor(subs) { this.subs = subs }
 
-    atomMap(f) {
-        return new this.constructor(this.subs.map(sub => sub.atomMap(f)))
+    map(f) {
+        return new this.constructor(this.subs.map(sub => sub.map(f)))
     }
 
-    propertyMap(f) {
-        return this.atomMap(({ property, value }) => ({
+    mapProperty(f) {
+        return this.map(({ property, value }) => ({
             property: f(property),
             value:    value
         }))
@@ -45,7 +45,7 @@ class Atom extends Formula {
         this.value = value
     }
 
-    atomMap(f) {
+    map(f) {
         return new this.constructor(f({property: this.property, value: this.value}))
     }
 

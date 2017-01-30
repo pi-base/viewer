@@ -2,10 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
-import Json from './Json'
+import JSONTree from 'react-json-tree'
 
 import { search } from '../actions'
 import * as queries from '../queries'
+
+import Formula from './Formula'
 
 const ExampleSearches = ({ runSearch }) => {
   return (
@@ -26,15 +28,15 @@ class Search extends React.Component {
 
     return (
       <form className="search row">
-          <div className="col-md-4">
-              <Field name="q" component="input" type="text" placeholder="search"/>
-              <p>Formula: <Json value={formula}/></p>
+        <div className="col-md-4">
+          <Field name="q" component="input" type="text" placeholder="search"/>
 
-              <li><a onClick={() => runSearch('a')}>a</a></li>
-              <li><a onClick={() => runSearch('b')}>b</a></li>
-          </div>
-          <div className="col-md-8">
-          </div>
+          <li><a onClick={() => runSearch('a')}>a</a></li>
+          <li><a onClick={() => runSearch('b')}>b</a></li>
+        </div>
+        <div className="col-md-8">
+          <Formula formula={formula}></Formula>
+        </div>
       </form>
     )
   }
@@ -49,12 +51,12 @@ const SearchForm = reduxForm({
 
 export default connect(
   (state) => ({
-      initialValues: {
-          q: queries.searchQ(state)
-      },
-      q:       queries.searchQ(state),
-      results: queries.searchResults(state),
-      formula: queries.searchFormula(state)
+    initialValues: {
+      q: queries.searchQ(state)
+    },
+    q:       queries.searchQ(state),
+    results: queries.searchResults(state),
+    formula: queries.searchFormula(state)
   }),
   { runSearch: search }
 )(SearchForm)

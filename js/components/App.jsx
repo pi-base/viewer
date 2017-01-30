@@ -12,9 +12,13 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {this.props.children}
-
-        <State/>
+        <div className="container">
+          {this.props.children}
+        </div>
+        <hr/>
+        <div className="container">
+          <State/>
+        </div>
       </div>
     );
   }
