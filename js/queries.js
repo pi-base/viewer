@@ -11,8 +11,10 @@ const matches = (traits, formula) => {
 
 const findAll = (hash, keys) => {
   let results = []
-  for (let key in keys) {
+
+  for (let key of keys) {
     let found = hash[key]
+
     if (found) {
       results.push({
         id:   key,

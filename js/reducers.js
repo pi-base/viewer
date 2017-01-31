@@ -21,31 +21,27 @@ const reducers = combineReducers({
 })
 
 const reducer = (state, action) => {
-    state = reducers(state, action)
+    let next = reducers(state, action)
 
     switch (action.type) {
     case '@@redux-form/CHANGE':
         if (action.meta.form !== 'search' || action.meta.field !== 'q') {
-            return state
+            return next
         }
-        state.search.q = action.payload
 
-        const formula = queries.parseSearchFormula(state, action.payload)
-        if (formula) {
-            state.search.formula = formula
-            state.search.results = queries.runSearch(state, formula)
-        }
-        return state
+        next.search.q = action.payload
+
+        const formula = queries.parseSearchFormula(next, action.payload)
+        if (formula) { next.search.formula = formula }
+        return next
     case 'FETCH_DONE':
-        let next = Object.assign({}, state, {
-          spaces: action.payload.spaces,
-          properties: action.payload.properties,
-          traits: action.payload.traits
-        })
+        next.spaces = action.payload.spaces,
+        next.properties = action.payload.properties,
+        next.traits =action.payload.traits
         next.properties.finder = new PropertyFinder(next.properties)
         return next
     default:
-        return state
+        return next
     }
 }
 
