@@ -21,12 +21,12 @@ const reducers = combineReducers({
 })
 
 const reducer = (state, action) => {
-    let next = reducers(state, action)
+    let next = Object.assign({}, reducers(state, action))
 
     switch (action.type) {
     case '@@redux-form/CHANGE':
         if (action.meta.form !== 'search' || action.meta.field !== 'q') {
-            return next
+          return next
         }
 
         next.search.q = action.payload

@@ -30,7 +30,7 @@ class Search extends React.Component {
     return (
       <form className="search row">
         <div className="col-md-4">
-          <FormulaInput name="q"/>
+          <FormulaInput name="q" value={q}/>
         </div>
         <div className="col-md-8">
           { q && formula

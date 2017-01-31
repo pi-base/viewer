@@ -19,8 +19,12 @@ export default class PropertyFinder {
     }
 
     resolve(str) {
-        const id   = this.fuse.search(str)[0]
-        const name = this.properties[id]
-        return { id, name }
+      return this.suggestionsFor(str, 1)[0]
+    }
+
+    suggestionsFor(str, limit) {
+      limit = limit || 10
+      const ids = this.fuse.search(str).slice(0, limit)
+      return ids.map(id => ({ id: id, name: this.properties[id] }))
     }
 }

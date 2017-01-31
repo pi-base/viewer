@@ -50,3 +50,17 @@ export const runSearch = (state, formula) => {
 
 export const searchQ = (state) => (state.search.q)
 export const searchFormula = (state) => (state.search.formula)
+
+
+const getFragment = (str) => {
+    if (!str) { return '' }
+    const parts = str.split(/[~+&|\(\)]/)
+    return parts[parts.length - 1].trim()
+}
+
+export const suggestionsFor = (state, query) => {
+  if (!(query && state.properties && state.properties.finder)) { return [] }
+
+  const fragment = getFragment(query)
+  return state.properties.finder.suggestionsFor(fragment)
+}
