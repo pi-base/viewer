@@ -14,7 +14,7 @@ import { makeStore } from './store'
 import routes from './routes/index'
 
 const history = useRouterHistory(createHashHistory)()
-const store = makeStore()
+const store   = makeStore()
 
 Relay.injectNetworkLayer(
   new Relay.DefaultNetworkLayer('http://localhost:3001/graphql')

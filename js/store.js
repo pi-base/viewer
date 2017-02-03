@@ -8,7 +8,10 @@ import reducer from './reducers'
 const loggerMiddleware = createLogger({
   predicate: (getState, action) => (
     // !action.type.endsWith('/CHANGE')
-    action.type && !action.type.startsWith('@@redux-form')
+    action.type
+      && !action.type.startsWith('@@redux-form')
+      && action.type !== 'FETCH_STARTING'
+      && action.type !== 'FETCH_DONE'
   )
 })
 

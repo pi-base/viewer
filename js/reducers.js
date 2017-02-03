@@ -10,6 +10,13 @@ const search = (state, action) => {
 }
 const noop = (state, action) => (state || {})
 
+const spaces = (state, action) => {
+  if (action.type === 'FILTER_SPACE_TRAITS') {
+    return Object.assign(state, { traitFilter: action.payload })
+  }
+  return state
+}
+
 const reducers = combineReducers({
     search: search,
     form:   formReducer,
