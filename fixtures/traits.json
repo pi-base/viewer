@@ -1,0 +1,144 @@
+{
+  "spaces": {
+    "1": "Finite Discrete Topology",
+    "2": "Countable Discrete Topology",
+    "3": "Uncountable Discrete Topology",
+    "4": "Indiscrete Topology",
+    "5": "Odd-Even Topology",
+    "7": "Finite Particular Point Topology",
+    "8": "Countable Particular Point Topology",
+    "9": "Uncountable Particular Point Topology",
+    "12": "Countable Excluded Point Topology",
+    "13": "Uncountable Excluded Point Topology"
+  },
+  "properties": {
+    "9": "Urysohn",
+    "12": "Completely Regular",
+    "13": "Normal",
+    "14": "Completely Normal",
+    "16": "Compact",
+    "17": "$\\sigma$-compact",
+    "18": "Lindelof",
+    "19": "Countably Compact",
+    "20": "Sequentially Compact",
+    "21": "Weakly Countably Compact"
+  },
+  "traits": {
+    "2": {
+      "17": true,
+      "19": false,
+      "20": false,
+      "16": false,
+      "18": true,
+      "21": false,
+      "9": true,
+      "13": true,
+      "14": true,
+      "12": true
+    },
+    "3": {
+      "17": false,
+      "19": false,
+      "20": false,
+      "16": false,
+      "18": false,
+      "9": true,
+      "21": false,
+      "14": true,
+      "13": true,
+      "12": true
+    },
+    "1": {
+      "16": true,
+      "17": true,
+      "18": true,
+      "19": true,
+      "21": true,
+      "9": true,
+      "14": true,
+      "13": true,
+      "20": true,
+      "12": true
+    },
+    "4": {
+      "16": true,
+      "14": true,
+      "13": true,
+      "12": true,
+      "17": true,
+      "18": true,
+      "19": true,
+      "21": true,
+      "20": true,
+      "9": false
+    },
+    "5": {
+      "21": true,
+      "19": false,
+      "20": false,
+      "9": false,
+      "14": true,
+      "13": true,
+      "12": true,
+      "17": true,
+      "18": true,
+      "16": false
+    },
+    "7": {
+      "16": true,
+      "18": true,
+      "17": true,
+      "9": false,
+      "13": false,
+      "14": false,
+      "19": true,
+      "21": true,
+      "20": true
+    },
+    "8": {
+      "16": false,
+      "21": false,
+      "19": false,
+      "20": false,
+      "9": false,
+      "17": true,
+      "18": true,
+      "13": false,
+      "14": false,
+      "12": false
+    },
+    "9": {
+      "16": false,
+      "18": false,
+      "21": false,
+      "19": false,
+      "20": false,
+      "9": false,
+      "13": false,
+      "14": false,
+      "17": false
+    },
+    "12": {
+      "14": true,
+      "16": true,
+      "13": true,
+      "9": false,
+      "17": true,
+      "18": true,
+      "19": true,
+      "21": true,
+      "20": true
+    },
+    "13": {
+      "14": true,
+      "16": true,
+      "13": true,
+      "9": false,
+      "17": true,
+      "18": true,
+      "19": true,
+      "21": true,
+      "20": true
+    }
+  }
+}
