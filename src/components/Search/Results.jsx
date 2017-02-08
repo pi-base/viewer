@@ -5,19 +5,27 @@ import {Link} from 'react-router'
 import * as Q from '../../queries'
 import Formula from '../Formula'
 
-const Results = ({ formula, results }) => (
-  <div>
-    <Formula formula={formula}></Formula>
-    <h2>{results.size} Results</h2>
-    <ul>
-      {results.map(s =>
-        <li key={s.id}>
-          <Link to={`/spaces/${s.id}`}>{s.name}</Link>
-        </li>
-      )}
-    </ul>
-  </div>
-)
+class Results extends React.Component {
+  render() {
+    const { formula, results } = this.props
+
+    return (
+      <div>
+        <h2>
+          {results.size} Spaces ∋
+          <Formula formula={formula}></Formula>
+        </h2>
+
+        {results.map(s =>
+          <article key={s.id}>
+            <Link to={`/spaces/${s.id}`}>{s.name}</Link>
+            <div>{s.description}</div>
+          </article>
+        )}
+      </div>
+    )
+  }
+}
 
 export default connect(
   (state, ownProps) => ({

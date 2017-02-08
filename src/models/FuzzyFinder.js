@@ -33,8 +33,6 @@ export default class FuzzyFinder {
   }
 
   suggestionsFor(str, limit) {
-    limit = limit || 10
-
     let ids
     if (str) {
       ids = this.fuse.search(str)
@@ -42,7 +40,11 @@ export default class FuzzyFinder {
       ids = this.allIds()
     }
 
-    return ids.slice(0, limit).map(id => ({
+    if (limit) {
+      ids = ids.slice(0, limit)
+    }
+
+    return ids.map(id => ({
       id: id,
       name: this.collection[id]
     }))

@@ -2,25 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
 
-import { search } from '../actions'
-import * as queries from '../queries'
+import * as A from '../actions'
+import * as Q from '../queries'
 
+import ExampleSearches from './Search/Examples'
 import SearchResults from './Search/Results'
 import FormulaInput from './Formula/Input'
 
-const ExampleSearches = ({ runSearch }) => {
-  const example = (label) => (
-    <li><a onClick={() => runSearch(label)}>{label}</a></li>
-  )
-  return (
-    <div>
-      <ul>
-        {example('compact + connected')}
-        {example('first countable + separable + ~second countable')}
-      </ul>
-    </div>
-  )
-}
 
 class Search extends React.Component {
   render() {
@@ -47,11 +35,10 @@ const SearchForm = reduxForm({
 
 export default connect(
   (state) => ({
-    initialValues: {
-      q: queries.searchQ(state)
-    },
-    q:       queries.searchQ(state),
-    formula: queries.searchFormula(state)
+    q:       Q.searchQ(state),
+    formula: Q.searchFormula(state)
   }),
-  { runSearch: search }
+  (dispatch) => ({
+    runSearch: (q) => dispatch(A.search(q))
+  })
 )(SearchForm)

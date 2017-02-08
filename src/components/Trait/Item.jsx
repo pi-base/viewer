@@ -3,17 +3,21 @@ import { Link } from 'react-router'
 
 import Icon from '../Icon'
 
-const TraitItem = ({ space, property, value }) => {
+const TraitItem = ({ space, property, trait }) => {
   // FIXME
-  if (!space || !property || !value) { return null }
+  if (!space || !property || !trait) { return null }
 
   return (
-    <li>
-      <Icon type={value === 'True' ? 'ok' : 'remove'}></Icon>
-      <Link to={`/spaces/${space.name}/properties/${property.name}`}>
-        {property.name}
-      </Link>
-    </li>
+    <tr>
+      <td>
+        <Icon type={trait.value ? 'ok' : 'remove'}></Icon>
+      </td>
+      <td>
+        <Link to={`/spaces/${space.name}/properties/${property.name}`}>
+          {property.name}
+        </Link>
+      </td>
+    </tr>
   )
 }
 

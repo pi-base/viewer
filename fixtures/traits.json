@@ -25,120 +25,408 @@
   },
   "traits": {
     "2": {
-      "17": true,
-      "19": false,
-      "20": false,
-      "16": false,
-      "18": true,
-      "21": false,
-      "9": true,
-      "13": true,
-      "14": true,
-      "12": true
+      "17": {
+        "value": true,
+        "deduced": false
+      },
+      "19": {
+        "value": false,
+        "deduced": false
+      },
+      "20": {
+        "value": false,
+        "deduced": true
+      },
+      "16": {
+        "value": false,
+        "deduced": true
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "21": {
+        "value": false,
+        "deduced": true
+      },
+      "9": {
+        "value": true,
+        "deduced": true
+      },
+      "13": {
+        "value": true,
+        "deduced": true
+      },
+      "14": {
+        "value": true,
+        "deduced": true
+      },
+      "12": {
+        "value": true,
+        "deduced": true
+      }
     },
     "3": {
-      "17": false,
-      "19": false,
-      "20": false,
-      "16": false,
-      "18": false,
-      "9": true,
-      "21": false,
-      "14": true,
-      "13": true,
-      "12": true
+      "17": {
+        "value": false,
+        "deduced": false
+      },
+      "19": {
+        "value": false,
+        "deduced": true
+      },
+      "20": {
+        "value": false,
+        "deduced": true
+      },
+      "16": {
+        "value": false,
+        "deduced": true
+      },
+      "18": {
+        "value": false,
+        "deduced": true
+      },
+      "9": {
+        "value": true,
+        "deduced": true
+      },
+      "21": {
+        "value": false,
+        "deduced": true
+      },
+      "14": {
+        "value": true,
+        "deduced": true
+      },
+      "13": {
+        "value": true,
+        "deduced": true
+      },
+      "12": {
+        "value": true,
+        "deduced": true
+      }
     },
     "1": {
-      "16": true,
-      "17": true,
-      "18": true,
-      "19": true,
-      "21": true,
-      "9": true,
-      "14": true,
-      "13": true,
-      "20": true,
-      "12": true
+      "16": {
+        "value": true,
+        "deduced": false
+      },
+      "17": {
+        "value": true,
+        "deduced": true
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "19": {
+        "value": true,
+        "deduced": true
+      },
+      "21": {
+        "value": true,
+        "deduced": true
+      },
+      "9": {
+        "value": true,
+        "deduced": true
+      },
+      "14": {
+        "value": true,
+        "deduced": true
+      },
+      "13": {
+        "value": true,
+        "deduced": true
+      },
+      "20": {
+        "value": true,
+        "deduced": true
+      },
+      "12": {
+        "value": true,
+        "deduced": true
+      }
     },
     "4": {
-      "16": true,
-      "14": true,
-      "13": true,
-      "12": true,
-      "17": true,
-      "18": true,
-      "19": true,
-      "21": true,
-      "20": true,
-      "9": false
+      "16": {
+        "value": true,
+        "deduced": false
+      },
+      "14": {
+        "value": true,
+        "deduced": true
+      },
+      "13": {
+        "value": true,
+        "deduced": true
+      },
+      "12": {
+        "value": true,
+        "deduced": true
+      },
+      "17": {
+        "value": true,
+        "deduced": true
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "19": {
+        "value": true,
+        "deduced": true
+      },
+      "21": {
+        "value": true,
+        "deduced": true
+      },
+      "20": {
+        "value": true,
+        "deduced": true
+      },
+      "9": {
+        "value": false,
+        "deduced": true
+      }
     },
     "5": {
-      "21": true,
-      "19": false,
-      "20": false,
-      "9": false,
-      "14": true,
-      "13": true,
-      "12": true,
-      "17": true,
-      "18": true,
-      "16": false
+      "21": {
+        "value": true,
+        "deduced": false
+      },
+      "19": {
+        "value": false,
+        "deduced": false
+      },
+      "20": {
+        "value": false,
+        "deduced": true
+      },
+      "9": {
+        "value": false,
+        "deduced": true
+      },
+      "14": {
+        "value": true,
+        "deduced": true
+      },
+      "13": {
+        "value": true,
+        "deduced": true
+      },
+      "12": {
+        "value": true,
+        "deduced": true
+      },
+      "17": {
+        "value": true,
+        "deduced": true
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "16": {
+        "value": false,
+        "deduced": true
+      }
     },
     "7": {
-      "16": true,
-      "18": true,
-      "17": true,
-      "9": false,
-      "13": false,
-      "14": false,
-      "19": true,
-      "21": true,
-      "20": true
+      "16": {
+        "value": true,
+        "deduced": false
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "17": {
+        "value": true,
+        "deduced": true
+      },
+      "9": {
+        "value": false,
+        "deduced": true
+      },
+      "13": {
+        "value": false,
+        "deduced": true
+      },
+      "14": {
+        "value": false,
+        "deduced": true
+      },
+      "19": {
+        "value": true,
+        "deduced": true
+      },
+      "21": {
+        "value": true,
+        "deduced": true
+      },
+      "20": {
+        "value": true,
+        "deduced": true
+      }
     },
     "8": {
-      "16": false,
-      "21": false,
-      "19": false,
-      "20": false,
-      "9": false,
-      "17": true,
-      "18": true,
-      "13": false,
-      "14": false,
-      "12": false
+      "16": {
+        "value": false,
+        "deduced": false
+      },
+      "21": {
+        "value": false,
+        "deduced": false
+      },
+      "19": {
+        "value": false,
+        "deduced": true
+      },
+      "20": {
+        "value": false,
+        "deduced": true
+      },
+      "9": {
+        "value": false,
+        "deduced": true
+      },
+      "17": {
+        "value": true,
+        "deduced": true
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "13": {
+        "value": false,
+        "deduced": true
+      },
+      "14": {
+        "value": false,
+        "deduced": true
+      },
+      "12": {
+        "value": false,
+        "deduced": true
+      }
     },
     "9": {
-      "16": false,
-      "18": false,
-      "21": false,
-      "19": false,
-      "20": false,
-      "9": false,
-      "13": false,
-      "14": false,
-      "17": false
+      "16": {
+        "value": false,
+        "deduced": false
+      },
+      "18": {
+        "value": false,
+        "deduced": false
+      },
+      "21": {
+        "value": false,
+        "deduced": false
+      },
+      "19": {
+        "value": false,
+        "deduced": true
+      },
+      "20": {
+        "value": false,
+        "deduced": true
+      },
+      "9": {
+        "value": false,
+        "deduced": true
+      },
+      "13": {
+        "value": false,
+        "deduced": true
+      },
+      "14": {
+        "value": false,
+        "deduced": true
+      },
+      "17": {
+        "value": false,
+        "deduced": true
+      }
     },
     "12": {
-      "14": true,
-      "16": true,
-      "13": true,
-      "9": false,
-      "17": true,
-      "18": true,
-      "19": true,
-      "21": true,
-      "20": true
+      "14": {
+        "value": true,
+        "deduced": false
+      },
+      "16": {
+        "value": true,
+        "deduced": false
+      },
+      "13": {
+        "value": true,
+        "deduced": true
+      },
+      "9": {
+        "value": false,
+        "deduced": true
+      },
+      "17": {
+        "value": true,
+        "deduced": true
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "19": {
+        "value": true,
+        "deduced": true
+      },
+      "21": {
+        "value": true,
+        "deduced": true
+      },
+      "20": {
+        "value": true,
+        "deduced": true
+      }
     },
     "13": {
-      "14": true,
-      "16": true,
-      "13": true,
-      "9": false,
-      "17": true,
-      "18": true,
-      "19": true,
-      "21": true,
-      "20": true
+      "14": {
+        "value": true,
+        "deduced": false
+      },
+      "16": {
+        "value": true,
+        "deduced": false
+      },
+      "13": {
+        "value": true,
+        "deduced": true
+      },
+      "9": {
+        "value": false,
+        "deduced": true
+      },
+      "17": {
+        "value": true,
+        "deduced": true
+      },
+      "18": {
+        "value": true,
+        "deduced": true
+      },
+      "19": {
+        "value": true,
+        "deduced": true
+      },
+      "21": {
+        "value": true,
+        "deduced": true
+      },
+      "20": {
+        "value": true,
+        "deduced": true
+      }
     }
   }
 }

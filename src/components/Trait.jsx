@@ -10,15 +10,15 @@ class Trait extends React.Component {
     if (!space.trait) { return null }
 
     return (
-      <div>
+      <Tex>
         <h3>{space.trait.property.name}</h3>
-        <Tex>{space.trait.property.description}</Tex>
+        <div>{space.trait.property.description}</div>
 
         <h4>Proof</h4>
         { space.trait.description
-        ? <Tex>{space.trait.description}</Tex>
+        ? <div>{space.trait.description}</div>
         : <p><i>No proof supplied</i></p>}
-      </div>
+      </Tex>
     )
   }
 }

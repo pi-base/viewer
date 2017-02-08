@@ -19,8 +19,7 @@ const PropertySuggestions = ({ suggestions, selected, visible, onSelect }) => {
           className={"list-group-item " + (selected === i ? "active" : "")}
           key={p.id}
           onMouseDown={() => onSelect(i)}
-          href="#"
-        >
+          href="#">
           {p.name}
         </a>
       )}
