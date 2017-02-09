@@ -1,23 +1,36 @@
 import React from 'react'
 import Relay from 'react-relay'
 
+import Markdown from './Markdown'
 import Tex from './Tex'
+
+class Proof extends React.Component {
+  render() {
+    if (this.props.deduced) {
+      return <p><i>Automatically deduced</i></p>
+    } else if (this.props.description) {
+      return <Markdown text={this.props.description}/>
+    } else {
+      return <p><i>No proof given</i></p>
+    }
+  }
+}
 
 class Trait extends React.Component {
   render() {
-    const { space } = this.props
+    const space = this.props.viewer.spaces[0]
+    if (!space) { return null }
 
-    if (!space.trait) { return null }
+    const trait = space.traits[0]
+    const property = trait.property
 
     return (
       <Tex>
-        <h3>{space.trait.property.name}</h3>
-        <div>{space.trait.property.description}</div>
+        <h3>{property.name}</h3>
+        <Markdown text={property.description}/>
 
         <h4>Proof</h4>
-        { space.trait.description
-        ? <div>{space.trait.description}</div>
-        : <p><i>No proof supplied</i></p>}
+        <Proof trait={trait}/>
       </Tex>
     )
   }
@@ -25,19 +38,22 @@ class Trait extends React.Component {
 
 export default Relay.createContainer(Trait, {
   initialVariables: {
-    propertyId: null
+    spaceName: null,
+    propertyName: null
   },
   fragments: {
-    space: (variables) => {
+    viewer: (vars) => {
+      if (!vars.spaceName || !vars.propertyName) { return '' }
       return Relay.QL`
-        fragment on Space {
-          name
-          description
-          trait(propertyId: $propertyId) {
-            description
-            property {
-              name
+        fragment on Viewer {
+          spaces(name: $spaceName) {
+            traits(propertyName: $propertyName) {
               description
+              deduced
+              property {
+                name
+                description
+              }
             }
           }
         }

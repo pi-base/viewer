@@ -8,9 +8,6 @@ import Spaces from '../components/Spaces'
 import Search from '../components/Search'
 import Trait  from '../components/Trait'
 
-const SpaceQueries = {
-  space: () => Relay.QL`query { space(id: $spaceId) }`
-}
 const ViewerQueries = {
   viewer: () => Relay.QL`query { viewer }`
 }
@@ -31,8 +28,8 @@ const routes = (
     render={({props}) => props ? <App {...props}/> : <Loading/>}
   >
     <Route path="spaces" component={Spaces} queries={ViewerQueries}/>
-    <Route path="spaces/:spaceId" component={Space} queries={SpaceQueries}>
-      <Route path="properties/:propertyId" component={Trait} queries={SpaceQueries}/>
+    <Route path="spaces/:spaceName" component={Space} queries={ViewerQueries}>
+      <Route path="properties/:propertyName" component={Trait} queries={ViewerQueries}/>
     </Route>
     <Route path="search" component={Search} queries={ViewerQueries}/>
   </Route>

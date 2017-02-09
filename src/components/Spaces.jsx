@@ -1,22 +1,28 @@
-import React from 'react';
-import Relay from 'react-relay';
-import { Link } from 'react-router';
+import React from 'react'
+import Relay from 'react-relay'
+import { Link } from 'react-router'
+
+import Tex from './Tex'
+
+ // TODO: this should probably be server-side
+import { preview } from '../utils'
 
 class Spaces extends React.Component {
   render() {
     return (
-      <div>
+      <section className="spaces">
         <h1>Spaces</h1>
-        <ul>
-          {this.props.viewer.spaces.map(space =>
-            <li key={space.uid}>
+        {this.props.viewer.spaces.slice(0,10).map(space =>
+          <Tex key={space.uid}>
+            <h2>
               <Link to={`/spaces/${space.name}`}>
                 {space.name}
               </Link>
-            </li>
-          )}
-        </ul>
-      </div>
+            </h2>
+            <div>{preview(space.description)}</div>
+          </Tex>
+        )}
+      </section>
     )
   }
 }
@@ -24,10 +30,11 @@ class Spaces extends React.Component {
 export default Relay.createContainer(Spaces, {
   fragments: {
     viewer: () => Relay.QL`
-      fragment on User {
+      fragment on Viewer {
         spaces {
-          name
           uid
+          name
+          description
         }
       }
     `

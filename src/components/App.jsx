@@ -40,7 +40,7 @@ const AppU = connect(
 export default Relay.createContainer(AppU, {
   fragments: {
     viewer: () => Relay.QL`
-      fragment on User {
+      fragment on Viewer {
         spaces {
           uid
           name

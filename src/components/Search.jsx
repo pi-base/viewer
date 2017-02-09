@@ -1,12 +1,10 @@
 import React from 'react'
 import Relay from 'react-relay'
-import { Link } from 'react-router'
 
 import U from './U'
 import Formula from './Formula'
 import FormulaInput from './Formula/Input'
 import SearchResults from './Search/Results'
-import Tex from './Tex'
 
 class Search extends React.Component {
   constructor() {
@@ -47,7 +45,7 @@ class Search extends React.Component {
 export default Relay.createContainer(U(Search), {
   fragments: {
     viewer: () => Relay.QL`
-      fragment on User {
+      fragment on Viewer {
         spaces {
           uid
           name

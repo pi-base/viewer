@@ -1,19 +1,18 @@
 import React from 'react'
 import Relay from 'react-relay'
 
+import Markdown   from './Markdown'
 import TraitPager from './Trait/Pager'
 import Tex        from './Tex'
 
 class Space extends React.Component {
   render() {
-    const { space } = this.props
-    // TODO: (why) can this happen?
-    if (!space) { return null }
+    const space = this.props.viewer.spaces[0]
 
     return (
       <div>
         <h1>{space.name}</h1>
-        <Tex>{space.description}</Tex>
+        <Tex><Markdown text={space.description}/></Tex>
 
         <hr/>
 
@@ -31,12 +30,17 @@ class Space extends React.Component {
 }
 
 export default Relay.createContainer(Space, {
+  initialVariables: {
+    uid: '1'
+  },
   fragments: {
-    space: () => Relay.QL`
-      fragment on Space {
-        uid
-        name
-        description
+    viewer: () => Relay.QL`
+      fragment on Viewer {
+        spaces(uid: $uid) {
+          uid
+          name
+          description
+        }
       }
     `
   }

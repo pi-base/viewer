@@ -101,7 +101,7 @@
               ],
               "type": {
                 "kind": "OBJECT",
-                "name": "User",
+                "name": "Viewer",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -117,7 +117,7 @@
         },
         {
           "kind": "OBJECT",
-          "name": "User",
+          "name": "Viewer",
           "description": "A site user",
           "fields": [
             {
@@ -142,7 +142,26 @@
               "name": "spaces",
               "description": null,
               "args": [
-
+                {
+                  "name": "uid",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                },
+                {
+                  "name": "name",
+                  "description": null,
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  },
+                  "defaultValue": null
+                }
               ],
               "type": {
                 "kind": "LIST",
@@ -249,7 +268,7 @@
               "deprecationReason": null
             },
             {
-              "name": "slug",
+              "name": "preview",
               "description": null,
               "args": [
 
@@ -263,78 +282,11 @@
               "deprecationReason": null
             },
             {
-              "name": "trait",
-              "description": null,
-              "args": [
-                {
-                  "name": "propertyId",
-                  "description": null,
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  },
-                  "defaultValue": null
-                }
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Trait",
-                "ofType": null
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "traits",
               "description": null,
               "args": [
                 {
-                  "name": "first",
-                  "description": "Returns the first _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "after",
-                  "description": "Returns the elements in the list that come after the specified global ID.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "last",
-                  "description": "Returns the last _n_ elements from the list.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "before",
-                  "description": "Returns the elements in the list that come before the specified global ID.",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  },
-                  "defaultValue": null
-                },
-                {
-                  "name": "propertySearch",
+                  "name": "propertyName",
                   "description": null,
                   "type": {
                     "kind": "SCALAR",
@@ -345,9 +297,13 @@
                 }
               ],
               "type": {
-                "kind": "OBJECT",
-                "name": "TraitConnection",
-                "ofType": null
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Trait",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -400,103 +356,23 @@
         },
         {
           "kind": "OBJECT",
-          "name": "TraitConnection",
-          "description": null,
+          "name": "Trait",
+          "description": "Properties posessed by a specific space",
           "fields": [
             {
-              "name": "edges",
-              "description": "A list of edges.",
+              "name": "deduced",
+              "description": null,
               "args": [
 
               ],
               "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "TraitEdge",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "pageInfo",
-              "description": "Information to aid in pagination.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "PageInfo",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "TraitEdge",
-          "description": "An edge in a connection.",
-          "fields": [
-            {
-              "name": "cursor",
-              "description": "A cursor for use in pagination.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              },
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "node",
-              "description": "The item at the end of the edge.",
-              "args": [
-
-              ],
-              "type": {
-                "kind": "OBJECT",
-                "name": "Trait",
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               },
               "isDeprecated": false,
               "deprecationReason": null
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-
-          ],
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "OBJECT",
-          "name": "Trait",
-          "description": "Properties posessed by a specific space",
-          "fields": [
+            },
             {
               "name": "description",
               "description": null,
@@ -728,23 +604,31 @@
           "possibleTypes": null
         },
         {
-          "kind": "SCALAR",
-          "name": "Int",
-          "description": "Represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "INTERFACE",
-          "name": "Node",
-          "description": "An object with an ID.",
+          "kind": "OBJECT",
+          "name": "TraitConnection",
+          "description": null,
           "fields": [
             {
-              "name": "id",
-              "description": "ID of the object.",
+              "name": "edges",
+              "description": "A list of edges.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "TraitEdge",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "pageInfo",
+              "description": "Information to aid in pagination.",
               "args": [
 
               ],
@@ -752,8 +636,8 @@
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
+                  "kind": "OBJECT",
+                  "name": "PageInfo",
                   "ofType": null
                 }
               },
@@ -762,47 +646,55 @@
             }
           ],
           "inputFields": null,
-          "interfaces": null,
+          "interfaces": [
+
+          ],
           "enumValues": null,
-          "possibleTypes": [
-            {
-              "kind": "OBJECT",
-              "name": "Property",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "Space",
-              "ofType": null
-            },
-            {
-              "kind": "OBJECT",
-              "name": "Trait",
-              "ofType": null
-            }
-          ]
+          "possibleTypes": null
         },
         {
-          "kind": "ENUM",
-          "name": "Value",
-          "description": "Values that a Trait might have",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
+          "kind": "OBJECT",
+          "name": "TraitEdge",
+          "description": "An edge in a connection.",
+          "fields": [
             {
-              "name": "True",
-              "description": "True",
+              "name": "cursor",
+              "description": "A cursor for use in pagination.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "False",
-              "description": "False",
+              "name": "node",
+              "description": "The item at the end of the edge.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Trait",
+                "ofType": null
+              },
               "isDeprecated": false,
               "deprecationReason": null
             }
           ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
           "possibleTypes": null
         },
         {
@@ -890,6 +782,84 @@
           "inputFields": null,
           "interfaces": null,
           "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "SCALAR",
+          "name": "Int",
+          "description": "Represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "Node",
+          "description": "An object with an ID.",
+          "fields": [
+            {
+              "name": "id",
+              "description": "ID of the object.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "Property",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Space",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "Trait",
+              "ofType": null
+            }
+          ]
+        },
+        {
+          "kind": "ENUM",
+          "name": "Value",
+          "description": "Values that a Trait might have",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "True",
+              "description": "True",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "False",
+              "description": "False",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
           "possibleTypes": null
         },
         {

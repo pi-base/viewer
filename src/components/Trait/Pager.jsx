@@ -34,6 +34,7 @@ class TraitPager extends React.Component {
   }
 
   all() {
+    // TODO: memoize / don't call this as much
     return this.props.universe.spaceTraits(this.props.space)
   }
 

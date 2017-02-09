@@ -55,6 +55,7 @@ class Universe {
 
   spaceTraits(space) {
     const traits = this.traits.get(space.uid)
+
     return I.Map(traits).map((trait, propId) => {
       return {
         property: this.properties.find(propId),
