@@ -13,6 +13,7 @@ const sepWith = (delimiter) => (componentArray) => {
 
 // TODO: use Formula.map (or something similar)
 const Formula = ({ formula, link }) => {
+
     if (!formula) { return (<span/>) }
 
     // TODO: check formula type and make sure that we have attached ids

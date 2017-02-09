@@ -4,22 +4,21 @@ import { Link } from 'react-router'
 
 import Tex from './Tex'
 
- // TODO: this should probably be server-side
-import { preview } from '../utils'
-
 class Spaces extends React.Component {
   render() {
+    const spaces = this.props.viewer.spaces.slice(0, 10)
+
     return (
       <section className="spaces">
         <h1>Spaces</h1>
-        {this.props.viewer.spaces.slice(0,10).map(space =>
+        {spaces.map(space =>
           <Tex key={space.uid}>
-            <h2>
+            <h3>
               <Link to={`/spaces/${space.name}`}>
                 {space.name}
               </Link>
-            </h2>
-            <div>{preview(space.description)}</div>
+            </h3>
+            <div>{space.preview}</div>
           </Tex>
         )}
       </section>
@@ -34,7 +33,7 @@ export default Relay.createContainer(Spaces, {
         spaces {
           uid
           name
-          description
+          preview
         }
       }
     `

@@ -49,7 +49,7 @@ export default Relay.createContainer(U(Search), {
         spaces {
           uid
           name
-          description
+          preview
         }
       }
     `

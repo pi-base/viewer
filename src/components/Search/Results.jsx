@@ -2,6 +2,7 @@ import React from 'react'
 import {Link} from 'react-router'
 
 import Formula from '../Formula'
+import Tex     from '../Tex'
 
 class Results extends React.Component {
   render() {
@@ -15,10 +16,10 @@ class Results extends React.Component {
         </h2>
 
         {results.map(s =>
-          <article key={s.id}>
-            <Link to={`/spaces/${s.id}`}>{s.name}</Link>
-            <div>{s.description}</div>
-          </article>
+          <Tex key={s.uid} component="article">
+            <Link to={`/spaces/${s.uid}`}>{s.name}</Link>
+            <div>{s.preview}</div>
+          </Tex>
         )}
       </div>
     )

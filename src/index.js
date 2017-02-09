@@ -40,8 +40,9 @@ Relay.injectNetworkLayer({
   },
 
   sendQueries(reqs) {
+    console.log('Sending ' + reqs.length + ' queries')
     network.sendQueries(reqs)
-    reqs.forEach(r => console.log('Sending', r._printedQuery.text, r))
+    // reqs.forEach(r => console.log('Sending', r._printedQuery.text, r))
   },
 
   supports(...options) {

@@ -2,11 +2,13 @@ import React from 'react'
 import Relay from 'react-relay'
 import {Route} from 'react-router'
 
-import App    from '../components/App'
-import Space  from '../components/Space'
-import Spaces from '../components/Spaces'
-import Search from '../components/Search'
-import Trait  from '../components/Trait'
+import App      from '../components/App'
+import Space    from '../components/Space'
+import Spaces   from '../components/Spaces'
+import Search   from '../components/Search'
+import Theorem  from '../components/Theorem'
+import Theorems from '../components/Theorems'
+import Trait    from '../components/Trait'
 
 const ViewerQueries = {
   viewer: () => Relay.QL`query { viewer }`
@@ -31,6 +33,8 @@ const routes = (
     <Route path="spaces/:spaceName" component={Space} queries={ViewerQueries}>
       <Route path="properties/:propertyName" component={Trait} queries={ViewerQueries}/>
     </Route>
+    <Route path="theorems" component={Theorems} queries={ViewerQueries}/>
+    <Route path="theorems/:theoremId" component={Theorem} queries={ViewerQueries}/>
     <Route path="search" component={Search} queries={ViewerQueries}/>
   </Route>
 )

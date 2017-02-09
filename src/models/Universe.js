@@ -64,6 +64,32 @@ class Universe {
       }
     }).valueSeq()
   }
+
+  hydrateTheorem(str) {
+    const t = JSON.parse(str)
+
+    return {
+      antecedent: this.hydrateFormula(t.antecedent),
+      consequent: this.hydrateFormula(t.consequent)
+    }
+  }
+
+  hydrateFormula(f) {
+    if (f.and) {
+      return {
+        and: f.and.map(sub => this.hydrateFormula(sub))
+      }
+    } else if (f.or) {
+      return {
+        or: f.or.map(sub => this.hydrateFormula(sub))
+      }
+    } else {
+      return {
+        property: this.properties.find(f.propertyId),
+        value: f.value
+      }
+    }
+  }
 }
 
 export default Universe
