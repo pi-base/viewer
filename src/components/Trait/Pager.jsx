@@ -1,46 +1,80 @@
 import React from 'react'
 
-import U from '../U'
+import * as I from 'immutable'
 
-import Tex from '../Tex'
+import Icon      from '../Icon'
+import Filter    from '../Filter'
+import Tex       from '../Tex'
 import TraitItem from './Item'
+import U         from '../U'
 
+class Limiter extends React.Component {
+  render() {
+    const { limit, found, total, onClick } = this.props
 
-const TraitTab = ({ name, filter, traits, active, onSelect }) => {
-  const scope = traits.filter(filter).toArray()
+    let icon, text
 
-  return <button
-    className={`btn btn-default ${active ? 'active' : ''}`}
-    onClick={() => onSelect()}>
-    {scope.length} {name}
-  </button>
+    if (limit && total > limit) {
+      icon = "chevron-down"
+      text = `Show All ${total}`
+    } else if (found > limit) {
+      icon = "chevron-up"
+      text = "Collapse"
+    } else {
+      return <span/>
+    }
+
+    return <div className="limiter">
+      <button
+        className="btn btn-default btn-sm pull-right"
+        onClick={onClick}
+      >
+        <Icon type={icon}/>
+        {' ' + text}
+      </button>
+    </div>
+  }
 }
 
-const Tabs = [
-  { name: 'Asserted', filter: (t) => !t.deduced },
-  { name: 'Deduced',  filter: (t) =>  t.deduced },
-  { name: 'All',      filter: (t) => true }
-]
-
 class TraitPager extends React.Component {
+  static tabs = [
+    { name: 'Asserted', icon: 'pencil' },
+    { name: 'Deduced',  icon: 'search' },
+  ]
+
   constructor() {
     super()
 
     this.state = {
-      q: '',
       limit: 10,
-      tab: Tabs[0]
+      tabs: {
+        'Asserted': true,
+        'Deduced': false
+      },
+      filtered: I.List()
     }
   }
 
-  all() {
-    // TODO: memoize / don't call this as much
-    return this.props.universe.spaceTraits(this.props.space)
+  componentWillMount() {
+    this.display(this.all())
   }
 
-  traits() {
-    const filter = this.state.tab.filter
-    return this.limit(this.all().filter(filter)).toArray()
+  all() {
+    this._all = this._all || this.props.universe
+      .spaceTraits(this.props.space)
+      .sortBy(t => t.property.name)
+
+    return this._all
+  }
+
+  display(traits) {
+    this.setState({ traits: I.List(traits) })
+  }
+
+  toggleTab(name) {
+    const tabs = this.state.tabs
+    tabs[name] = !tabs[name]
+    this.setState({ tabs: tabs })
   }
 
   toggleShowAll() {
@@ -48,14 +82,24 @@ class TraitPager extends React.Component {
     this.setState({ limit: limit })
   }
 
-  queueFilter(q) {
-    this.setState({ q })
-    console.log('TODO: apply property finder to filter results')
-  }
-
-  limit(seq) {
+  limited(seq) {
     if (this.state.limit) {
       return seq.take(this.state.limit)
+    } else {
+      return seq
+    }
+  }
+
+  tabbed(seq) {
+    const asserted = this.state.tabs.Asserted
+    const deduced  = this.state.tabs.Deduced
+
+    if (asserted && deduced) {
+      return seq
+    } else if (asserted) {
+      return seq.filter(t => !t.deduced)
+    } else if (deduced) {
+      return seq.filter(t => t.deduced)
     } else {
       return seq
     }
@@ -64,48 +108,51 @@ class TraitPager extends React.Component {
   render() {
     const { space } = this.props
 
-    const tab = (t) => {
-      return <TraitTab
-        key={t.name}
-        name={t.name}
-        filter={t.filter}
-        traits={this.all()}
-        active={this.state.tab === t}
-        onSelect={() => this.setState({ tab: t })}
-      />
+    const all     = this.all()
+    const tabbed  = this.tabbed(this.state.traits)
+    const limited = this.limited(tabbed)
+
+    const tab = ({ name, icon }) => {
+      const active = this.state.tabs[name] ? 'active' : ''
+
+      return <button key={name}
+        className={`btn btn-default ${active}`}
+        onClick={() => this.toggleTab(name)}
+      >
+        <Icon type={icon}/>
+        {' '}
+        {name}
+      </button>
     }
 
+
     return (
-      <Tex>
+      <Tex className="traitFilter">
         <div className="btn-group">
-          {Tabs.map(t => tab(t))}
+          {TraitPager.tabs.map(tab)}
         </div>
 
-        <button
-          className={`btn btn-default ${this.state.limit ? '' : 'active'}`}
-          onClick={() => this.toggleShowAll()}
-        >
-          Show All
-        </button>
-
-        <input
-          type="text"
-          autoComplete="off"
-          className="form-control"
-          name="traitFilter"
-          placeholder="Property Search"
-          value={this.state.q}
-          onChange={(e) => this.queueFilter(e.target.value)}
+        <Filter
+          collection={all}
+          onField={t => t.property.name}
+          onChange={(ts) => this.display(ts)}
         />
 
         <table className="table table-condensed">
           <thead></thead>
           <tbody>
-            {this.traits().map(trait =>
+            {limited.map(trait =>
               <TraitItem key={trait.property.name} space={space} property={trait.property} trait={trait}/>
             )}
           </tbody>
         </table>
+
+        <Limiter
+          limit={this.state.limit}
+          found={limited.size}
+          total={tabbed.size}
+          onClick={() => this.toggleShowAll()}
+        />
       </Tex>
     )
   }

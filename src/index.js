@@ -13,7 +13,7 @@ import {applyRouterMiddleware, useRouterHistory} from 'react-router'
 import useRelay from 'react-router-relay'
 
 import { makeStore } from './store'
-import routes from './routes/index'
+import routes        from './routes'
 
 // TODO: fix up JSDOM, use hash history throughout
 let history

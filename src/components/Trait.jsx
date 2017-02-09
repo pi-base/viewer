@@ -6,12 +6,16 @@ import Tex from './Tex'
 
 class Proof extends React.Component {
   render() {
-    if (this.props.deduced) {
+    const { trait } = this.props
+
+    if (trait.deduced) {
       return <p><i>Automatically deduced</i></p>
-    } else if (this.props.description) {
-      return <Markdown text={this.props.description}/>
+    } else if (trait.description) {
+      return <Markdown text={trait.description}/>
     } else {
-      return <p><i>No proof given</i></p>
+      return <p>
+        <i>No proof given</i>
+      </p>
     }
   }
 }

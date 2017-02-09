@@ -27,6 +27,9 @@ class Spaces extends React.Component {
 }
 
 export default Relay.createContainer(Spaces, {
+  // FIXME: if we start at e.g. /theorems and then navigate here, the Relay
+  // container fetches each space node-wise, making _way_ too many queries
+  // May need a custom network layer here. See https://github.com/facebook/relay/issues/520
   fragments: {
     viewer: () => Relay.QL`
       fragment on Viewer {

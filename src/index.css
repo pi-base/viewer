@@ -7,3 +7,7 @@ body {
 .search article {
   margin-bottom: 2em;
 }
+
+.traitFilter table {
+  margin-top: 1em;
+}
