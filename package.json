@@ -49,6 +49,7 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "debounce": "^1.0.0",
     "fuse.js": "^2.6.1",
     "immutable": "^3.8.1",
     "react": "^15.4.2",
@@ -63,7 +64,8 @@
     "redux-immutable": "^3.0.11",
     "redux-logger": "^2.8.1",
     "redux-router": "^2.1.2",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "relay-cache-manager": "^0.2.1"
   },
   "scripts": {
     "start": "node scripts/start.js",

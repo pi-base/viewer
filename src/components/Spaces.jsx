@@ -8,10 +8,10 @@ class Spaces extends React.Component {
       <div>
         <h1>Spaces</h1>
         <ul>
-          {this.props.viewer.spaces.edges.map(({node}) =>
-            <li key={node.slug}>
-              <Link to={`/spaces/${node.slug}`}>
-                {node.name}
+          {this.props.viewer.spaces.map(space =>
+            <li key={space.uid}>
+              <Link to={`/spaces/${space.name}`}>
+                {space.name}
               </Link>
             </li>
           )}
@@ -25,13 +25,9 @@ export default Relay.createContainer(Spaces, {
   fragments: {
     viewer: () => Relay.QL`
       fragment on User {
-        spaces(first: 10) {
-          edges {
-            node {
-              name
-              slug
-            }
-          }
+        spaces {
+          name
+          uid
         }
       }
     `

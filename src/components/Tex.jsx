@@ -15,7 +15,7 @@ class Tex extends React.Component {
     }
 
     render() {
-        return <div>{this.props.children}</div>
+        return <div className={this.props.className}>{this.props.children}</div>
     }
 }
 

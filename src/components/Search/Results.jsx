@@ -1,8 +1,6 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import {Link} from 'react-router'
 
-import * as Q from '../../queries'
 import Formula from '../Formula'
 
 class Results extends React.Component {
@@ -27,8 +25,4 @@ class Results extends React.Component {
   }
 }
 
-export default connect(
-  (state, ownProps) => ({
-    results: Q.runSearch(state, ownProps.formula)
-  })
-)(Results)
+export default Results

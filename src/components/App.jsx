@@ -1,14 +1,17 @@
 import React from 'react'
+import Relay from 'react-relay'
 import { connect } from 'react-redux'
-
-import { fetchCache } from '../actions'
 
 import Navbar from './Navbar'
 import State  from './State'
 
+import * as A from '../actions'
+
 class App extends React.Component {
-  componentDidMount() {
-    this.props.fetchCache()
+  componentWillMount() {
+    if (this.props.viewer) {
+      this.props.cacheUniverse(this.props.viewer)
+    }
   }
 
   render() {
@@ -27,9 +30,26 @@ class App extends React.Component {
   }
 }
 
-export default connect(
-    (state)    => ({}),
-    (dispatch) => ({
-        fetchCache: () => { dispatch(fetchCache()) }
-    })
+const AppU = connect(
+  (state)    => ({}),
+  (dispatch) => ({
+    cacheUniverse: (u) => { dispatch(A.cacheUniverse(u)) }
+  })
 )(App)
+
+export default Relay.createContainer(AppU, {
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on User {
+        spaces {
+          uid
+          name
+        }
+        properties {
+          uid
+          name
+        }
+        traitTable
+      }`
+  }
+})

@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js'
 
+// TODO: we don't need both this and PropertyFinder ...
 export default class FuzzyFinder {
   constructor(collection) {
     // TODO: store this as an immutable collection and refactor

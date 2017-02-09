@@ -15,6 +15,8 @@ class Space extends React.Component {
         <h1>{space.name}</h1>
         <Tex>{space.description}</Tex>
 
+        <hr/>
+
         <div className="row">
           <div className="col-md-4">
             <TraitPager space={space}/>

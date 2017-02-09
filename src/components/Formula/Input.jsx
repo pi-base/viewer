@@ -1,8 +1,6 @@
 import React from 'react'
-import {connect} from 'react-redux'
-import {Field} from 'redux-form'
 
-import * as Q from '../../queries'
+import U from '../U'
 
 const TAB = 9, ENTER = 13, UP = 38, RIGHT = 39, DOWN = 40
 
@@ -32,6 +30,7 @@ class FormulaInput extends React.Component {
     super()
     this.state = {
       selected:        0,
+      suggestions:     [],
       dropdownVisible: false
     }
   }
@@ -43,7 +42,7 @@ class FormulaInput extends React.Component {
   setSelection(to) {
     const limit = Math.min(
       this.props.suggestionLimit || 10,
-      this.props.suggestions.length
+      this.state.suggestions.length
     )
     if (limit === 0) { return }
 
@@ -53,7 +52,7 @@ class FormulaInput extends React.Component {
 
   expandFragment(index) {
     index = index || this.state.selected
-    const selected = this.props.suggestions[index]
+    const selected = this.state.suggestions[index]
 
     console.log('TODO: replace fragment with', selected)
 
@@ -79,8 +78,18 @@ class FormulaInput extends React.Component {
     }
   }
 
-  handleChange(e) {
-    this.setState({ dropdownVisible: true })
+  handleChange(q) {
+    const u = this.props.universe
+
+    let updates = { q, dropdownVisible: true }
+    let formula = u.parseFormula(q)
+    if (formula) {
+      updates.formula     = formula
+      updates.suggestions = u.propertySuggestions(q)
+
+      this.props.doChange(formula)
+    }
+    this.setState(updates)
   }
 
   handleBlur(e) {
@@ -89,19 +98,17 @@ class FormulaInput extends React.Component {
 
   render() {
     return (<div>
-      <Field
-        component="input"
+      <input
         type="text"
         autoComplete="off"
         className="form-control"
-        name={this.props.name}
         onKeyDown={this.handleKeyDown.bind(this)}
-        onChange={this.handleChange.bind(this)}
+        onChange={(e) => this.handleChange(e.target.value)}
         onBlur={this.handleChange.bind(this)}
       />
       <PropertySuggestions
         visible={this.state.dropdownVisible}
-        suggestions={this.props.suggestions}
+        suggestions={this.state.suggestions}
         selected={this.state.selected}
         onSelect={this.expandFragment}
       />
@@ -109,8 +116,4 @@ class FormulaInput extends React.Component {
   }
 }
 
-export default connect(
-  (state, ownProps) => ({
-    suggestions: Q.suggestionsFor(state, ownProps.value)
-  })
-)(FormulaInput)
+export default U(FormulaInput)

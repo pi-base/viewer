@@ -8,6 +8,7 @@ import {Provider} from 'react-redux'
 import {createMemoryHistory, createHashHistory} from 'history'
 import {applyRouterMiddleware, useRouterHistory} from 'react-router'
 import useRelay from 'react-router-relay'
+import CacheManager from 'relay-cache-manager'
 
 import { makeStore } from './store'
 import routes from './routes/index'
@@ -20,7 +21,10 @@ try {
   history = useRouterHistory(createMemoryHistory)()
 }
 
-const store   = makeStore()
+const store = makeStore()
+
+const cacheManager = new CacheManager()
+Relay.Store.getStoreData().injectCacheManager(cacheManager)
 
 Relay.injectNetworkLayer(
   new Relay.DefaultNetworkLayer('http://localhost:3001/graphql')

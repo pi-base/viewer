@@ -1,28 +1,45 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
-import * as Q from '../../queries'
+import U from '../U'
 
 import Tex from '../Tex'
 import TraitItem from './Item'
 
-const ASSERTED = 'ASSERTED'
-const DEDUCED = 'DEDUCED'
-const ALL = 'ALL'
+
+const TraitTab = ({ name, filter, traits, active, onSelect }) => {
+  const scope = traits.filter(filter).toArray()
+
+  return <button
+    className={`btn btn-default ${active ? 'active' : ''}`}
+    onClick={() => onSelect()}>
+    {scope.length} {name}
+  </button>
+}
+
+const Tabs = [
+  { name: 'Asserted', filter: (t) => !t.deduced },
+  { name: 'Deduced',  filter: (t) =>  t.deduced },
+  { name: 'All',      filter: (t) => true }
+]
 
 class TraitPager extends React.Component {
   constructor() {
     super()
+
     this.state = {
-      traits: [],
       q: '',
-      type: ASSERTED,
-      limit: 10
+      limit: 10,
+      tab: Tabs[0]
     }
   }
 
-  componentDidMount() {
-    this.setState({ traits: this.props.filterTraits(this.state.q) })
+  all() {
+    return this.props.universe.spaceTraits(this.props.space)
+  }
+
+  traits() {
+    const filter = this.state.tab.filter
+    return this.limit(this.all().filter(filter)).toArray()
   }
 
   toggleShowAll() {
@@ -30,66 +47,46 @@ class TraitPager extends React.Component {
     this.setState({ limit: limit })
   }
 
-  queueFilter(str) {
-    this.setState({ q: str })
-
-    if (this.wait) {
-      clearTimeout(this.wait)
-      this.wait = null
-    }
-    this.wait = setTimeout(() => {
-      this.setState({ traits: this.props.filterTraits(this.state.q) })
-      this.wait = null
-    }, 500)
+  queueFilter(q) {
+    this.setState({ q })
+    console.log('TODO: apply property finder to filter results')
   }
 
-  traits() {
-    return this.limit(this.state.traits.filter((t) => this.showTrait(t)))
-  }
-
-  showTrait(t) {
-    if (this.state.type === ALL) { return true }
-
-    if (this.state.type === DEDUCED) { return t.deduced }
-    if (this.state.type === ASSERTED) { return !t.deduced }
-  }
-
-  limit(array) {
+  limit(seq) {
     if (this.state.limit) {
-      return array.slice(0, this.state.limit)
+      return seq.take(this.state.limit)
     } else {
-      return array
+      return seq
     }
-  }
-
-  set(name, value) {
-    const updates = {}
-    updates[name] = value
-    this.setState(updates)
   }
 
   render() {
     const { space } = this.props
 
-    const btn = (label, name, value) => {
-      const klass = this.state[name] === value ? 'active' : ''
-      return (<button
-        className={`btn btn-default ${klass}`}
-        onClick={() => this.set(name, value)}>
-        {label}
-      </button>)
+    const tab = (t) => {
+      return <TraitTab
+        key={t.name}
+        name={t.name}
+        filter={t.filter}
+        traits={this.all()}
+        active={this.state.tab === t}
+        onSelect={() => this.setState({ tab: t })}
+      />
     }
 
     return (
       <Tex>
         <div className="btn-group">
-          {btn('Asserted', 'type', ASSERTED)}
-          {btn('Deduced', 'type', DEDUCED)}
-          {btn('All', 'type', ALL)}
+          {Tabs.map(t => tab(t))}
         </div>
+
         <button
           className={`btn btn-default ${this.state.limit ? '' : 'active'}`}
-          onClick={() => this.toggleShowAll()}>Show All</button>
+          onClick={() => this.toggleShowAll()}
+        >
+          Show All
+        </button>
+
         <input
           type="text"
           autoComplete="off"
@@ -97,13 +94,15 @@ class TraitPager extends React.Component {
           name="traitFilter"
           placeholder="Property Search"
           value={this.state.q}
-          onChange={(e) => this.queueFilter(e.target.value)}/>
+          onChange={(e) => this.queueFilter(e.target.value)}
+        />
+
         <table className="table table-condensed">
           <thead></thead>
           <tbody>
-              {this.traits().map(trait =>
-                <TraitItem key={trait.property.name} space={space} property={trait.property} trait={trait}/>
-              )}
+            {this.traits().map(trait =>
+              <TraitItem key={trait.property.name} space={space} property={trait.property} trait={trait}/>
+            )}
           </tbody>
         </table>
       </Tex>
@@ -111,10 +110,4 @@ class TraitPager extends React.Component {
   }
 }
 
-export default connect(
-  (state, ownProps) => {
-    return {
-      filterTraits: (f) => Q.filteredTraitsForSpace(state, ownProps.space, f)
-    }
-  }
-)(TraitPager)
+export default U(TraitPager)

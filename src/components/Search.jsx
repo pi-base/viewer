@@ -1,44 +1,59 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { reduxForm } from 'redux-form'
+import Relay from 'react-relay'
+import { Link } from 'react-router'
 
-import * as A from '../actions'
-import * as Q from '../queries'
-
-import ExampleSearches from './Search/Examples'
-import SearchResults from './Search/Results'
+import U from './U'
+import Formula from './Formula'
 import FormulaInput from './Formula/Input'
-
+import SearchResults from './Search/Results'
+import Tex from './Tex'
 
 class Search extends React.Component {
-  render() {
-    const { q, formula, runSearch } = this.props
+  constructor() {
+    super()
 
+    this.state = {
+      formula: null
+    }
+  }
+
+  searchFor(formula) {
+    this.setState({ formula })
+  }
+
+  results() {
+    return this.props.universe.searchByFormula(
+      this.props.viewer.spaces,
+      this.state.formula
+    ).sortBy(s => s.name).slice(0, 10)
+  }
+
+  render() {
     return (
-      <form className="search row">
+      <div className="search row">
         <div className="col-md-4">
-          <FormulaInput name="q" value={q}/>
+          <FormulaInput doChange={(f) => this.searchFor(f)}/>
         </div>
+
         <div className="col-md-8">
-          { q && formula
-          ? <SearchResults formula={formula}/>
-          : <ExampleSearches runSearch={runSearch}/>}
+          <Formula formula={this.state.formula}/>
+          <SearchResults formula={this.state.formula} results={this.results()}/>
         </div>
-      </form>
+      </div>
     )
   }
 }
 
-const SearchForm = reduxForm({
-  form: 'search'
-})(Search)
-
-export default connect(
-  (state) => ({
-    q:       Q.searchQ(state),
-    formula: Q.searchFormula(state)
-  }),
-  (dispatch) => ({
-    runSearch: (q) => dispatch(A.search(q))
-  })
-)(SearchForm)
+export default Relay.createContainer(U(Search), {
+  fragments: {
+    viewer: () => Relay.QL`
+      fragment on User {
+        spaces {
+          uid
+          name
+          description
+        }
+      }
+    `
+  }
+})
