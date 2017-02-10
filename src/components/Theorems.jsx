@@ -2,19 +2,15 @@ import React from 'react'
 import Relay from 'react-relay'
 import { Link } from 'react-router'
 
-import Formula from './Formula'
-import Tex from './Tex'
-import U from './U'
+import Implication from './Implication'
+import Tex         from './Tex'
+import U           from './U'
 
 class Theorems extends React.Component {
   hydrate(theorem) {
     const t = this.props.universe.hydrateTheorem(theorem)
 
-    return <span>
-      <Formula formula={t.antecedent} link={false}/>
-      {' ⇒ '}
-      <Formula formula={t.consequent} link={false}/>
-    </span>
+    return <Implication theorem={t} link={false}/>
   }
 
   render() {

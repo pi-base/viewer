@@ -21,10 +21,13 @@ class App extends React.Component {
         <div className="container">
           {this.props.children}
         </div>
-        <hr/>
-        <div className="container">
-          <State/>
-        </div>
+        {process.env.NODE_ENV === 'development'
+        ? <div className="container">
+            <hr/>
+            <State/>
+          </div>
+        : ''
+        }
       </div>
     );
   }

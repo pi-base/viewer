@@ -1,26 +1,22 @@
 import React from 'react'
 import Relay from 'react-relay'
 
+import Icon     from './Icon'
 import Markdown from './Markdown'
-import Tex from './Tex'
+import Proof    from './Proof'
+import Tex      from './Tex'
 
-class Proof extends React.Component {
-  render() {
-    const { trait } = this.props
-
-    if (trait.deduced) {
-      return <p><i>Automatically deduced</i></p>
-    } else if (trait.description) {
-      return <Markdown text={trait.description}/>
-    } else {
-      return <p>
-        <i>No proof given</i>
-      </p>
-    }
-  }
-}
 
 class Trait extends React.Component {
+  constructor() {
+    super()
+    this.state = { showProperty: false }
+  }
+
+  toggleShowProperty() {
+    this.setState({ showProperty: !this.state.showProperty })
+  }
+
   render() {
     const space = this.props.viewer.spaces[0]
     if (!space) { return null }
@@ -30,11 +26,24 @@ class Trait extends React.Component {
 
     return (
       <Tex>
-        <h3>{property.name}</h3>
-        <Markdown text={property.description}/>
+        <h3>
+          {property.name}
+          {' '}
+          <button
+            className="btn btn-default btn-xs"
+            onClick={() => this.toggleShowProperty()}
+          >
+            <Icon type="question-sign"/>
+          </button>
+        </h3>
 
-        <h4>Proof</h4>
-        <Proof trait={trait}/>
+        { this.state.showProperty
+        ? <div className="well">
+            <Markdown text={property.description}/>
+          </div>
+        : ''}
+
+        <Proof space={space} trait={trait}/>
       </Tex>
     )
   }
@@ -48,12 +57,15 @@ export default Relay.createContainer(Trait, {
   fragments: {
     viewer: (vars) => {
       if (!vars.spaceName || !vars.propertyName) { return '' }
+
       return Relay.QL`
         fragment on Viewer {
           spaces(name: $spaceName) {
+            name
             traits(propertyName: $propertyName) {
-              description
               deduced
+              description
+              proof
               property {
                 name
                 description

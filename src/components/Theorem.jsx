@@ -1,10 +1,10 @@
 import React from 'react'
 import Relay from 'react-relay'
 
-import Formula    from './Formula'
-import Markdown   from './Markdown'
-import Tex        from './Tex'
-import U          from './U'
+import Implication from './Implication'
+import Markdown    from './Markdown'
+import Tex         from './Tex'
+import U           from './U'
 
 class Theorem extends React.Component {
   render() {
@@ -14,11 +14,7 @@ class Theorem extends React.Component {
     return (
       <div>
         <h1>
-          <Tex>
-            <Formula formula={h.antecedent} link={true}/>
-            {' ⇒ '}
-            <Formula formula={h.consequent} link={true}/>
-          </Tex>
+          <Implication theorem={h} link={true}/>
         </h1>
         <Tex><Markdown text={t.description}/></Tex>
       </div>

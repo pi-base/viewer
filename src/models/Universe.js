@@ -65,8 +65,8 @@ class Universe {
     }).valueSeq()
   }
 
-  hydrateTheorem(str) {
-    const t = JSON.parse(str)
+  hydrateTheorem(arg) {
+    const t = typeof(arg) === 'string' ? JSON.parse(arg) : arg
 
     return {
       antecedent: this.hydrateFormula(t.antecedent),
