@@ -1,49 +1,75 @@
 import React from 'react'
-import Relay from 'react-relay'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
+import * as Q from '../queries'
+
+import Filter      from './Filter'
 import Implication from './Implication'
+import Preview     from './Preview'
 import Tex         from './Tex'
-import U           from './U'
 
 class Theorems extends React.Component {
-  hydrate(theorem) {
-    const t = this.props.universe.hydrateTheorem(theorem)
+  constructor() {
+    super()
+    this.state = {
+      limit: 10,
+      theorems: []
+    }
+  }
 
-    return <Implication theorem={t} link={false}/>
+  componentWillMount() {
+    this.doFilter(this.props.theorems)
+  }
+
+  more() {
+    this.setState({ limit: this.state.limit + 10 })
+  }
+
+  doFilter(theorems) {
+    this.setState({
+      limit: 10,
+      theorems: theorems.length ? theorems : this.props.theorems
+    })
   }
 
   render() {
-    const theorems = this.props.viewer.theorems.slice(0, 10)
+    const theorems = this.state.theorems.slice(0, this.state.limit)
 
     return (
       <section className="theorems">
-        <h1>Theorems</h1>
+        <Filter
+          collection={this.props.theorems}
+          onChange={this.doFilter.bind(this)}
+          weights={[
+            { name: 'antecedent',  weight: 0.7 },
+            { name: 'consequent',  weight: 0.7 },
+            { name: 'description', weight: 0.5 }
+          ]}
+          placeholder="Filter theorems"
+        />
+
         {theorems.map(t =>
           <Tex key={t.uid}>
             <h3>
               <Link to={`/theorems/${t.uid}`}>
-                {this.hydrate(t.name)}
+                <Implication theorem={t} link={false}/>
               </Link>
             </h3>
-            <div>{t.preview}</div>
+            <Preview text={t.description}/>
           </Tex>
         )}
+
+        { this.props.theorems.length > this.state.limit
+        ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
+        : ''}
       </section>
     )
   }
 }
 
-export default Relay.createContainer(U(Theorems), {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        theorems {
-          uid
-          name
-          preview
-        }
-      }
-    `
-  }
-})
+export default connect(
+  (state) => ({
+    theorems: Q.allTheorems(state).toJS()
+  })
+)(Theorems)

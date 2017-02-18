@@ -1,6 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
-import U from '../U'
+import * as Q from '../../queries'
 
 const TAB = 9, ENTER = 13, UP = 38, RIGHT = 39, DOWN = 40
 
@@ -15,7 +16,7 @@ const PropertySuggestions = ({ suggestions, selected, visible, onSelect }) => {
       {suggestions.map((p,i) =>
         <a
           className={"list-group-item " + (selected === i ? "active" : "")}
-          key={p.id}
+          key={p.uid}
           onMouseDown={() => onSelect(i)}
           href="#">
           {p.name}
@@ -79,13 +80,15 @@ class FormulaInput extends React.Component {
   }
 
   handleChange(q) {
-    const u = this.props.universe
+    if (!q) { return this.setState({ q: '', dropdownVisible: false }) }
 
-    let updates = { q, dropdownVisible: true }
-    let formula = u.parseFormula(q)
+    const { parseFormula, suggestions } = this.props
+
+    const updates = { q, dropdownVisible: true }
+    const formula = parseFormula(q)
     if (formula) {
       updates.formula     = formula
-      updates.suggestions = u.propertySuggestions(q)
+      updates.suggestions = suggestions(q)
 
       this.props.doChange(formula)
     }
@@ -116,4 +119,9 @@ class FormulaInput extends React.Component {
   }
 }
 
-export default U(FormulaInput)
+export default connect(
+  (state) => ({
+    parseFormula: (str) => { return Q.parseFormula(state, str) },
+    suggestions: (str) => { return Q.suggestionsFor(state, str, 10) }
+  })
+)(FormulaInput)

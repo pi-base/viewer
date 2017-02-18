@@ -1,7 +1,6 @@
 import React from 'react'
 import Fuse  from 'fuse.js'
 
-// TODO: extract Fuse
 class Filter extends React.Component {
   constructor() {
     super()
@@ -10,30 +9,27 @@ class Filter extends React.Component {
 
   componentWillMount() {
     this.records = {}
-    const records = []
 
     this.props.collection.forEach((rec, i) => {
-      const name = this.props.onField(rec)
-
-      this.records[i] = rec
-      records.push({ id: i, name: name })
+      this.records[rec.uid] = rec
     })
 
-    this.finder = new Fuse(records, {
+    this.finder = new Fuse(this.props.collection, {
       caseSensitive: false,
       shouldSort: true,
-      keys: ['name'],
-      id: 'id',
+      keys: this.props.weights,
+      id: 'uid',
       threshold: 0.7
     })
   }
 
   onChange(q) {
     this.setState({ q })
+    if (!q) { return this.props.onChange([]) }
 
     const matches = this.finder
       .search(q)
-      .map(id => this.records[id])
+      .map(uid => this.records[uid])
 
     this.props.onChange(matches)
   }
@@ -54,14 +50,22 @@ class Filter extends React.Component {
 }
 
 Filter.propTypes = {
-  collection:  React.PropTypes.object.isRequired,
-  onField:     React.PropTypes.func.isRequired,
+  collection:  React.PropTypes.array.isRequired,
   onChange:    React.PropTypes.func.isRequired,
+  weights:     React.PropTypes.array,
   name:        React.PropTypes.string,
   placeholder: React.PropTypes.string
 }
 
+const weights = [{
+  name: 'name',
+  weight: 0.6
+},{
+  name: 'description',
+  weight: 0.4
+}]
 Filter.defaultProps = {
+  weights:     weights,
   name:        'filter',
   placeholder: 'Filter'
 }

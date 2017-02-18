@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "babel-polyfill": "^6.22.0",
-    "babel-relay-plugin": "^0.11.0",
     "autoprefixer": "6.5.1",
     "babel-core": "6.17.0",
     "babel-eslint": "7.1.1",
     "babel-jest": "17.0.2",
     "babel-loader": "6.2.7",
+    "babel-polyfill": "^6.22.0",
     "babel-preset-react-app": "^2.0.1",
+    "babel-relay-plugin": "^0.11.0",
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "1.1.3",
     "connect-history-api-fallback": "1.3.0",
@@ -29,6 +29,7 @@
     "file-loader": "0.9.0",
     "filesize": "3.3.0",
     "fs-extra": "0.30.0",
+    "graphiql": "^0.9.3",
     "gzip-size": "3.0.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.2",
@@ -57,22 +58,17 @@
     "react-dom": "^15.4.2",
     "react-json-tree": "^0.10.1",
     "react-redux": "^5.0.2",
-    "react-relay": "^0.10.0",
     "react-router": "^3.0.2",
-    "react-router-relay": "^0.13.5",
     "redux": "^3.6.0",
-    "redux-form": "^6.5.0",
     "redux-immutable": "^3.0.11",
     "redux-logger": "^2.8.1",
     "redux-router": "^2.1.2",
-    "redux-thunk": "^2.2.0",
-    "relay-cache-manager": "^0.2.1"
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js",
-    "update": "rm node_modules/.cache && ./scripts/update_schema.rb"
+    "test": "node scripts/test.js"
   },
   "jest": {
     "collectCoverageFrom": [

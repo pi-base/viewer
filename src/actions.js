@@ -1,9 +1,21 @@
-import fetch from 'isomorphic-fetch'
+import ifetch from 'isomorphic-fetch'
+
+export const STORAGE_KEY = ':pi-base:'
 
 export const FORM_CHANGE = '@@redux-form/CHANGE'
-export const FETCH_DONE = 'FETCH_DONE'
 export const FILTER_SPACE_TRAITS = 'FILTER_SPACE_TRAITS'
-export const CACHE_UNIVERSE = 'CACHE_UNIVERSE'
+
+// Fetch states
+export const STARTING = 'STARTING'
+export const DONE = 'DONE'
+export const FAILED = 'FAILED'
+
+// Fetch types
+export const OBJECTS = 'OBJECTS'
+
+export const fetch = (status, type) => {
+  return `FETCH:${type}:${status}`
+}
 
 export const search = (q) => ({
   type: FORM_CHANGE,
@@ -19,31 +31,40 @@ export const filterSpaceTraits = (filter) => ({
   payload: filter
 })
 
-export const cacheUniverse = (u) => ({
-  type: CACHE_UNIVERSE,
-  payload: u
-})
-
 const path = (rel) => (`http://localhost:3001/${rel}`)
 
-export const fetchCache = () =>
+export const doFetch = (type, url) =>
   (dispatch) => {
+    let key = `${STORAGE_KEY}:${type}`
+    let cached = localStorage.getItem(key)
+    if (cached) {
+      dispatch({
+        type: fetch(DONE, type),
+        payload: JSON.parse(cached)
+      })
+      return
+    }
+
+    // Not cached; do the fetch
     dispatch({
-      type: 'FETCH_STARTING'
+      type: fetch(STARTING, type)
     })
 
-    return fetch(path('traits'))
+    return ifetch(path(url))
       .then(r => r.json())
-      .then(data =>
-        dispatch({
-          type: FETCH_DONE,
+      .then(data => {
+        localStorage.setItem(key, JSON.stringify(data))
+        return dispatch({
+          type: fetch(DONE, type),
           payload: data
         })
-      )
+      })
       .catch(err =>
         dispatch({
-          type: 'FETCH_FAILED',
+          type: fetch(FAILED, type),
           payload: err
         })
       )
   }
+
+export const fetchUniverse = doFetch(OBJECTS, 'db')

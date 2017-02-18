@@ -1,21 +1,17 @@
-import React    from 'react'
-import Relay    from 'react-relay'
+import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
+
+import * as Q from '../queries'
 
 import Markdown    from './Markdown'
 import Implication from './Implication'
-import U           from './U'
 
 class Explorer extends React.Component {
   render() {
-    const { space, trait } = this.props
+    const { space, proof } = this.props
 
-    const proof    = JSON.parse(trait.proof)
-    const theorems = proof.theorems.map(t => {
-      const h = this.props.universe.hydrateTheorem(t.name)
-      h.uid = t.uid
-      return h
-    })
+    if (!proof) { return null }
 
     return <div className="proofExplorer">
       <p>Automatically deduced from the following properties</p>
@@ -32,7 +28,7 @@ class Explorer extends React.Component {
 
       <p>and theorems</p>
       <ul>
-        {theorems.map(t =>
+        {proof.theorems.map(t =>
           <li key={'implication' + t.uid}>
             <Link to={`/theorems/${t.uid}`}>
               <Implication theorem={t} link={false}/>
@@ -44,7 +40,16 @@ class Explorer extends React.Component {
   }
 }
 
-const ProofExplorer = U(Explorer)
+Explorer.propTypes = {
+  space: PropTypes.object.isRequired,
+  trait: PropTypes.object.isRequired
+}
+
+const ProofExplorer = connect(
+  (state, ownProps) => ({
+    proof: Q.getProof(state, ownProps.trait)
+  })
+)(Explorer)
 
 class Proof extends React.Component {
   render() {
@@ -62,6 +67,4 @@ class Proof extends React.Component {
   }
 }
 
-// TODO: this should be a Relay container w/ fragment for
-//   description, proof, &c.
 export default Proof

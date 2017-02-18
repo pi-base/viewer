@@ -1,16 +1,51 @@
 import React from 'react'
-import Relay from 'react-relay'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import Tex from './Tex'
+import * as Q from '../queries'
+
+import Filter  from './Filter'
+import Preview from './Preview'
+import Tex     from './Tex'
 
 class Spaces extends React.Component {
-  render() {
-    const spaces = this.props.viewer.spaces.slice(0, 10)
+  constructor() {
+    super()
+    this.state = {
+      limit: 10,
+      spaces: []
+    }
+  }
 
+  componentWillMount() {
+    this.doFilter(this.props.spaces)
+  }
+
+  more() {
+    this.setState({ limit: this.state.limit + 10 })
+  }
+
+  doFilter(spaces) {
+    this.setState({
+      limit: 10,
+      spaces: spaces.length ? spaces : this.props.spaces
+    })
+  }
+
+  render() {
+    const spaces = this.state.spaces.slice(0, this.state.limit)
+
+    // TODO: the filter here may be confusing, should
+    //   probably support searching by formula as well
+    // TODO: add "infinite" scroll for paging
     return (
       <section className="spaces">
-        <h1>Spaces</h1>
+        <Filter
+          collection={this.props.spaces}
+          onChange={this.doFilter.bind(this)}
+          placeholder="Filter spaces"
+        />
+
         {spaces.map(space =>
           <Tex key={space.uid}>
             <h3>
@@ -18,27 +53,20 @@ class Spaces extends React.Component {
                 {space.name}
               </Link>
             </h3>
-            <div>{space.preview}</div>
+            <Preview text={space.description}/>
           </Tex>
         )}
+
+        { this.props.spaces.length > this.state.limit
+        ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
+        : ''}
       </section>
     )
   }
 }
 
-export default Relay.createContainer(Spaces, {
-  // FIXME: if we start at e.g. /theorems and then navigate here, the Relay
-  // container fetches each space node-wise, making _way_ too many queries
-  // May need a custom network layer here. See https://github.com/facebook/relay/issues/520
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        spaces {
-          uid
-          name
-          preview
-        }
-      }
-    `
-  }
-});
+export default connect(
+  (state) => ({
+    spaces: Q.allSpaces(state).toJS()
+  })
+)(Spaces)

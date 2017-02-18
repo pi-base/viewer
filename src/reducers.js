@@ -1,22 +1,34 @@
 import I from 'immutable'
 
-import Universe from './models/Universe'
+import * as A from './actions'
 
-import * as actions from './actions'
+import PropertyFinder from './models/PropertyFinder'
+
+const index = (key, collection) => {
+  return I.Map(collection.map(obj => [obj.get(key), obj]))
+}
 
 const reducer = (state, action) => {
-  state = state || I.Map({
-    universe: null
+  state = state || I.fromJS({
+    spaces: [],
+    properties: [],
+    traits: [],
+    theorems: []
   })
 
   switch (action.type) {
-    case actions.CACHE_UNIVERSE:
+    case A.fetch(A.DONE, A.OBJECTS):
+      const u = I.fromJS(action.payload)
+
       return state.merge({
-        universe: new Universe(
-          action.payload.spaces,
-          action.payload.properties,
-          JSON.parse(action.payload.traitTable)
-        )
+        spaces: index('uid', u.get('spaces')),
+        properties: index('uid', u.get('properties')),
+        'properties.finder': new PropertyFinder(u.get('properties').toJS()),
+        theorems: index('uid', u.get('theorems')),
+        // TODO: unify these two vvv
+        traits: index('uid', u.get('traits')),
+        traitTable: u.get('traits').groupBy(t => t.get('space')),
+        proofs: u.get('proofs')
       })
 
     default:

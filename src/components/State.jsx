@@ -9,7 +9,11 @@ class State extends React.Component {
     this.state = { expanded: false }
   }
 
-  toggle() { this.setState({ expanded: !this.state.expanded })}
+  toggle() {
+    if (window) { window.$state = this.props.state }
+    this.setState({ expanded: !this.state.expanded })
+  }
+
 
   render() {
     const { state } = this.props

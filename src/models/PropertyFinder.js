@@ -2,9 +2,9 @@ import Fuse from 'fuse.js'
 
 class PropertyFinder {
   constructor(props) {
-    this.names = {}
-    props.forEach(p => {
-      this.names[p.uid] = p.name
+    this.records = {}
+    props.forEach(rec => {
+      this.records[rec.uid] = rec
     })
 
     this.fuse = new Fuse(props, {
@@ -16,32 +16,19 @@ class PropertyFinder {
     })
   }
 
-  resolve(p) {
-    const id = this.fuse.search(p)[0]
-    return find(id)
+  getId(p) {
+    return this.fuse.search(p)[0]
   }
 
   suggestionsFor(str, limit) {
-    let ids
-    if (str) {
-      ids = this.fuse.search(str)
-    } else {
-      ids = this.allIds()
-    }
+    str = str || ''
+    let ids = this.fuse.search(str)
 
     if (limit) {
       ids = ids.slice(0, limit)
     }
 
-    return ids.map(id => find(id))
-  }
-
-  find(id) {
-    const name = this.names[id]
-    return name && {
-      id,
-      name
-    }
+    return ids.map(id => this.records[id])
   }
 }
 

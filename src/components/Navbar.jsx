@@ -6,9 +6,9 @@ const Navbar = () => (
     <div className="container">
       <a className="navbar-brand">Pi-Base</a>
       <ul className="nav navbar-nav">
-        <li><Link to="/spaces">Spaces</Link></li>
-        <li><Link to="/theorems">Theorems</Link></li>
-        <li><Link to="/search">Search</Link></li>
+        <li><Link activeClassName="active" to="/spaces">Spaces</Link></li>
+        <li><Link activeClassName="active" to="/theorems">Theorems</Link></li>
+        <li><Link activeClassName="active" to="/search">Search</Link></li>
       </ul>
     </div>
   </nav>

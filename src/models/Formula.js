@@ -152,10 +152,20 @@ export function map(formula, func) {
     return {
       or: formula.or.map(sf => map(sf, func))
     }
-  } else {
+  } else if (formula.property) {
     return {
       property: func(formula.property),
       value: formula.value
+    }
+  } else {
+    for (let prop in formula) {
+      // { prop: value } -- really only want the first one
+      if (Object.prototype.hasOwnProperty.call(formula, prop)) {
+        return {
+          property: func(prop),
+          value: formula[prop]
+        }
+      }
     }
   }
 }

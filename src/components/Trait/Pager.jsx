@@ -1,40 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import * as I from 'immutable'
 
+import * as Q from '../../queries'
+
 import Icon      from '../Icon'
 import Filter    from '../Filter'
+import Limiter   from '../Limiter'
 import Tex       from '../Tex'
 import TraitItem from './Item'
-import U         from '../U'
-
-class Limiter extends React.Component {
-  render() {
-    const { limit, found, total, onClick } = this.props
-
-    let icon, text
-
-    if (limit && total > limit) {
-      icon = "chevron-down"
-      text = `Show All ${total}`
-    } else if (found > limit) {
-      icon = "chevron-up"
-      text = "Collapse"
-    } else {
-      return <span/>
-    }
-
-    return <div className="limiter">
-      <button
-        className="btn btn-default btn-sm pull-right"
-        onClick={onClick}
-      >
-        <Icon type={icon}/>
-        {' ' + text}
-      </button>
-    </div>
-  }
-}
 
 class TraitPager extends React.Component {
   static tabs = [
@@ -60,9 +35,7 @@ class TraitPager extends React.Component {
   }
 
   all() {
-    this._all = this._all || this.props.universe
-      .spaceTraits(this.props.space)
-      .sortBy(t => t.property.name)
+    this._all = this._all || this.props.allTraits
 
     return this._all
   }
@@ -158,4 +131,8 @@ class TraitPager extends React.Component {
   }
 }
 
-export default U(TraitPager)
+export default connect(
+  (state, ownProps) => ({
+    allTraits: Q.spaceTraits(state, ownProps.space)
+  })
+)(TraitPager)

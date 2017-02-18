@@ -1,9 +1,10 @@
 import React from 'react'
-import Relay from 'react-relay'
+import { connect } from 'react-redux'
 
-import U from './U'
-import Formula from './Formula'
-import FormulaInput from './Formula/Input'
+import * as Q from '../queries'
+
+import Formula       from './Formula'
+import FormulaInput  from './Formula/Input'
 import SearchResults from './Search/Results'
 
 class Search extends React.Component {
@@ -20,10 +21,10 @@ class Search extends React.Component {
   }
 
   results() {
-    return this.props.universe.searchByFormula(
-      this.props.viewer.spaces,
-      this.state.formula
-    ).sortBy(s => s.name).slice(0, 10)
+    return this.props
+      .search(this.state.formula)
+      .sortBy(s => s.name)
+      .toJS()
   }
 
   render() {
@@ -42,16 +43,8 @@ class Search extends React.Component {
   }
 }
 
-export default Relay.createContainer(U(Search), {
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        spaces {
-          uid
-          name
-          preview
-        }
-      }
-    `
-  }
-})
+export default connect(
+  (state) => ({
+    search: (f) => Q.runSearch(state, f)
+  })
+)(Search)

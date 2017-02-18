@@ -1,5 +1,7 @@
 import React from 'react'
-import Relay from 'react-relay'
+import { connect } from 'react-redux'
+
+import * as Q from '../queries'
 
 import Icon     from './Icon'
 import Markdown from './Markdown'
@@ -18,16 +20,16 @@ class Trait extends React.Component {
   }
 
   render() {
-    const space = this.props.viewer.spaces[0]
-    if (!space) { return null }
+    const { trait } = this.props
+    if (!trait) { return null }
 
-    const trait = space.traits[0]
+    const space = trait.space
     const property = trait.property
 
     return (
       <Tex>
         <h3>
-          {property.name}
+          <span>{property.name}</span>
           {' '}
           <button
             className="btn btn-default btn-xs"
@@ -49,31 +51,8 @@ class Trait extends React.Component {
   }
 }
 
-export default Relay.createContainer(Trait, {
-  initialVariables: {
-    spaceName: null,
-    propertyName: null
-  },
-  fragments: {
-    viewer: (vars) => {
-      if (!vars.spaceName || !vars.propertyName) { return '' }
-
-      return Relay.QL`
-        fragment on Viewer {
-          spaces(name: $spaceName) {
-            name
-            traits(propertyName: $propertyName) {
-              deduced
-              description
-              proof
-              property {
-                name
-                description
-              }
-            }
-          }
-        }
-      `
-    }
-  }
-})
+export default connect(
+  (state, ownProps) => ({
+    trait: Q.findTrait(state, ownProps.params.spaceName, ownProps.params.propertyName)
+  })
+)(Trait)

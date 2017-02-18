@@ -1,5 +1,7 @@
 import React from 'react'
-import Relay from 'react-relay'
+import { connect } from 'react-redux'
+
+import * as Q from '../queries'
 
 import Markdown   from './Markdown'
 import TraitPager from './Trait/Pager'
@@ -7,7 +9,8 @@ import Tex        from './Tex'
 
 class Space extends React.Component {
   render() {
-    const space = this.props.viewer.spaces[0]
+    const space = this.props.space
+    if (!space) { return null }
 
     return (
       <div>
@@ -30,19 +33,8 @@ class Space extends React.Component {
   }
 }
 
-export default Relay.createContainer(Space, {
-  initialVariables: {
-    uid: '1'
-  },
-  fragments: {
-    viewer: () => Relay.QL`
-      fragment on Viewer {
-        spaces(uid: $uid) {
-          uid
-          name
-          description
-        }
-      }
-    `
-  }
-})
+export default connect(
+  (state, ownProps) => ({
+    space: Q.findSpace(state, ownProps.params.spaceName)
+  })
+)(Space)
