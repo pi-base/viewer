@@ -48,6 +48,7 @@ const all = (coll, key) => {
 }
 
 export const allSpaces = all('spaces')
+export const allProperties = all('properties')
 export const allTheorems = (state) => {
   const ts = all('theorems', 'uid')(state)
   return ts.map(t => hydrateTheorem(state, t))
@@ -162,4 +163,19 @@ export const counterexamples = (state, theorem) => {
   ])
 
   return runSearch(state, f)
+}
+
+const theoremProperties = (t) => {
+  return F.properties(t.get('antecedent').toJS()) +
+    F.properties(t.get('consequent').toJS())
+}
+
+export const relatedTheorems = (state, prop) => {
+  if (!state) {
+    return I.List()
+  }
+
+  return state.get('theorems').filter(t => {
+    return theoremProperties(t).includes(prop.uid)
+  }).keySeq().map(id => findTheorem(state, id))
 }

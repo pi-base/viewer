@@ -173,3 +173,22 @@ export const map = (formula, func) => {
     }
   }
 }
+
+export const properties = (f) => {
+  if (f.and) {
+    return f.and.reduce((acc, sf) => {
+      return acc.concat(properties(sf))
+    }, [])
+  } else if (f.or) {
+    return f.or.reduce((acc, sf) => {
+      return acc.concat(properties(sf))
+    }, [])
+  } else {
+    for (let prop in f) {
+      // { prop: value } -- really only want the first one
+      if (Object.prototype.hasOwnProperty.call(f, prop)) {
+        return [prop]
+      }
+    }
+  }
+}

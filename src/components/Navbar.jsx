@@ -7,7 +7,7 @@ const Navbar = () => (
       <a className="navbar-brand">Pi-Base</a>
       <ul className="nav navbar-nav">
         <li><Link activeClassName="active" to="/spaces">Spaces</Link></li>
-        <li><Link activeClassName="active" to="/theorems">Theorems</Link></li>
+        <li><Link activeClassName="active" to="/properties">Properties</Link></li>
         <li><Link activeClassName="active" to="/search">Search</Link></li>
       </ul>
     </div>

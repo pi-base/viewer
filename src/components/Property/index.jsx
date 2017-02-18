@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 
 import * as Q from '../../queries'
 
-import Markdown from '../Markdown'
-import Tex      from '../Tex'
+import Markdown        from '../Markdown'
+import RelatedTheorems from './RelatedTheorems'
+import Tex             from '../Tex'
 
 
 class Property extends React.Component {
@@ -16,6 +17,9 @@ class Property extends React.Component {
       <div>
         <h1>{property.name}</h1>
         <Tex><Markdown text={property.description}/></Tex>
+        <hr/>
+
+        <RelatedTheorems property={property}/>
       </div>
     )
   }
