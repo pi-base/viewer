@@ -1,6 +1,21 @@
 import * as I from 'immutable'
 
-import * as Formula from './models/Formula'
+import * as F from './models/Formula'
+
+
+// Utilities
+
+const hydrateTheorem = (state, t) => {
+  const hydrate = (f) =>
+    F.map(f.toJS(), (p) => {
+      return state.getIn(['properties', p]).toJS()
+    })
+
+  return t.merge({
+    antecedent: hydrate(t.get('antecedent')),
+    consequent: hydrate(t.get('consequent'))
+  })
+}
 
 const matches = (formula, traits) => {
   return formula.check((prop, targetValue) => {
@@ -9,12 +24,69 @@ const matches = (formula, traits) => {
   })
 }
 
+const getFragment = (str) => {
+  if (!str) {
+    return ''
+  }
+  const parts = str.split(/[~+&|\(\)]/)
+  return parts[parts.length - 1].trim()
+}
+
 const findAll = (coll, ids) => {
   return ids.map((id) => coll.get(id))
 }
 
+
+// Generic finders
+
+const all = (coll, key) => {
+  key = key || 'name'
+  return (state) => {
+    const objs = state.get(coll) || I.List()
+    return objs.sortBy(obj => obj.get(key)).valueSeq()
+  }
+}
+
+export const allSpaces = all('spaces')
+export const allTheorems = (state) => {
+  const ts = all('theorems', 'uid')(state)
+  return ts.map(t => hydrateTheorem(state, t))
+}
+
+const scan = (coll, key) =>
+  (state, val) => {
+    const objs = state.get(coll)
+    const obj = objs.find((o, _id) => o.get(key) === val)
+    return obj ? obj.toJS() : obj
+  }
+
+export const findSpace = scan('spaces', 'name')
+export const findProperty = scan('properties', 'name')
+
+const fetchTheorem = (state) => {
+  return (id) => {
+    const t = state.getIn(['theorems', id])
+    return hydrateTheorem(state, t)
+  }
+}
+
+export const findTheorem = (state, id) => fetchTheorem(state)(id)
+
+const fetchTrait = (state) =>
+  (id) => {
+    const t = state.getIn(['traits', id])
+    return t.merge({
+      space: state.getIn(['spaces', t.get('space')]),
+      property: state.getIn(['properties', t.get('property')])
+    })
+  }
+
+
+// Other exports
+
 export const parseFormula = (state, q) => {
-  const parsed = Formula.parse(q)
+  console.log("parseFormula.q", q)
+  const parsed = F.parse(q)
   if (!parsed) {
     return
   }
@@ -40,15 +112,6 @@ export const runSearch = (state, formula) => {
   return findAll(state.get('spaces'), spaceIds)
 }
 
-
-const getFragment = (str) => {
-  if (!str) {
-    return ''
-  }
-  const parts = str.split(/[~+&|\(\)]/)
-  return parts[parts.length - 1].trim()
-}
-
 export const suggestionsFor = (state, query, limit) => {
   if (!query) {
     return []
@@ -57,73 +120,6 @@ export const suggestionsFor = (state, query, limit) => {
   const finder = state.get('properties.finder')
   return finder.suggestionsFor(getFragment(query), limit)
 }
-
-export const spaceTraitFilter = (state) => (
-  state.getIn(['spaces', 'traitFilter']) || ''
-)
-
-export const filteredTraitsForSpace = (state, space, filter) => {
-  const traits = state.getIn(['traits', space.uid])
-  const finder = state.getIn(['properties', 'finder'])
-
-  if (!traits || !finder) {
-    return []
-  }
-
-  const suggs = finder.suggestionsFor(filter)
-  let result = []
-
-  suggs.forEach((sug) => {
-    let trait = traits[sug.id]
-    if (!trait) {
-      return
-    }
-
-    result.push({
-      property: sug,
-      value: trait.value,
-      deduced: trait.deduced
-    })
-  })
-
-  return result
-}
-
-const all = (coll, key) => {
-  key = key || 'name'
-  return (state) => {
-    const objs = state.get(coll) || I.List()
-    return objs.sortBy(obj => obj.get(key)).valueSeq()
-  }
-}
-
-const hydrateTheorem = (state, t) => {
-  const hydrate = (f) =>
-    Formula.map(f.toJS(), (p) => {
-      return state.getIn(['properties', p]).toJS()
-    })
-
-  return t.merge({
-    antecedent: hydrate(t.get('antecedent')),
-    consequent: hydrate(t.get('consequent'))
-  })
-}
-
-export const allSpaces = all('spaces')
-export const allTheorems = (state) => {
-  const ts = all('theorems', 'uid')(state)
-  return ts.map(t => hydrateTheorem(state, t))
-}
-
-const scan = (coll, key) =>
-  (state, val) => {
-    const objs = state.get(coll)
-    const obj = objs.find((o, _id) => o.get(key) === val)
-    return obj ? obj.toJS() : obj
-  }
-
-export const findSpace = scan('spaces', 'name')
-export const findProperty = scan('properties', 'name')
 
 export const spaceTraits = (state, space) => {
   const traits = state.getIn(['traitTable', space.uid])
@@ -145,23 +141,6 @@ export const findTrait = (state, space, property) => {
   return trait
 }
 
-
-const fetchTheorem = (state) => {
-  return (id) => {
-    const t = state.getIn(['theorems', id])
-    return hydrateTheorem(state, t)
-  }
-}
-
-const fetchTrait = (state) =>
-  (id) => {
-    const t = state.getIn(['traits', id])
-    return t.merge({
-      space: state.getIn(['spaces', t.get('space')]),
-      property: state.getIn(['properties', t.get('property')])
-    })
-  }
-
 export const getProof = (state, trait) => {
   const proof = state.getIn(['proofs', trait.uid])
 
@@ -174,8 +153,14 @@ export const getProof = (state, trait) => {
   }).toJS()
 }
 
-export const findTheorem = (state, id) => fetchTheorem(state)(id)
+export const counterexamples = (state, theorem) => {
+  const ant = F.fromJSON(theorem.antecedent)
+  const con = F.fromJSON(theorem.consequent)
 
-export const searchByFormula = (state, f) => {
-  return I.List()
+  const f = new F.Conjunction([
+    F.negate(ant),
+    con
+  ])
+
+  return runSearch(state, f)
 }

@@ -98,7 +98,7 @@ class Atom extends Formula {
   }
 }
 
-const fromJSON = (json) => {
+export const fromJSON = (json) => {
   if (json.and) {
     return new Conjunction(json.and.map(fromJSON))
   } else if (json.or) {
@@ -108,7 +108,7 @@ const fromJSON = (json) => {
   }
 }
 
-export function negate(f) {
+export const negate = (f) => {
   if (f.and) {
     return new Disjunction(f.subs.map(sf => negate(sf)))
   } else if (f.or) {
@@ -121,7 +121,11 @@ export function negate(f) {
   }
 }
 
-export function parse(q) {
+export const parse = (q) => {
+  if (!q) {
+    return
+  }
+
   let parsed
 
   try {
@@ -139,7 +143,7 @@ export function parse(q) {
   return formula
 }
 
-export function map(formula, func) {
+export const map = (formula, func) => {
   if (!formula) {
     return formula
   }

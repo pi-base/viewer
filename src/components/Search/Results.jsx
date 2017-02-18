@@ -20,7 +20,7 @@ class Results extends React.Component {
 
         {results.slice(0, 10).map(s =>
           <Tex key={s.uid} component="article">
-            <Link to={`/spaces/${s.uid}`}>{s.name}</Link>
+            <Link to={`/spaces/${s.name}`}>{s.name}</Link>
             <Preview text={s.description}/>
           </Tex>
         )}
