@@ -32,6 +32,17 @@ const getFragment = (str) => {
   return parts[parts.length - 1].trim()
 }
 
+export const replaceFragment = (q, expanded) => {
+  if (!q) {
+    return ''
+  }
+
+  const frag = getFragment(q)
+  const rexp = new RegExp(frag + '$')
+
+  return q.replace(rexp, expanded)
+}
+
 const findAll = (coll, ids) => {
   return ids.map((id) => coll.get(id))
 }

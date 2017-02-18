@@ -54,8 +54,12 @@ class FormulaInput extends React.Component {
   expandFragment(index) {
     index = index || this.state.selected
     const selected = this.state.suggestions[index]
+    const updated  = Q.replaceFragment(this.props.q, selected.name)
 
-    console.log('TODO: replace fragment with', selected)
+    this.props.doChange({
+      q:       updated,
+      formula: this.props.parseFormula(updated)
+    })
 
     this.setState({ selected: 0, dropdownVisible: false })
   }
@@ -80,17 +84,21 @@ class FormulaInput extends React.Component {
   }
 
   handleChange(q) {
-    if (!q) { return this.setState({ q: '', dropdownVisible: false }) }
-
     const { parseFormula, suggestions } = this.props
-
-    const updates = { q, dropdownVisible: true }
     const formula = parseFormula(q)
+
+    // Updates for parent component
+    let updates = { q }
+    if (formula) {
+      updates.formula = formula
+    }
+    this.props.doChange(updates)
+
+    // Updates for local state
+    updates = { q, dropdownVisible: true }
     if (formula) {
       updates.formula     = formula
       updates.suggestions = suggestions(q)
-
-      this.props.doChange(formula)
     }
     this.setState(updates)
   }
@@ -100,22 +108,25 @@ class FormulaInput extends React.Component {
   }
 
   render() {
-    return (<div>
-      <input
-        type="text"
-        autoComplete="off"
-        className="form-control"
-        onKeyDown={this.handleKeyDown.bind(this)}
-        onChange={(e) => this.handleChange(e.target.value)}
-        onBlur={this.handleBlur.bind(this)}
-      />
-      <PropertySuggestions
-        visible={this.state.dropdownVisible}
-        suggestions={this.state.suggestions}
-        selected={this.state.selected}
-        onSelect={this.expandFragment}
-      />
-    </div>)
+    return (
+      <div>
+        <input
+          type="text"
+          autoComplete="off"
+          className="form-control"
+          value={this.props.q}
+          onKeyDown={this.handleKeyDown.bind(this)}
+          onChange={(e) => this.handleChange(e.target.value)}
+          onBlur={this.handleBlur.bind(this)}
+        />
+        <PropertySuggestions
+          visible={this.state.dropdownVisible}
+          suggestions={this.state.suggestions}
+          selected={this.state.selected}
+          onSelect={this.expandFragment}
+        />
+      </div>
+    )
   }
 }
 

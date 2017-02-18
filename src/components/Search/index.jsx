@@ -12,13 +12,13 @@ class Search extends React.Component {
     super()
 
     this.state = {
+      q: '',
       formula: null
     }
   }
 
-  searchFor(formula) {
-    // TODO: when selecting an example, show the selected q
-    this.setState({ formula })
+  searchFor({ q, formula }) {
+    this.setState({ q, formula })
   }
 
   results() {
@@ -32,7 +32,7 @@ class Search extends React.Component {
     return (
       <div className="search row">
         <div className="col-md-4">
-          <FormulaInput doChange={(f) => this.searchFor(f)}/>
+          <FormulaInput q={this.state.q} doChange={this.searchFor.bind(this)}/>
         </div>
 
         <div className="col-md-8">

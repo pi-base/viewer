@@ -24,7 +24,7 @@ class Examples extends React.Component {
     return (
       <example key={ex.q}>
         <h5>{ex.name}</h5>
-        <a onClick={() => onSelect(f)}>
+        <a onClick={() => onSelect({ q: ex.q, formula: f })}>
           <pre>{ex.q}</pre>
         </a>
       </example>
