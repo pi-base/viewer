@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import * as Q from '../queries'
+import * as Q from '../../queries'
 
-import Preview from './Preview'
-import Tex     from './Tex'
+import Preview from '../Preview'
+import Tex     from '../Tex'
 
 class Counterexamples extends React.Component {
   render () {

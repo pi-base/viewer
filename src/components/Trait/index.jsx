@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import * as Q from '../queries'
+import * as Q from '../../queries'
 
-import Icon     from './Icon'
-import Markdown from './Markdown'
-import Proof    from './Proof'
-import Tex      from './Tex'
+import Icon     from '../Icon'
+import Markdown from '../Markdown'
+import Proof    from '../Proof'
+import Tex      from '../Tex'
 
 
 class Trait extends React.Component {

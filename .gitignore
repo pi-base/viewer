@@ -4,4 +4,6 @@ npm-debug.log
 data/schema.graphql
 .idea/
 
+build
 js/formula/parser.js
+public/db

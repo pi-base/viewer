@@ -85,7 +85,6 @@ const fetchTrait = (state) =>
 // Other exports
 
 export const parseFormula = (state, q) => {
-  console.log("parseFormula.q", q)
   const parsed = F.parse(q)
   if (!parsed) {
     return

@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import * as Q from '../queries'
+import * as Q from '../../queries'
 
-import Filter  from './Filter'
-import Preview from './Preview'
-import Tex     from './Tex'
+import Filter  from '../Filter'
+import Preview from '../Preview'
+import Tex     from '../Tex'
 
 class Spaces extends React.Component {
   constructor() {

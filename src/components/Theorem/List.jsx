@@ -2,12 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
-import * as Q from '../queries'
+import * as Q from '../../queries'
 
-import Filter      from './Filter'
-import Implication from './Implication'
-import Preview     from './Preview'
-import Tex         from './Tex'
+import Filter      from '../Filter'
+import Implication from '../Implication'
+import Preview     from '../Preview'
+import Tex         from '../Tex'
 
 class Theorems extends React.Component {
   constructor() {

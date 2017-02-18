@@ -1,4 +1,7 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
+
+import * as Q from '../../queries'
 
 class Examples extends React.Component {
   examples() {
@@ -15,10 +18,13 @@ class Examples extends React.Component {
   }
 
   example(ex) {
+    const { onSelect, parseFormula } = this.props
+    const f = parseFormula(ex.q)
+
     return (
       <example key={ex.q}>
         <h5>{ex.name}</h5>
-        <a onClick={() => this.props.runSearch(ex.q)}>
+        <a onClick={() => onSelect(f)}>
           <pre>{ex.q}</pre>
         </a>
       </example>
@@ -28,6 +34,7 @@ class Examples extends React.Component {
   render() {
     return (
       <div>
+        <p>Not sure where to start? Try one of the following searches</p>
         {this.examples().map(ex =>
           this.example(ex)
         )}
@@ -36,4 +43,12 @@ class Examples extends React.Component {
   }
 }
 
-export default Examples
+Examples.propTypes = {
+  onSelect: PropTypes.func.isRequired
+}
+
+export default connect(
+  (state) => ({
+    parseFormula: (q) => Q.parseFormula(state, q)
+  })
+)(Examples)

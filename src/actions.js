@@ -31,7 +31,12 @@ export const filterSpaceTraits = (filter) => ({
   payload: filter
 })
 
-const path = (rel) => (`http://localhost:3001/${rel}`)
+const ROOT = process.env.NODE_ENV === 'production' ?
+  'https://pi-base.firebaseapp.com' :
+  'http://localhost:3000'
+
+
+const path = (rel) => (`${ROOT}/${rel}`)
 
 export const doFetch = (type, url) =>
   (dispatch) => {

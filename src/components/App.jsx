@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import Navbar from './Navbar'
-import State  from './State'
+import Debug  from './Debug'
 
 import * as A from '../actions'
 
@@ -19,10 +19,7 @@ class App extends React.Component {
           {this.props.children}
         </div>
         {process.env.NODE_ENV === 'development'
-        ? <div className="container">
-            <hr/>
-            <State/>
-          </div>
+        ? <Debug/>
         : ''
         }
       </div>

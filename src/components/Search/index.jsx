@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import * as Q from '../queries'
+import * as Q from '../../queries'
 
-import Formula       from './Formula'
-import FormulaInput  from './Formula/Input'
-import SearchResults from './Search/Results'
+import Examples      from './Examples'
+import FormulaInput  from '../Formula/Input'
+import Results       from './Results'
 
 class Search extends React.Component {
   constructor() {
@@ -17,6 +17,7 @@ class Search extends React.Component {
   }
 
   searchFor(formula) {
+    // TODO: when selecting an example, show the selected q
     this.setState({ formula })
   }
 
@@ -35,8 +36,10 @@ class Search extends React.Component {
         </div>
 
         <div className="col-md-8">
-          <Formula formula={this.state.formula}/>
-          <SearchResults formula={this.state.formula} results={this.results()}/>
+          { this.state.formula
+          ? <Results formula={this.state.formula} results={this.results()}/>
+          : <Examples onSelect={this.searchFor.bind(this)}/>
+          }
         </div>
       </div>
     )

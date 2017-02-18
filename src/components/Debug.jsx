@@ -1,7 +1,29 @@
-// import GraphiQL from 'graphiql'
-// export default GraphiQL
 import React from 'react'
+import {connect} from 'react-redux'
 
-const Debug = () => (<div/>)
+// import JSONTree from 'react-json-tree'
 
-export default Debug
+class Debug extends React.Component {
+  logState() {
+    window.$s = this.props.state
+    console.log('$s:', this.props.state.toJS())
+  }
+
+  render() {
+    return (
+      <nav className="navbar navbar-inverse navbar-fixed-bottom">
+        <div className="container">
+          <ul className="nav navbar-nav">
+            <li>
+              <a href="#" onClick={this.logState.bind(this)}>Log State</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    )
+  }
+}
+
+export default connect(
+  (state) => { return { state } }
+)(Debug)

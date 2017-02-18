@@ -47,7 +47,7 @@ class FormulaInput extends React.Component {
     )
     if (limit === 0) { return }
 
-    const next  = ((to % limit) + limit) % limit
+    const next = ((to % limit) + limit) % limit
     this.setState({ selected: next })
   }
 
@@ -107,7 +107,7 @@ class FormulaInput extends React.Component {
         className="form-control"
         onKeyDown={this.handleKeyDown.bind(this)}
         onChange={(e) => this.handleChange(e.target.value)}
-        onBlur={this.handleChange.bind(this)}
+        onBlur={this.handleBlur.bind(this)}
       />
       <PropertySuggestions
         visible={this.state.dropdownVisible}

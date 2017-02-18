@@ -25,7 +25,7 @@ const Formula = ({ formula, link }) => {
         if (link === false) {
             return <span>{label}</span>
         } else {
-            return <Link to={"/properties/"+formula.property.id}>{label}</Link>
+            return <Link to={"/properties/"+formula.property.name}>{label}</Link>
         }
     } else if (formula.and) {
         return (

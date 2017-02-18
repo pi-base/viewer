@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import * as Q from '../queries'
+import * as Q from '../../queries'
 
-import Markdown   from './Markdown'
-import TraitPager from './Trait/Pager'
-import Tex        from './Tex'
+import Markdown   from '../Markdown'
+import TraitPager from '../Trait/Pager'
+import Tex        from '../Tex'
 
 class Space extends React.Component {
   render() {

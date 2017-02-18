@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import * as Q from '../queries'
+import * as Q from '../../queries'
 
 import Counterexamples from './Counterexamples'
-import Implication     from './Implication'
-import Markdown        from './Markdown'
-import Tex             from './Tex'
+import Implication     from '../Implication'
+import Markdown        from '../Markdown'
+import Tex             from '../Tex'
 
 class Theorem extends React.Component {
   render() {
