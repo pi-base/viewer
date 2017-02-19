@@ -1,72 +1,57 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
 import * as Q from '../../queries'
 
-import Filter  from '../Filter'
+import Icon    from '../Icon'
+import List    from '../List'
 import Preview from '../Preview'
 import Tex     from '../Tex'
 
-class Properties extends React.Component {
+class PropertyPreview extends React.Component {
   constructor() {
     super()
-    this.state = {
-      limit: 10,
-      properties: []
-    }
+    this.state = { expanded: false }
   }
 
-  componentWillMount() {
-    this.doFilter(this.props.properties)
-  }
-
-  more() {
-    this.setState({ limit: this.state.limit + 10 })
-  }
-
-  doFilter(properties) {
-    this.setState({
-      limit: 10,
-      properties: properties.length ? properties : this.props.properties
-    })
+  toggle() {
+    this.setState({ expanded: !this.state.expanded })
   }
 
   render() {
-    const properties = this.state.properties.slice(0, this.state.limit)
+    const property = this.props.object
 
-    // TODO: the filter here may be confusing, should
-    //   probably support searching by formula as well
-    // TODO: add "infinite" scroll for paging
     return (
-      <section className="properties">
-        <Filter
-          collection={this.props.properties}
-          onChange={this.doFilter.bind(this)}
-          placeholder="Filter properties"
-        />
-
-      {properties.map(property =>
-          <Tex key={property.uid}>
-            <h3>
-              <Link to={`/properties/${property.name}`}>
-                {property.name}
-              </Link>
-            </h3>
-            <Preview text={property.description}/>
-          </Tex>
-        )}
-
-        { this.props.properties.length > this.state.limit
-        ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
+      <Tex>
+        <h3>
+          <button
+            className="btn btn-default btn-xs"
+            onClick={this.toggle.bind(this)}
+          >
+            <Icon type="question-sign"/>
+          </button>
+          {' '}
+          <Link to={`/properties/${property.name}`}>
+            {property.name}
+          </Link>
+        </h3>
+        { this.state.expanded
+        ? <Preview text={property.description}/>
         : ''}
-      </section>
+      </Tex>
     )
   }
 }
 
-Properties.propTypes = {
-  properties: PropTypes.array.isRequired
+class Properties extends React.Component {
+  render() {
+    return <List
+      name="properties"
+      objects={this.props.properties}
+      component={PropertyPreview}
+    />
+  }
 }
 
 export default connect(
