@@ -133,7 +133,7 @@ class FormulaInput extends React.Component {
 
 export default connect(
   (state) => ({
-    parseFormula: (str) => { return Q.parseFormula(state, str).toJS() },
+    parseFormula: (str) => { return Q.parseFormula(state, str) },
     suggestions: (str) => { return Q.suggestionsFor(state, str, 10).toJS() }
   })
 )(FormulaInput)
