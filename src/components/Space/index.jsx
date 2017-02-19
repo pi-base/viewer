@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
 import * as Q from '../../queries'
@@ -33,8 +33,12 @@ class Space extends React.Component {
   }
 }
 
+Space.propTypes = {
+  space: PropTypes.object.isRequired
+}
+
 export default connect(
   (state, ownProps) => ({
-    space: Q.findSpace(state, ownProps.params.spaceName)
+    space: Q.findSpaceByName(state, ownProps.params.spaceName).toJS()
   })
 )(Space)

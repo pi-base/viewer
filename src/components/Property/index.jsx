@@ -31,6 +31,6 @@ Property.propTypes = {
 
 export default connect(
   (state, ownProps) => ({
-    property: Q.findProperty(state, ownProps.params.propertyName)
+    property: Q.findPropertyByName(state, ownProps.params.propertyName).toJS()
   })
 )(Property)

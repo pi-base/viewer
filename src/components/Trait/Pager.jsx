@@ -132,6 +132,6 @@ class TraitPager extends React.Component {
 
 export default connect(
   (state, ownProps) => ({
-    allTraits: Q.spaceTraits(state, ownProps.space)
+    allTraits: Q.spaceTraits(state, ownProps.space).toJS()
   })
 )(TraitPager)

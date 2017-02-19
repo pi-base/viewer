@@ -145,34 +145,40 @@ export const parse = (q) => {
 
 export const map = (formula, func) => {
   if (!formula) {
-    return formula
+    return
   }
 
   if (formula.and) {
-    return {
-      and: formula.and.map(sf => map(sf, func))
-    }
+    return new Conjunction(formula.and.map(sf => map(sf, func)))
   } else if (formula.or) {
-    return {
-      or: formula.or.map(sf => map(sf, func))
-    }
+    return new Disjunction(formula.or.map(sf => map(sf, func)))
   } else if (formula.property) {
-    return {
+    return new Atom({
       property: func(formula.property),
       value: formula.value
-    }
+    })
   } else {
     for (let prop in formula) {
       // { prop: value } -- really only want the first one
       if (Object.prototype.hasOwnProperty.call(formula, prop)) {
-        return {
+        return new Atom({
           property: func(prop),
           value: formula[prop]
-        }
+        })
       }
     }
   }
 }
+
+export const and = (subs) => new Conjunction(subs)
+export const or = (subs) => new Disjunction(subs)
+export const atom = (p, v) => new Atom({
+  property: p,
+  value: v
+})
+
+export const withProperty = (f) =>
+  (a) => atom(f(a.property), a.value)
 
 export const properties = (f) => {
   if (f.and) {

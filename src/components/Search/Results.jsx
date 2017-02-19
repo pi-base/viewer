@@ -11,7 +11,8 @@ class Results extends React.Component {
   render() {
     const { formula, results } = this.props
 
-    const { type, query, spaces } = results
+    const { type, query } = results
+    const spaces = results.spaces.toJS()
 
     if (spaces.length === 0) { return null }
 

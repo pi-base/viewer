@@ -8,13 +8,12 @@ import thunkMiddleware from 'redux-thunk'
 
 import reducer from './reducers'
 
-const devLogger = createLogger()
+let middleware = [thunkMiddleware]
 
-const middleware = applyMiddleware(
-  devLogger,
-  thunkMiddleware
-)
+if (process.env.NODE_ENV === 'development') {
+  middleware.unshift(createLogger())
+}
 
 export const makeStore = (state) => {
-  return createStore(reducer, state, middleware)
+  return createStore(reducer, state, applyMiddleware(...middleware))
 }

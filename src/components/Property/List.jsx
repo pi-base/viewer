@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
@@ -63,6 +63,10 @@ class Properties extends React.Component {
       </section>
     )
   }
+}
+
+Properties.propTypes = {
+  properties: PropTypes.array.isRequired
 }
 
 export default connect(

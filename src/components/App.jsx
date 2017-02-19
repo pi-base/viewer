@@ -1,35 +1,24 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import {Router}   from 'react-router'
+import {Provider} from 'react-redux'
 
-import Navbar from './Navbar'
-import Debug  from './Debug'
+import { browserHistory } from 'react-router'
 
-import * as A from '../actions'
+import {makeStore} from '../store'
+import routes      from '../routes'
+
+const store = makeStore()
 
 class App extends React.Component {
-  componentWillMount() {
-    this.props.fetchUniverse()
-  }
-
   render() {
     return (
-      <div>
-        <Navbar/>
-        <div className="container">
-          {this.props.children}
-        </div>
-        {process.env.NODE_ENV === 'development'
-        ? <Debug/>
-        : ''
-        }
-      </div>
-    );
+      <Provider store={store}>
+        <Router history={browserHistory}>
+          {routes}
+        </Router>
+      </Provider>
+    )
   }
 }
 
-export default connect(
-  (state)    => ({}),
-  (dispatch) => ({
-    fetchUniverse: () => { A.fetchUniverse(dispatch) }
-  })
-)(App)
+export default App

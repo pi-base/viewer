@@ -21,10 +21,19 @@ const ROOT = process.env.NODE_ENV === 'production' ?
 
 const path = (rel) => (`${ROOT}/${rel}`)
 
+const storage = typeof(localStorage) === 'undefined' ? {
+  getItem: () => {
+    return
+  },
+  setItem: () => {
+    return
+  }
+} : localStorage
+
 export const cachedFetch = (type, url) =>
   (dispatch) => {
     let key = `${STORAGE_KEY}:${type}`
-    let cached = localStorage.getItem(key)
+    let cached = storage.getItem(key)
     if (cached) {
       dispatch({
         type: fetch(DONE, type),
@@ -41,7 +50,7 @@ export const cachedFetch = (type, url) =>
     return ifetch(path(url))
       .then(r => r.json())
       .then(data => {
-        localStorage.setItem(key, JSON.stringify(data))
+        storage.setItem(key, JSON.stringify(data))
         return dispatch({
           type: fetch(DONE, type),
           payload: data

@@ -53,6 +53,6 @@ class Trait extends React.Component {
 
 export default connect(
   (state, ownProps) => ({
-    trait: Q.findTrait(state, ownProps.params.spaceName, ownProps.params.propertyName)
+    trait: Q.findTrait(state, ownProps.params.spaceName, ownProps.params.propertyName).toJS()
   })
 )(Trait)

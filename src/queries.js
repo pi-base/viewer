@@ -61,15 +61,15 @@ export const allTheorems = (state) => {
   return ts.map(t => hydrateTheorem(state, t))
 }
 
-const scan = (coll, key) =>
-  (state, val) => {
-    const objs = state.get(coll)
-    const obj = objs.find((o, _id) => o.get(key) === val)
-    return obj ? obj.toJS() : obj
-  }
+const scan = (state, coll, key, val) => {
+  const objs = state.get(coll)
+  return objs.find((o, _id) => o.get(key) === val)
+}
 
-export const findSpace = scan('spaces', 'name')
-export const findProperty = scan('properties', 'name')
+export const findSpaceByName = (state, name) =>
+  scan(state, 'spaces', 'name', name)
+export const findPropertyByName = (state, name) =>
+  scan(state, 'properties', 'name', name)
 
 const fetchTheorem = (state) => {
   return (id) => {
@@ -111,9 +111,7 @@ export const parseFormula = (state, q) => {
 }
 
 const searchByText = (state, q) => {
-  const finder = state.get('spaces.finder')
-
-  return finder.search(q)
+  return state.get('spaces.finder').search(q)
 }
 
 const searchWhereUnknown = (state, formula) => {
@@ -152,7 +150,7 @@ export const runSearch = (state, query, formula) => {
   }
 
   const coll = state.get('spaces')
-  const spaces = ids.map(id => coll.get(id)).toJS()
+  const spaces = ids.map(id => coll.get(id))
 
   return {
     type,
@@ -176,19 +174,21 @@ export const spaceTraits = (state, space) => {
   return traits.map(t => t.merge({
     space: state.getIn(['spaces', t.get('space')]),
     property: state.getIn(['properties', t.get('property')])
-  })).sortBy((t, _id) => t.getIn(['property', 'name'])).toJS()
+  })).sortBy((t, _id) => t.getIn(['property', 'name']))
 }
 
 export const findTrait = (state, space, property) => {
-  const s = findSpace(state, space)
-  const p = findProperty(state, property)
-  const trait = state.getIn(['traitTable', s.uid]).find(t => {
-    return t.get('property') === p.uid
-  }).toJS()
+  const s = findSpaceByName(state, space)
+  const p = findPropertyByName(state, property)
 
-  trait.space = s
-  trait.property = p
-  return trait
+  const trait = state.getIn(['traitTable', s.get('uid')]).find(t => {
+    return t.get('property') === p.get('uid')
+  })
+
+  return trait.merge({
+    space: s,
+    property: p
+  })
 }
 
 export const getProof = (state, trait) => {
@@ -204,20 +204,20 @@ export const getProof = (state, trait) => {
 }
 
 export const counterexamples = (state, theorem) => {
-  const ant = F.fromJSON(theorem.antecedent)
-  const con = F.fromJSON(theorem.consequent)
+  theorem = theorem.toJS ? theorem.toJS() : theorem
 
-  const f = new F.Conjunction([
-    F.negate(ant),
-    con
+  const f = F.and([
+    F.negate(theorem.antecedent),
+    theorem.consequent
   ])
 
-  return runSearch(state, f)
+  return searchByFormula(state, f).map(id => state.getIn(['spaces', id]))
 }
 
 const theoremProperties = (t) => {
-  return F.properties(t.get('antecedent').toJS()) +
-    F.properties(t.get('consequent').toJS())
+  const a = F.properties(t.get('antecedent').toJS())
+  const c = F.properties(t.get('consequent').toJS())
+  return a.concat(c)
 }
 
 export const relatedTheorems = (state, prop) => {
