@@ -98,7 +98,6 @@ class TraitPager extends React.Component {
       </button>
     }
 
-
     return (
       <Tex className="traitFilter">
         <div className="btn-group">
@@ -107,7 +106,7 @@ class TraitPager extends React.Component {
 
         <Filter
           collection={all}
-          onField={t => t.property.name}
+          weights={['property.name']}
           onChange={(ts) => this.display(ts)}
         />
 
