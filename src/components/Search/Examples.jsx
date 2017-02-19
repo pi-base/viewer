@@ -8,12 +8,20 @@ class Examples extends React.Component {
     return [
       {
         name: 'All Non-Metric Continua',
-        q: 'compact + connected + ~metrizable'
+        q: 'compact + connected + t_2 + ~metrizable'
       },
       {
         name: 'A Common Non-Theorem',
         q: 'first countable + separable + ~second countable'
+      },
+      {
+        name: 'A Class of Examples by Name',
+        q: ':plank'
       }
+      // {
+      //   name: 'New Things to Prove',
+      //   q: '?metacompact'
+      // }
     ]
   }
 

@@ -43,10 +43,6 @@ export const replaceFragment = (q, expanded) => {
   return q.replace(rexp, expanded)
 }
 
-const findAll = (coll, ids) => {
-  return ids.map((id) => coll.get(id))
-}
-
 
 // Generic finders
 
@@ -102,25 +98,68 @@ export const parseFormula = (state, q) => {
     return
   }
   const finder = state.get('properties.finder')
-  const formula = parsed.mapProperty(p => {
-    const id = finder.getId(p)
-    return state.getIn(['properties', id]).toJS()
-  })
-  // TODO: show error if properties not found
-
-  return formula
+  try {
+    const formula = parsed.mapProperty(p => {
+      const id = finder.getId(p)
+      return state.getIn(['properties', id]).toJS()
+    })
+    return formula
+  } catch (e) {
+    // TODO: show error if properties not found
+    return
+  }
 }
 
-export const runSearch = (state, formula) => {
-  if (!formula) {
-    return I.List()
-  }
+const searchByText = (state, q) => {
+  const finder = state.get('spaces.finder')
 
-  const spaceIds = state.get('traitTable').filter((traits) => {
+  return finder.search(q)
+}
+
+const searchWhereUnknown = (state, formula) => {
+  return state.get('traitTable').filter((traits) => {
     return matches(formula, traits)
   }).keySeq()
+}
 
-  return findAll(state.get('spaces'), spaceIds)
+const searchByFormula = (state, formula) => {
+  return state.get('traitTable').filter((traits) => {
+    return matches(formula, traits)
+  }).keySeq()
+}
+
+export const BY_TEXT = 'BY_TEXT'
+export const BY_FORMULA = 'BY_FORMULA'
+export const WHERE_UNKOWN = 'WHERE_UNKOWN'
+export const runSearch = (state, query, formula) => {
+  if (!query) {
+    return
+  }
+
+  let type, ids
+  switch (query[0]) {
+    case ':':
+      type = BY_TEXT
+      ids = searchByText(state, query)
+      break
+    case '?':
+      type = WHERE_UNKOWN
+      ids = searchWhereUnknown(state, formula)
+      break
+    default:
+      type = BY_FORMULA
+      ids = searchByFormula(state, formula)
+  }
+
+  const coll = state.get('spaces')
+  const spaces = ids.map(id => coll.get(id)).toJS()
+
+  return {
+    type,
+    query,
+    formula,
+    spaces
+  }
 }
 
 export const suggestionsFor = (state, query, limit) => {

@@ -22,10 +22,7 @@ class Search extends React.Component {
   }
 
   results() {
-    return this.props
-      .search(this.state.formula)
-      .sortBy(s => s.name)
-      .toJS()
+    return this.props.search(this.state.q, this.state.formula)
   }
 
   render() {
@@ -48,6 +45,6 @@ class Search extends React.Component {
 
 export default connect(
   (state) => ({
-    search: (f) => Q.runSearch(state, f)
+    search: (q, f) => Q.runSearch(state, q, f)
   })
 )(Search)

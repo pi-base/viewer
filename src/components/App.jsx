@@ -30,6 +30,6 @@ class App extends React.Component {
 export default connect(
   (state)    => ({}),
   (dispatch) => ({
-    fetchUniverse: () => { dispatch(A.fetchUniverse) }
+    fetchUniverse: () => { A.fetchUniverse(dispatch) }
   })
 )(App)

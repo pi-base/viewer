@@ -1,5 +1,7 @@
 import Fuse from 'fuse.js'
+import * as I from 'immutable'
 
+// TODO: unify w/ fuse usage in Filter.jsx
 class PropertyFinder {
   constructor(props) {
     this.records = {}
@@ -21,6 +23,10 @@ class PropertyFinder {
   }
 
   suggestionsFor(str, limit) {
+    return this.search(str, limit).map(id => this.records[id])
+  }
+
+  search(str, limit) {
     str = str || ''
     let ids = this.fuse.search(str)
 
@@ -28,7 +34,7 @@ class PropertyFinder {
       ids = ids.slice(0, limit)
     }
 
-    return ids.map(id => this.records[id])
+    return I.List(ids)
   }
 }
 

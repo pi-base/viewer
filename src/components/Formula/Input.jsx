@@ -95,7 +95,8 @@ class FormulaInput extends React.Component {
     this.props.doChange(updates)
 
     // Updates for local state
-    updates = { q, dropdownVisible: true }
+    const dropdownVisible = q && q[0] !== ':'
+    updates = { q, dropdownVisible }
     if (formula) {
       updates.formula     = formula
       updates.suggestions = suggestions(q)

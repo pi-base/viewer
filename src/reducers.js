@@ -4,16 +4,21 @@ import * as A from './actions'
 
 import PropertyFinder from './models/PropertyFinder'
 
-const index = (key, collection) => {
-  return I.Map(collection.map(obj => [obj.get(key), obj]))
+const index = (map, collectionK, idK) => {
+  idK = idK || 'uid'
+  return I.Map(map.get(collectionK).map(obj => [obj.get(idK), obj]))
 }
 
 const reducer = (state, action) => {
   state = state || I.fromJS({
-    spaces: [],
-    properties: [],
-    traits: [],
-    theorems: []
+    spaces: {},
+    'spaces.finder': null,
+    properties: {},
+    'properties.finder': null,
+    traits: {},
+    theorems: {},
+    traitTable: {},
+    proofs: {}
   })
 
   switch (action.type) {
@@ -21,12 +26,13 @@ const reducer = (state, action) => {
       const u = I.fromJS(action.payload)
 
       return state.merge({
-        spaces: index('uid', u.get('spaces')),
-        properties: index('uid', u.get('properties')),
+        spaces: index(u, 'spaces'),
+        'spaces.finder': new PropertyFinder(u.get('spaces').toJS()),
+        properties: index(u, 'properties'),
         'properties.finder': new PropertyFinder(u.get('properties').toJS()),
-        theorems: index('uid', u.get('theorems')),
+        theorems: index(u, 'theorems'),
         // TODO: unify these two vvv
-        traits: index('uid', u.get('traits')),
+        traits: index(u, 'traits'),
         traitTable: u.get('traits').groupBy(t => t.get('space')),
         proofs: u.get('proofs')
       })

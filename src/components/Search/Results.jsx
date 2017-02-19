@@ -1,5 +1,7 @@
-import React    from 'react'
+import React, { PropTypes }    from 'react'
 import { Link } from 'react-router'
+
+import * as Q from '../../queries'
 
 import Formula from '../Formula'
 import Preview from '../Preview'
@@ -9,16 +11,24 @@ class Results extends React.Component {
   render() {
     const { formula, results } = this.props
 
-    if (results.length === 0) { return null }
+    const { type, query, spaces } = results
+
+    if (spaces.length === 0) { return null }
+
+    let title
+    if (type === Q.BY_TEXT) {
+      title = (<span>matching '{query}'</span>)
+    } else {
+      title = (<span>∋ <Formula formula={formula}></Formula></span>)
+    }
 
     return (
       <div>
         <h2>
-          {results.length} Spaces ∋
-          <Formula formula={formula}></Formula>
+          {spaces.length} Spaces {title}
         </h2>
 
-        {results.slice(0, 10).map(s =>
+        {spaces.slice(0, 10).map(s =>
           <Tex key={s.uid} component="article">
             <Link to={`/spaces/${s.name}`}>{s.name}</Link>
             <Preview text={s.description}/>
@@ -27,6 +37,10 @@ class Results extends React.Component {
       </div>
     )
   }
+}
+
+Results.propTypes = {
+  results: PropTypes.object.isRequired
 }
 
 export default Results

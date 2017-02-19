@@ -2,9 +2,6 @@ import ifetch from 'isomorphic-fetch'
 
 export const STORAGE_KEY = ':pi-base:'
 
-export const FORM_CHANGE = '@@redux-form/CHANGE'
-export const FILTER_SPACE_TRAITS = 'FILTER_SPACE_TRAITS'
-
 // Fetch states
 export const STARTING = 'STARTING'
 export const DONE = 'DONE'
@@ -17,20 +14,6 @@ export const fetch = (status, type) => {
   return `FETCH:${type}:${status}`
 }
 
-export const search = (q) => ({
-  type: FORM_CHANGE,
-  meta: {
-    field: 'q',
-    form: 'search'
-  },
-  payload: q
-})
-
-export const filterSpaceTraits = (filter) => ({
-  type: FILTER_SPACE_TRAITS,
-  payload: filter
-})
-
 const ROOT = process.env.NODE_ENV === 'production' ?
   'https://pi-base.firebaseapp.com' :
   'http://localhost:3000'
@@ -38,7 +21,7 @@ const ROOT = process.env.NODE_ENV === 'production' ?
 
 const path = (rel) => (`${ROOT}/${rel}`)
 
-export const doFetch = (type, url) =>
+export const cachedFetch = (type, url) =>
   (dispatch) => {
     let key = `${STORAGE_KEY}:${type}`
     let cached = localStorage.getItem(key)
@@ -72,4 +55,4 @@ export const doFetch = (type, url) =>
       )
   }
 
-export const fetchUniverse = doFetch(OBJECTS, 'db')
+export const fetchUniverse = cachedFetch(OBJECTS, 'db')
