@@ -60,18 +60,18 @@ it('can parse search formula', () => {
 })
 
 it('can run a search by formula', () => {
-  const q = 'Normal + ~Compact'
+  const q = 'Compact'
   const f = Q.parseFormula(state, q)
   const results = Q.runSearch(state, q, f)
 
   expect(results.type).toEqual(Q.BY_FORMULA)
   expect(results.formula).toEqual(f)
-  expect(results.spaces.size).toEqual(59)
+  expect(results.spaces.size).toEqual(39)
 
   expect(
     results.spaces.sortBy(s => s.name).getIn(['0', 'name'])
   ).toEqual(
-    'Countable Discrete Topology'
+    'Finite Discrete Topology'
   )
 })
 

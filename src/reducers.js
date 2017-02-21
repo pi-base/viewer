@@ -33,7 +33,9 @@ const reducer = (state, action) => {
         theorems: index(u, 'theorems'),
         // TODO: unify these two vvv
         traits: index(u, 'traits'),
-        traitTable: u.get('traits').groupBy(t => t.get('space')),
+        traitTable: u.get('traits').groupBy(t => t.get('space')).map(
+          ts => I.Map(ts.map(t => [t.get('property'), t]))
+        ),
         proofs: u.get('proofs')
       })
 

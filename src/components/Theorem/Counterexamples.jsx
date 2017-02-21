@@ -4,29 +4,41 @@ import { Link } from 'react-router'
 
 import * as Q from '../../queries'
 
-import Preview from '../Preview'
-import Tex     from '../Tex'
+import Implication from '../Implication'
+import TraitTable  from '../Trait/Table'
+
 
 class Counterexamples extends React.Component {
   render () {
-    const { counterexamples } = this.props
+    const { counterexamples, theorem } = this.props
+
+    if (theorem.converse) {
+      return <aside>
+        <p>The converse of this theorem also holds</p>
+        <table className="table table-condensed">
+          <tbody>
+            {theorem.converse.map(id =>
+              <tr key={id}>
+                <td>
+                  <Link to={`/theorems/${id}`}>{id}</Link>
+                </td>
+                <td>
+                  <Implication theorem={this.props.findTheorem(id)} link={false}/>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </aside>
+    }
+    if (counterexamples.length === 0) {
+      return <aside>No examples found disproving the converse.{theorem.converse}</aside>
+    }
 
     return (
       <aside>
-        { counterexamples.length === 0
-        ? <p>No examples found disproving the converse</p>
-        : <p>This implication does not reverse, as shown by</p>
-        }
-        {counterexamples.map(space =>
-          <Tex key={space.uid}>
-            <h4>
-              <Link to={`/spaces/${space.name}`}>
-                {space.name}
-              </Link>
-            </h4>
-            <Preview text={space.description}/>
-          </Tex>
-        )}
+        <p>This implication does not reverse, as shown by</p>
+        <TraitTable spaces={counterexamples} properties={Q.theoremProperties(theorem)}/>
       </aside>
     )
   }
@@ -38,6 +50,7 @@ Counterexamples.propTypes = {
 
 export default connect(
   (state, ownProps) => ({
-    counterexamples: Q.counterexamples(state, ownProps.theorem).toJS()
+    counterexamples: Q.counterexamples(state, ownProps.theorem).toJS(),
+    findTheorem:     (id) => Q.findTheorem(state,id).toJS()
   })
 )(Counterexamples)

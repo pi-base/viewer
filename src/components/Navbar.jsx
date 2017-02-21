@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 const Navbar = () => (
   <nav className="navbar navbar-default navbar-static-top">
     <div className="container">
-      <a className="navbar-brand">Pi-Base</a>
+      <Link to="/" className="navbar-brand">π-Base</Link>
       <ul className="nav navbar-nav">
         <li><Link activeClassName="active" to="/spaces">Spaces</Link></li>
         <li><Link activeClassName="active" to="/properties">Properties</Link></li>

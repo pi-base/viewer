@@ -116,6 +116,7 @@ class FormulaInput extends React.Component {
           autoComplete="off"
           className="form-control"
           value={this.props.q}
+          placeholder={this.props.placeholder}
           onKeyDown={this.handleKeyDown.bind(this)}
           onChange={(e) => this.handleChange(e.target.value)}
           onBlur={this.handleBlur.bind(this)}
@@ -124,7 +125,7 @@ class FormulaInput extends React.Component {
           visible={this.state.dropdownVisible}
           suggestions={this.state.suggestions}
           selected={this.state.selected}
-          onSelect={this.expandFragment}
+          onSelect={this.expandFragment.bind(this)}
         />
       </div>
     )
@@ -133,7 +134,7 @@ class FormulaInput extends React.Component {
 
 export default connect(
   (state) => ({
-    parseFormula: (str) => { return Q.parseFormula(state, str) },
-    suggestions: (str) => { return Q.suggestionsFor(state, str, 10).toJS() }
+    parseFormula: (str) => Q.parseFormula(state, str),
+    suggestions: (str) => Q.suggestionsFor(state, str, 10).toJS()
   })
 )(FormulaInput)

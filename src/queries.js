@@ -17,13 +17,6 @@ const hydrateTheorem = (state, t) => {
   })
 }
 
-const matches = (formula, traits) => {
-  return formula.check((prop, targetValue) => {
-    const t = traits.find(t => t.get('property') === prop.uid)
-    return t && t.get('value') === targetValue
-  })
-}
-
 const getFragment = (str) => {
   if (!str) {
     return ''
@@ -114,17 +107,15 @@ const searchByText = (state, q) => {
   return state.get('spaces.finder').search(q)
 }
 
-const searchWhereUnknown = (state, formula) => {
+const searchByFormula = (state, formula, value = true) => {
   return state.get('traitTable').filter((traits) => {
-    return matches(formula, traits)
+    return formula.evaluate(traits) === value
   }).keySeq()
 }
 
-const searchByFormula = (state, formula) => {
-  return state.get('traitTable').filter((traits) => {
-    return matches(formula, traits)
-  }).keySeq()
-}
+const searchWhereUnknown = (state, formula) =>
+  searchByFormula(state, formula, undefined)
+
 
 export const BY_TEXT = 'BY_TEXT'
 export const BY_FORMULA = 'BY_FORMULA'
@@ -171,10 +162,15 @@ export const suggestionsFor = (state, query, limit) => {
 
 export const spaceTraits = (state, space) => {
   const traits = state.getIn(['traitTable', space.uid])
-  return traits.map(t => t.merge({
+  return traits.valueSeq().map(t => t.merge({
     space: state.getIn(['spaces', t.get('space')]),
     property: state.getIn(['properties', t.get('property')])
   })).sortBy((t, _id) => t.getIn(['property', 'name']))
+}
+
+export const traitTable = (state, spaces, properties) => {
+  // TODO: actually filter?
+  return state.get('traitTable')
 }
 
 export const findTrait = (state, space, property) => {
@@ -214,9 +210,12 @@ export const counterexamples = (state, theorem) => {
   return searchByFormula(state, f).map(id => state.getIn(['spaces', id]))
 }
 
-const theoremProperties = (t) => {
-  const a = F.properties(t.get('antecedent').toJS())
-  const c = F.properties(t.get('consequent').toJS())
+export const theoremProperties = (t) => {
+  t = t.toJS ? t.toJS() : t
+
+  const a = F.properties(t.antecedent)
+  const c = F.properties(t.consequent)
+
   return a.concat(c)
 }
 

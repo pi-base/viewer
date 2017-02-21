@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Route, IndexRoute } from 'react-router'
 
+import Home       from './components/Home'
 import Layout     from './components/Layout'
 import Property   from './components/Property'
 import Properties from './components/Property/List'
@@ -18,6 +19,7 @@ const routes = (
     path="/"
     component={Layout}
   >
+    <IndexRoute component={Home}/>
     <Route path="spaces" component={Spaces}/>
     <Route path="spaces/:spaceName" component={Space}>
       <IndexRoute component={TraitHelp}/>

@@ -38,13 +38,18 @@ export class Conjunction extends Formula {
     }
   }
 
-  check(pred) {
+  evaluate(traits) {
+    let result = true // by default
     for (let sub of this.subs) {
-      if (sub.check(pred) === false) {
+      const sv = sub.evaluate(traits)
+      if (sv === false) { // definitely false
         return false
       }
+      if (sv === undefined) { // maybe false
+        result = undefined
+      }
     }
-    return true
+    return result
   }
 }
 
@@ -59,13 +64,18 @@ class Disjunction extends Formula {
     }
   }
 
-  check(pred) {
+  evaluate(traits) {
+    let result = false
     for (let sub of this.subs) {
-      if (sub.check(pred) === true) {
+      const sv = sub.evaluate(traits)
+      if (sv === true) { // definitely true
         return true
       }
+      if (sv === undefined) { // maybe true
+        result = undefined
+      }
     }
-    return false
+    return result
   }
 }
 
@@ -93,8 +103,9 @@ class Atom extends Formula {
     }
   }
 
-  check(pred) {
-    return pred(this.property, this.value)
+  evaluate(traits) {
+    const trait = traits.get(this.property.uid)
+    return trait ? trait.get('value') === this.value : undefined
   }
 }
 
@@ -181,6 +192,10 @@ export const withProperty = (f) =>
   (a) => atom(f(a.property), a.value)
 
 export const properties = (f) => {
+  if (f.toJS) {
+    f = f.toJS()
+  }
+
   if (f.and) {
     return f.and.reduce((acc, sf) => {
       return acc.concat(properties(sf))
@@ -189,6 +204,8 @@ export const properties = (f) => {
     return f.or.reduce((acc, sf) => {
       return acc.concat(properties(sf))
     }, [])
+  } else if (f.property) {
+    return [f.property]
   } else {
     for (let prop in f) {
       // { prop: value } -- really only want the first one

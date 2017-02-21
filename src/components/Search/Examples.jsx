@@ -13,11 +13,11 @@ class Examples extends React.Component {
       {
         name: 'A Common Non-Theorem',
         q: 'first countable + separable + ~second countable'
-      },
-      {
-        name: 'A Class of Examples by Name',
-        q: ':plank'
       }
+      // {
+      //   name: 'A Class of Examples by Name',
+      //   q: ':plank'
+      // },
       // {
       //   name: 'New Things to Prove',
       //   q: '?metacompact'

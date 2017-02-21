@@ -16,7 +16,9 @@ class Layout extends React.Component {
       <div>
         <Navbar/>
         <div className="container">
-          {this.props.children}
+          { this.props.loaded
+          ? this.props.children
+          : 'Loading...' }
         </div>
         {process.env.NODE_ENV === 'development'
         ? <Debug/>
@@ -28,7 +30,7 @@ class Layout extends React.Component {
 }
 
 export default connect(
-  (state)    => ({}),
+  (state)    => ({ loaded: state.get('spaces').size > 0 }),
   (dispatch) => ({
     fetchUniverse: () => { A.fetchUniverse(dispatch) }
   })

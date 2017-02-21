@@ -37,7 +37,7 @@ class List extends React.Component {
         <Filter
           collection={this.props.objects}
           onChange={this.doFilter.bind(this)}
-          placeholder={`Filter ${this.props.name}`}
+          placeholder={`Filter ${this.props.name} by text`}
         />
 
       {objects.map(obj => <this.props.component key={obj.uid} object={obj}/>)}
