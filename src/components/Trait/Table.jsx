@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
@@ -9,7 +10,7 @@ import Tex  from '../Tex'
 
 class TraitTable extends React.Component {
   check(traits, space, property) {
-    const val = traits.getIn([space.uid, property.uid, 'value'])
+    const val = traits.getIn([space.get('uid'), property.get('uid'), 'value'])
     let type
     if (val === true) {
       type = "ok"
@@ -20,7 +21,7 @@ class TraitTable extends React.Component {
     }
 
     return (
-      <Link to={`/spaces/${space.name}/properties/${property.name}`}>
+      <Link to={`/spaces/${space.get('name')}/properties/${property.get('name')}`}>
         <Icon type={type}/>
       </Link>
     )
@@ -32,26 +33,26 @@ class TraitTable extends React.Component {
       <table className="table table-condensed table-striped table-hover">
         <thead>
           <tr>
-            <td></td>
+            <th>Space</th>
             {properties.map(p =>
-              <td key={p.uid}>
-                <Link to={`/properties/${p.name}`}>
-                  <Tex>{p.name}</Tex>
+              <th key={p.get('uid')}>
+                <Link to={`/properties/${p.get('name')}`}>
+                  <Tex>{p.get('name')}</Tex>
                 </Link>
-              </td>
+              </th>
             )}
           </tr>
         </thead>
         <tbody>
           {spaces.map(s =>
-            <tr key={s.uid}>
+            <tr key={s.get('uid')}>
               <td>
-                <Link to={`/spaces/${s.name}`}>
-                  <Tex>{s.name}</Tex>
+                <Link to={`/spaces/${s.get('name')}`}>
+                  <Tex>{s.get('name')}</Tex>
                 </Link>
               </td>
               {properties.map(p =>
-                <td key={p.uid}>{this.check(traits, s, p)}</td>
+                <td key={p.get('uid')}>{this.check(traits, s, p)}</td>
               )}
             </tr>
           )}
@@ -59,6 +60,11 @@ class TraitTable extends React.Component {
       </table>
     )
   }
+}
+
+TraitTable.propTypes = {
+  spaces: PropTypes.instanceOf(I.List),
+  properties: PropTypes.instanceOf(I.List)
 }
 
 export default connect(

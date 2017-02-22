@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
 import * as I from 'immutable'
@@ -70,9 +70,9 @@ class TraitPager extends React.Component {
     if (asserted && deduced) {
       return seq
     } else if (asserted) {
-      return seq.filter(t => !t.deduced)
+      return seq.filter(t => !t.get('deduced'))
     } else if (deduced) {
-      return seq.filter(t => t.deduced)
+      return seq.filter(t => t.get('deduced'))
     } else {
       return seq
     }
@@ -114,7 +114,7 @@ class TraitPager extends React.Component {
           <thead></thead>
           <tbody>
             {limited.map(trait =>
-              <TraitItem key={trait.property.name} space={space} property={trait.property} trait={trait}/>
+              <TraitItem key={trait.getIn(['property', 'name'])} space={space} property={trait.get('property')} trait={trait}/>
             )}
           </tbody>
         </table>
@@ -130,8 +130,13 @@ class TraitPager extends React.Component {
   }
 }
 
+TraitPager.propTypes = {
+  space: PropTypes.instanceOf(I.Map),
+  allTraits: PropTypes.instanceOf(I.List),
+}
+
 export default connect(
   (state, ownProps) => ({
-    allTraits: Q.spaceTraits(state, ownProps.space).toJS()
+    allTraits: Q.spaceTraits(state, ownProps.space)
   })
 )(TraitPager)

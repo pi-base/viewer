@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import * as I from 'immutable'
 
 import Filter from './Filter'
 
@@ -22,7 +23,7 @@ class List extends React.Component {
   doFilter(objects) {
     this.setState({
       limit: 25,
-      objects: objects.length ? objects : this.props.objects
+      objects: objects.size ? objects : this.props.objects
     })
   }
 
@@ -40,9 +41,9 @@ class List extends React.Component {
           placeholder={`Filter ${this.props.name} by text`}
         />
 
-      {objects.map(obj => <this.props.component key={obj.uid} object={obj}/>)}
+        {objects.map(obj => <this.props.component key={obj.get('uid')} object={obj}/>)}
 
-        { this.props.objects.length > this.state.limit
+        { this.props.objects.size > this.state.limit
         ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
         : ''}
       </section>
@@ -52,7 +53,7 @@ class List extends React.Component {
 
 List.propTypes = {
   name: PropTypes.string.isRequired,
-  objects: PropTypes.array.isRequired,
+  objects: PropTypes.instanceOf(I.List),
   component: PropTypes.func.isRequired
 }
 

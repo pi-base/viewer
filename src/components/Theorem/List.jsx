@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
@@ -29,7 +30,7 @@ class Theorems extends React.Component {
   doFilter(theorems) {
     this.setState({
       limit: 10,
-      theorems: theorems.length ? theorems : this.props.theorems
+      theorems: theorems.size ? theorems : this.props.theorems
     })
   }
 
@@ -50,17 +51,17 @@ class Theorems extends React.Component {
         />
 
         {theorems.map(t =>
-          <Tex key={t.uid}>
+          <Tex key={t.get('uid')}>
             <h3>
-              <Link to={`/theorems/${t.uid}`}>
+              <Link to={`/theorems/${t.get('uid')}`}>
                 <Implication theorem={t} link={false}/>
               </Link>
             </h3>
-            <Preview text={t.description}/>
+            <Preview text={t.get('description')}/>
           </Tex>
         )}
 
-        { this.props.theorems.length > this.state.limit
+        { this.props.theorems.size > this.state.limit
         ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
         : ''}
       </section>
@@ -68,8 +69,12 @@ class Theorems extends React.Component {
   }
 }
 
+Theorems.propTypes = {
+  theorems: PropTypes.instanceOf(I.List)
+}
+
 export default connect(
   (state) => ({
-    theorems: Q.allTheorems(state).toJS()
+    theorems: Q.allTheorems(state).toList()
   })
 )(Theorems)

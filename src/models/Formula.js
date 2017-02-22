@@ -2,12 +2,9 @@
 //       but I'm not sure how to get that to play nice with
 //       the test environment
 import parser from './formula/parser.js'
+import * as I from 'immutable'
 
-export const PARSED_TEXT = 'PARSED_TEXT'
-export const NORMALIZED_PROPERTY_IDS = 'NORMALIZED_PROPERTY_IDS'
-export const NORMALIZED_TEXT = 'NORMALIZED_TEXT'
-
-class Formula {
+export class Formula {
   constructor(subs) {
     this.subs = subs
   }
@@ -27,7 +24,7 @@ class Formula {
   }
 }
 
-export class Conjunction extends Formula {
+class Conjunction extends Formula {
   get and() {
     return this.subs
   }
@@ -85,7 +82,11 @@ class Atom extends Formula {
     value
   }) {
     super()
-    this.property = property
+    if (typeof(property) === 'object') {
+      this.property = I.Map(property)
+    } else {
+      this.property = property
+    }
     this.value = value
   }
 
@@ -104,7 +105,7 @@ class Atom extends Formula {
   }
 
   evaluate(traits) {
-    const trait = traits.get(this.property.uid)
+    const trait = traits.get(this.property.get('uid'))
     return trait ? trait.get('value') === this.value : undefined
   }
 }
@@ -138,20 +139,17 @@ export const parse = (q) => {
   }
 
   let parsed
-
   try {
     parsed = parser.parse(q)
   } catch (e) {
     if (q && q.startsWith('(')) {
-      return null
+      return
     } else {
       return parse('(' + q + ')')
     }
   }
 
-  let formula = fromJSON(parsed)
-  formula.property_type = PARSED_TEXT
-  return formula
+  return fromJSON(parsed)
 }
 
 export const map = (formula, func) => {
@@ -192,6 +190,9 @@ export const withProperty = (f) =>
   (a) => atom(f(a.property), a.value)
 
 export const properties = (f) => {
+  if (!f) {
+    return []
+  }
   if (f.toJS) {
     f = f.toJS()
   }

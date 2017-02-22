@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 
+import * as F from '../../models/Formula'
+
 const sepWith = (delimiter) => (componentArray) => {
   let result = []
   componentArray.forEach((comp,i) => {
@@ -18,14 +20,14 @@ const Formula = ({ formula, link }) => {
 
   // TODO: check formula type and make sure that we have attached ids
   if (formula.property) {
-    var label = formula.property.name
+    var label = formula.property.get('name')
     if (formula.value === false) {
       label = "¬" + label
     }
     if (link === false) {
       return <span>{label}</span>
     } else {
-      return <Link to={"/properties/"+formula.property.name}>{label}</Link>
+      return <Link to={"/properties/"+formula.property.get('name')}>{label}</Link>
     }
   } else if (formula.and) {
     return (
@@ -44,7 +46,7 @@ const Formula = ({ formula, link }) => {
 }
 
 Formula.propTypes = {
-  formula: PropTypes.object.isRequired,
+  formula: PropTypes.instanceOf(F.Formula),
   link:    PropTypes.bool
 }
 

@@ -1,41 +1,22 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
+import Suggestions from './Suggestions'
+
 const TAB = 9, ENTER = 13, UP = 38, RIGHT = 39, DOWN = 40
-
-const PropertySuggestions = ({ suggestions, selected, visible, onSelect }) => {
-  const divStyle = {
-    display:   (visible ? 'block' : 'none'),
-    marginTop: '5px'
-  }
-
-  return (
-    <div className="list-group" style={divStyle}>
-      {suggestions.map((p,i) =>
-        <a
-          className={"list-group-item " + (selected === i ? "active" : "")}
-          key={p.uid}
-          onMouseDown={() => onSelect(i)}
-          href="#">
-          {p.name}
-        </a>
-      )}
-    </div>
-  )
-}
 
 class FormulaInput extends React.Component {
   constructor() {
     super()
     this.state = {
       selected:        0,
-      suggestions:     [],
+      suggestions:     I.List([]),
       dropdownVisible: false
     }
   }
-
   changeSelection(delta) {
     this.setSelection(this.state.selected + delta)
   }
@@ -43,20 +24,20 @@ class FormulaInput extends React.Component {
   setSelection(to) {
     const limit = Math.min(
       this.props.suggestionLimit || 10,
-      this.state.suggestions.length
+      this.state.suggestions.size
     )
     if (limit === 0) { return }
 
-    const next = ((to % limit) + limit) % limit
+    const next = ((to % limit) + limit) % limit || 0
     this.setState({ selected: next })
   }
 
   expandFragment(index) {
     index = index || this.state.selected
-    const selected = this.state.suggestions[index]
-    const updated  = Q.replaceFragment(this.props.q, selected.name)
+    const selected = this.state.suggestions.get(''+index)
+    const updated  = Q.replaceFragment(this.props.q, selected.get('name'))
 
-    this.props.doChange({
+    this.props.onChange({
       q:       updated,
       formula: this.props.parseFormula(updated)
     })
@@ -92,10 +73,10 @@ class FormulaInput extends React.Component {
     if (formula) {
       updates.formula = formula
     }
-    this.props.doChange(updates)
+    this.props.onChange(updates)
 
     // Updates for local state
-    const dropdownVisible = q && q[0] !== ':'
+    const dropdownVisible = !!q && q[0] !== ':'
     updates = { q, dropdownVisible }
     if (formula) {
       updates.formula     = formula
@@ -121,7 +102,8 @@ class FormulaInput extends React.Component {
           onChange={(e) => this.handleChange(e.target.value)}
           onBlur={this.handleBlur.bind(this)}
         />
-        <PropertySuggestions
+
+        <Suggestions
           visible={this.state.dropdownVisible}
           suggestions={this.state.suggestions}
           selected={this.state.selected}
@@ -132,9 +114,16 @@ class FormulaInput extends React.Component {
   }
 }
 
+FormulaInput.propTypes = {
+  q: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  suggestionLimit: PropTypes.number,
+  placeholder: PropTypes.string
+}
+
 export default connect(
   (state) => ({
     parseFormula: (str) => Q.parseFormula(state, str),
-    suggestions: (str) => Q.suggestionsFor(state, str, 10).toJS()
+    suggestions: (str) => Q.suggestionsFor(state, str, 10)
   })
 )(FormulaInput)

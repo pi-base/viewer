@@ -1,24 +1,28 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
+import * as I from 'immutable'
 
 import Icon from '../Icon'
 
 const TraitItem = ({ space, property, trait }) => {
-  // FIXME
-  if (!space || !property || !trait) { return null }
-
   return (
     <tr>
       <td>
-        <Icon type={trait.value ? 'ok' : 'remove'}></Icon>
+        <Icon type={trait.get('value') ? 'ok' : 'remove'}></Icon>
       </td>
       <td>
-        <Link to={`/spaces/${space.name}/properties/${property.name}`}>
-          {property.name}
+        <Link to={`/spaces/${space.get('name')}/properties/${property.get('name')}`}>
+          {property.get('name')}
         </Link>
       </td>
     </tr>
   )
+}
+
+TraitItem.propTypes = {
+  space: PropTypes.instanceOf(I.Map),
+  property: PropTypes.instanceOf(I.Map),
+  trait: PropTypes.instanceOf(I.Map)
 }
 
 export default TraitItem

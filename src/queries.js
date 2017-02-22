@@ -6,6 +6,7 @@ import * as F from './models/Formula'
 // Utilities
 
 const hydrateTheorem = (state, t) => {
+  // TODO: refactor formulae to be immutable
   const hydrate = (f) =>
     F.map(f.toJS(), (p) => {
       return state.getIn(['properties', p]).toJS()
@@ -82,6 +83,58 @@ const fetchTrait = (state) =>
     })
   }
 
+// Filtration
+
+export const filterByText = (state, {
+  text,
+  spaces
+}) => {
+  const finder = state.get('spaces.finder')
+  spaces = spaces || state.get('spaces')
+
+  if (!text) {
+    return spaces
+  }
+
+  const matches = finder.search(text)
+  return I.OrderedMap(matches.map(uid => [uid, spaces.get(uid)]))
+}
+
+export const filterByFormula = (state, {
+  formula,
+  spaces,
+  value
+}) => {
+  return spaces.filter(s => {
+    const traits = state.getIn(['traitTable', s.get('uid')])
+    if (!traits) {
+      return false
+    }
+    return formula.evaluate(traits) === value
+  })
+}
+
+export const filter = (state, {
+  text,
+  formula,
+  spaces,
+  value
+}) => {
+  // TODO: validate params
+  spaces = spaces || state.get('spaces')
+  if (formula) {
+    return filterByFormula(state, {
+      formula,
+      spaces,
+      value
+    })
+  } else {
+    return filterByText(state, {
+      text,
+      spaces
+    })
+  }
+}
 
 // Other exports
 
@@ -91,10 +144,14 @@ export const parseFormula = (state, q) => {
     return
   }
   const finder = state.get('properties.finder')
+
   try {
     const formula = parsed.mapProperty(p => {
       const id = finder.getId(p)
-      return state.getIn(['properties', id]).toJS()
+      if (!id) {
+        throw new Error("id not found")
+      }
+      return state.getIn(['properties', id])
     })
     return formula
   } catch (e) {
@@ -153,7 +210,7 @@ export const runSearch = (state, query, formula) => {
 
 export const suggestionsFor = (state, query, limit) => {
   if (!query) {
-    return []
+    return I.List([])
   }
 
   const finder = state.get('properties.finder')
@@ -161,11 +218,15 @@ export const suggestionsFor = (state, query, limit) => {
 }
 
 export const spaceTraits = (state, space) => {
-  const traits = state.getIn(['traitTable', space.uid])
+  const traits = state.getIn(['traitTable', space.get('uid')])
+  if (!traits) {
+    return I.List([])
+  }
+
   return traits.valueSeq().map(t => t.merge({
     space: state.getIn(['spaces', t.get('space')]),
     property: state.getIn(['properties', t.get('property')])
-  })).sortBy((t, _id) => t.getIn(['property', 'name']))
+  })).sortBy((t, _id) => t.getIn(['property', 'name'])).toList()
 }
 
 export const traitTable = (state, spaces, properties) => {
@@ -188,7 +249,7 @@ export const findTrait = (state, space, property) => {
 }
 
 export const getProof = (state, trait) => {
-  const proof = state.getIn(['proofs', trait.uid])
+  const proof = state.getIn(['proofs', trait.get('uid')])
 
   if (!proof) {
     return
@@ -196,35 +257,27 @@ export const getProof = (state, trait) => {
   return I.Map({
     theorems: proof.get('0').map(fetchTheorem(state)),
     traits: proof.get('1').map(fetchTrait(state))
-  }).toJS()
+  })
 }
 
 export const counterexamples = (state, theorem) => {
-  theorem = theorem.toJS ? theorem.toJS() : theorem
-
   const f = F.and([
-    F.negate(theorem.antecedent),
-    theorem.consequent
+    F.negate(theorem.get('antecedent')),
+    theorem.get('consequent')
   ])
 
   return searchByFormula(state, f).map(id => state.getIn(['spaces', id]))
 }
 
 export const theoremProperties = (t) => {
-  t = t.toJS ? t.toJS() : t
+  const a = F.properties(t.get('antecedent'))
+  const c = F.properties(t.get('consequent'))
 
-  const a = F.properties(t.antecedent)
-  const c = F.properties(t.consequent)
-
-  return a.concat(c)
+  return I.List(a.concat(c))
 }
 
 export const relatedTheorems = (state, prop) => {
-  if (!state) {
-    return I.List()
-  }
-
   return state.get('theorems').filter(t => {
-    return theoremProperties(t).includes(prop.uid)
+    return theoremProperties(t).includes(prop.get('uid'))
   }).keySeq().map(id => findTheorem(state, id))
 }

@@ -95,3 +95,24 @@ it('can filter space traits', () => {
 
   expect(ts.length).toEqual(66)
 })
+
+fit('can compose space filters', () => {
+  const s1 = Q.filter(state, {
+    text: 'plank'
+  })
+
+  let result = s1.valueSeq().toJS()
+  expect(result[0].name).toContain('Plank')
+  expect(result.length).toEqual(57)
+
+  const f = Q.parseFormula(state, 'Compact')
+  const s2 = Q.filter(state, {
+    formula: f,
+    spaces: s1,
+    value: true
+  })
+
+  result = s2.valueSeq().toJS()
+  expect(result[0].name).toEqual('Tychonoff Plank')
+  expect(result.length).toEqual(13)
+})

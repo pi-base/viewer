@@ -31,7 +31,7 @@ class Counterexamples extends React.Component {
         </table>
       </aside>
     }
-    if (counterexamples.length === 0) {
+    if (counterexamples.size === 0) {
       return <aside>No examples found disproving the converse.{theorem.converse}</aside>
     }
 
@@ -50,7 +50,7 @@ Counterexamples.propTypes = {
 
 export default connect(
   (state, ownProps) => ({
-    counterexamples: Q.counterexamples(state, ownProps.theorem).toJS(),
-    findTheorem:     (id) => Q.findTheorem(state,id).toJS()
+    counterexamples: Q.counterexamples(state, ownProps.theorem).toList(),
+    findTheorem:     (id) => Q.findTheorem(state,id)
   })
 )(Counterexamples)

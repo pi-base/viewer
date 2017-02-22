@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import Fuse  from 'fuse.js'
+
+import * as I from 'immutable'
 
 class Filter extends React.Component {
   constructor() {
@@ -11,15 +13,15 @@ class Filter extends React.Component {
     this.records = {}
 
     this.props.collection.forEach((rec, i) => {
-      this.records[rec.uid] = rec
+      this.records[rec.get('uid')] = rec
     })
 
-    this.finder = new Fuse(this.props.collection, {
+    this.finder = new Fuse(this.props.collection.toJS(), {
       caseSensitive: false,
       shouldSort: true,
       keys: this.props.weights,
       id: 'uid',
-      threshold: 0.7
+      threshold: 0.5
     })
   }
 
@@ -27,9 +29,9 @@ class Filter extends React.Component {
     this.setState({ q })
     if (!q) { return this.props.onChange([]) }
 
-    const matches = this.finder
+    const matches = I.List(this.finder
       .search(q)
-      .map(uid => this.records[uid])
+      .map(uid => this.records[uid]))
 
     this.props.onChange(matches)
   }
@@ -50,19 +52,19 @@ class Filter extends React.Component {
 }
 
 Filter.propTypes = {
-  collection:  React.PropTypes.array.isRequired,
-  onChange:    React.PropTypes.func.isRequired,
-  weights:     React.PropTypes.array,
-  name:        React.PropTypes.string,
-  placeholder: React.PropTypes.string
+  collection:  PropTypes.instanceOf(I.List).isRequired,
+  onChange:    PropTypes.func.isRequired,
+  weights:     PropTypes.array,
+  name:        PropTypes.string,
+  placeholder: PropTypes.string
 }
 
 const weights = [{
   name: 'name',
-  weight: 0.6
+  weight: 0.7
 },{
   name: 'description',
-  weight: 0.4
+  weight: 0.3
 }]
 Filter.defaultProps = {
   weights:     weights,

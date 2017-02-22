@@ -15,11 +15,13 @@ class Layout extends React.Component {
     return (
       <div>
         <Navbar/>
+
         <div className="container">
-          { this.props.loaded
+          { this.props.loaded || this.props.location.pathname === '/'
           ? this.props.children
           : 'Loading...' }
         </div>
+
         {process.env.NODE_ENV === 'development'
         ? <Debug/>
         : ''

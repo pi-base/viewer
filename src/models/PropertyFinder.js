@@ -6,15 +6,15 @@ class PropertyFinder {
   constructor(props) {
     this.records = {}
     props.forEach(rec => {
-      this.records[rec.uid] = rec
+      this.records[rec.get('uid')] = rec
     })
 
-    this.fuse = new Fuse(props, {
+    this.fuse = new Fuse(props.toJS(), {
       caseSensitive: false,
       shouldSort: true,
       keys: ['name'],
       id: 'uid',
-      threshold: 0.7
+      threshold: 0.5
     })
   }
 

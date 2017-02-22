@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
@@ -10,12 +11,11 @@ import Tex        from '../Tex'
 class Space extends React.Component {
   render() {
     const space = this.props.space
-    if (!space) { return null }
 
     return (
       <div>
-        <h1>{space.name}</h1>
-        <Tex><Markdown text={space.description}/></Tex>
+        <h1><Tex>{space.get('name')}</Tex></h1>
+        <Tex><Markdown text={space.get('description')}/></Tex>
 
         <hr/>
 
@@ -34,11 +34,11 @@ class Space extends React.Component {
 }
 
 Space.propTypes = {
-  space: PropTypes.object.isRequired
+  space: PropTypes.instanceOf(I.Map)
 }
 
 export default connect(
   (state, ownProps) => ({
-    space: Q.findSpaceByName(state, ownProps.params.spaceName).toJS()
+    space: Q.findSpaceByName(state, ownProps.params.spaceName)
   })
 )(Space)

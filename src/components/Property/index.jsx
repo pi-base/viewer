@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
@@ -15,8 +16,8 @@ class Property extends React.Component {
 
     return (
       <div>
-        <h1>{property.name}</h1>
-        <Tex><Markdown text={property.description}/></Tex>
+        <h1>{property.get('name')}</h1>
+        <Tex><Markdown text={property.get('description')}/></Tex>
         <hr/>
 
         <RelatedTheorems property={property}/>
@@ -26,11 +27,11 @@ class Property extends React.Component {
 }
 
 Property.propTypes = {
-  property: PropTypes.object.isRequired
+  property: PropTypes.instanceOf(I.Map)
 }
 
 export default connect(
   (state, ownProps) => ({
-    property: Q.findPropertyByName(state, ownProps.params.propertyName).toJS()
+    property: Q.findPropertyByName(state, ownProps.params.propertyName)
   })
 )(Property)

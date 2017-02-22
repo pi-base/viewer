@@ -11,6 +11,7 @@ const index = (map, collectionK, idK) => {
 
 const reducer = (state, action) => {
   state = state || I.fromJS({
+    version: {},
     spaces: {},
     'spaces.finder': null,
     properties: {},
@@ -27,9 +28,9 @@ const reducer = (state, action) => {
 
       return state.merge({
         spaces: index(u, 'spaces'),
-        'spaces.finder': new PropertyFinder(u.get('spaces').toJS()),
+        'spaces.finder': new PropertyFinder(u.get('spaces')),
         properties: index(u, 'properties'),
-        'properties.finder': new PropertyFinder(u.get('properties').toJS()),
+        'properties.finder': new PropertyFinder(u.get('properties')),
         theorems: index(u, 'theorems'),
         // TODO: unify these two vvv
         traits: index(u, 'traits'),

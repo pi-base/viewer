@@ -7,20 +7,20 @@ import Layout     from './components/Layout'
 import Property   from './components/Property'
 import Properties from './components/Property/List'
 import Space      from './components/Space'
-import Spaces     from './components/Space/List'
 import Search     from './components/Search'
 import Theorem    from './components/Theorem'
 import Theorems   from './components/Theorem/List'
 import Trait      from './components/Trait'
 import TraitHelp  from './components/Trait/Help'
 
+// TODO: better loading indicator
 const routes = (
   <Route
     path="/"
     component={Layout}
   >
     <IndexRoute component={Home}/>
-    <Route path="spaces" component={Spaces}/>
+    <Route path="spaces" component={Search}/>
     <Route path="spaces/:spaceName" component={Space}>
       <IndexRoute component={TraitHelp}/>
       <Route path="properties/:propertyName" component={Trait}/>
@@ -31,8 +31,6 @@ const routes = (
 
     <Route path="properties" component={Properties}/>
     <Route path="properties/:propertyName" component={Property}/>
-
-    <Route path="search" component={Search}/>
   </Route>
 )
 

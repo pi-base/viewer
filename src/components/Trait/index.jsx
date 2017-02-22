@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
@@ -23,13 +24,13 @@ class Trait extends React.Component {
     const { trait } = this.props
     if (!trait) { return null }
 
-    const space = trait.space
-    const property = trait.property
+    const space = trait.get('space')
+    const property = trait.get('property')
 
     return (
       <Tex>
         <h3>
-          <span>{property.name}</span>
+          <span>{property.get('name')}</span>
           {' '}
           <button
             className="btn btn-default btn-xs"
@@ -41,7 +42,7 @@ class Trait extends React.Component {
 
         { this.state.showProperty
         ? <div className="well">
-            <Markdown text={property.description}/>
+            <Markdown text={property.get('description')}/>
           </div>
         : ''}
 
@@ -51,8 +52,12 @@ class Trait extends React.Component {
   }
 }
 
+Trait.propTypes = {
+  trait: PropTypes.instanceOf(I.Map)
+}
+
 export default connect(
   (state, ownProps) => ({
-    trait: Q.findTrait(state, ownProps.params.spaceName, ownProps.params.propertyName).toJS()
+    trait: Q.findTrait(state, ownProps.params.spaceName, ownProps.params.propertyName)
   })
 )(Trait)

@@ -7,4 +7,5 @@ data/schema.graphql
 build
 js/formula/parser.js
 public/db
+config/version.json
 coverage

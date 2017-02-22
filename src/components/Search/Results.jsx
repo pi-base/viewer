@@ -1,47 +1,34 @@
-import React, { PropTypes }    from 'react'
-import { Link } from 'react-router'
+import React, { PropTypes } from 'react'
+import * as I from 'immutable'
 
-import * as Q from '../../queries'
+import * as F from '../../models/Formula'
 
-import Formula from '../Formula'
-import Preview from '../Preview'
-import Tex     from '../Tex'
+import Examples   from './Examples'
+import TraitTable from '../Trait/Table'
 
 class Results extends React.Component {
   render() {
-    const { formula, results } = this.props
+    const { text, formula, results, properties, onSelect } = this.props
 
-    const { type, query } = results
-    const spaces = results.spaces.toJS()
-
-    if (spaces.length === 0) { return null }
-
-    let title
-    if (type === Q.BY_TEXT) {
-      title = (<span>matching '{query}'</span>)
-    } else {
-      title = (<span>∋ <Formula formula={formula}></Formula></span>)
+    if (!text && !formula) {
+      return <Examples onSelect={onSelect}/>
+    }
+    if (results.size === 0) {
+      return <p>No results found</p>
     }
 
     return (
-      <div>
-        <h2>
-          {spaces.length} Spaces {title}
-        </h2>
-
-        {spaces.slice(0, 10).map(s =>
-          <Tex key={s.uid} component="article">
-            <Link to={`/spaces/${s.name}`}>{s.name}</Link>
-            <Preview text={s.description}/>
-          </Tex>
-        )}
-      </div>
+      <TraitTable spaces={results} properties={properties}/>
     )
   }
 }
 
 Results.propTypes = {
-  results: PropTypes.object.isRequired
+  results: PropTypes.instanceOf(I.List).isRequired,
+  onSelect: PropTypes.func.isRequired,
+  text: PropTypes.string,
+  formula: PropTypes.instanceOf(F.Formula),
+  properties: PropTypes.instanceOf(I.List)
 }
 
 export default Results

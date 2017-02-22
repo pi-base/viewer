@@ -1,4 +1,5 @@
 import ifetch from 'isomorphic-fetch'
+import V from '../config/version'
 
 export const STORAGE_KEY = ':pi-base:'
 
@@ -30,19 +31,12 @@ const storage = typeof(localStorage) === 'undefined' ? {
   }
 } : localStorage
 
-export const cachedFetch = (type, url) =>
+const doFetch = ({
+    type,
+    url,
+    onSuccess
+  }) =>
   (dispatch) => {
-    let key = `${STORAGE_KEY}:${type}`
-    let cached = storage.getItem(key)
-    if (cached) {
-      dispatch({
-        type: fetch(DONE, type),
-        payload: JSON.parse(cached)
-      })
-      return
-    }
-
-    // Not cached; do the fetch
     dispatch({
       type: fetch(STARTING, type)
     })
@@ -50,10 +44,10 @@ export const cachedFetch = (type, url) =>
     return ifetch(path(url))
       .then(r => r.json())
       .then(data => {
-        storage.setItem(key, JSON.stringify(data))
+        const processed = onSuccess(data) || data
         return dispatch({
           type: fetch(DONE, type),
-          payload: data
+          payload: processed
         })
       })
       .catch(err =>
@@ -64,4 +58,47 @@ export const cachedFetch = (type, url) =>
       )
   }
 
-export const fetchUniverse = cachedFetch(OBJECTS, 'db')
+const cacheKey = (type) => `${STORAGE_KEY}:${type}`
+
+export const cachedFetch = ({
+    type,
+    url,
+    force,
+    onSuccess
+  }) =>
+  (dispatch) => {
+    let key = cacheKey(type)
+    if (force) {
+      storage.removeItem(key)
+    }
+    let cached = storage.getItem(key)
+
+    if (cached && !force) {
+      return dispatch({
+        type: fetch(DONE, type),
+        payload: JSON.parse(cached)
+      })
+    }
+
+    doFetch({
+      type: type,
+      url: url,
+      onSuccess: (data) => {
+        storage.setItem(key, JSON.stringify(data))
+        onSuccess(data)
+        return data
+      }
+    })(dispatch)
+  }
+
+export const fetchUniverse = (dispatch, force) => {
+  const loaded = storage.getItem(cacheKey('version'))
+  cachedFetch({
+    type: OBJECTS,
+    url: `db/${V.db}.json`,
+    force: force || (loaded !== V.db),
+    onSuccess: () => {
+      storage.setItem(cacheKey('version'), V.db)
+    }
+  })(dispatch)
+}

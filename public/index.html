@@ -16,6 +16,11 @@
     -->
     <title>π-Base</title>
 
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+      integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="
+      crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
@@ -24,9 +29,34 @@
     <script type="text/javascript" async
       src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
     </script>
+    <script type="text/javascript" src="./rollbar.js"/></script>
   </head>
   <body>
     <div id="root"></div>
+
+
+    <div id="errorModal" class="modal fade">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h2 class="modal-title">Uh-oh ...</h2>
+          </div>
+          <div class="modal-body">
+            <p>Something has gone wrong on our end. Sorry about that.</p>
+            <p>The good news is that this error has been reported, and we'll
+              get to work to make sure it doesn't happen again.</p>
+            <p>If <i>you</i> would like to get involved, development of this site
+              happens <a href="https://github.com/jamesdabbs/pi-base-viewer">on Github</a>
+              and it'd be great if you could get in touch and <a href="https://github.com/jamesdabbs/pi-base-viewer/issues">
+              file a bug report</a>.
+            <hr>
+            <div class="details"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

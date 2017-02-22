@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
@@ -15,8 +16,8 @@ class RelatedTheorems extends React.Component {
       <div>
         <h4>Related Theorems</h4>
         {theorems.map(t =>
-          <div key={t.uid}>
-            <Link to={`/theorems/${t.uid}`}>
+          <div key={t.get('uid')}>
+            <Link to={`/theorems/${t.get('uid')}`}>
               <Implication theorem={t} link={false}/>
             </Link>
           </div>
@@ -27,11 +28,12 @@ class RelatedTheorems extends React.Component {
 }
 
 RelatedTheorems.propTypes = {
-  property: PropTypes.object.isRequired
+  property: PropTypes.object.isRequired,
+  theorems: PropTypes.instanceOf(I.List)
 }
 
 export default connect(
   (state, ownProps) => ({
-    theorems: Q.relatedTheorems(state, ownProps.property).toJS()
+    theorems: Q.relatedTheorems(state, ownProps.property).toList()
   })
 )(RelatedTheorems)

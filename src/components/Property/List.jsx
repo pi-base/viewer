@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
-import Icon    from '../Icon'
 import List    from '../List'
 import Preview from '../Preview'
 import Tex     from '../Tex'
 
-class PropertyPreview extends React.Component {
+class Property extends React.Component {
   constructor() {
     super()
     this.state = { expanded: false }
@@ -23,39 +23,38 @@ class PropertyPreview extends React.Component {
     const property = this.props.object
 
     return (
-      <Tex>
-        <h3>
-          <button
-            className="btn btn-default btn-xs"
-            onClick={this.toggle.bind(this)}
-          >
-            <Icon type="question-sign"/>
-          </button>
-          {' '}
-          <Link to={`/properties/${property.name}`}>
-            {property.name}
-          </Link>
-        </h3>
-        { this.state.expanded
-        ? <Preview text={property.description}/>
-        : ''}
+      <Tex className="row">
+        <div className="col-md-2">
+          <h4>
+            <Link to={`/properties/${property.get('name')}`}>
+              {property.get('name')}
+            </Link>
+          </h4>
+        </div>
+        <div className="col-md-10">
+          <Preview text={property.get('description')}/>
+        </div>
       </Tex>
     )
   }
+}
+
+Preview.propTypes = {
+  object: PropTypes.instanceOf(I.Map)
 }
 
 class Properties extends React.Component {
   render() {
     return <List
       name="properties"
-      objects={this.props.properties}
-      component={PropertyPreview}
+      objects={this.props.properties.toList()}
+      component={Property}
     />
   }
 }
 
 export default connect(
   (state) => ({
-    properties: Q.allProperties(state).toJS()
+    properties: Q.allProperties(state)
   })
 )(Properties)

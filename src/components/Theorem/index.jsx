@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
@@ -33,8 +34,12 @@ class Theorem extends React.Component {
   }
 }
 
+Theorem.propTypes = {
+  theorem: PropTypes.instanceOf(I.Map)
+}
+
 export default connect(
   (state, ownProps) => ({
-    theorem: Q.findTheorem(state, ownProps.params.theoremId).toJS()
+    theorem: Q.findTheorem(state, ownProps.params.theoremId)
   })
 )(Theorem)
