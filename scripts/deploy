@@ -6,10 +6,11 @@ require 'json'
 ROLLBAR_ACCESS_TOKEN='b3c8ae937ce5402a8b7166c12eae9d86'
 
 revision = `git log -n 1 --pretty=format:"%H"`.strip
-data     = JSON.parse(File.read File.expand_path('../../public/db', __FILE__))['version']
 
-File.write File.expand_path('../../public/version.json', __FILE__),
-  { app: revision, data: data }.to_json
+version_path = File.expand_path '../../config/version.json', __FILE__
+version = JSON.parse File.read version_path
+version['app'] = revision
+File.write version_path, version.to_json
 
 system 'npm run build'
 system 'firebase deploy'

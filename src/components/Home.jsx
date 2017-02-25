@@ -14,20 +14,22 @@ const Home = () => (
     </Tex>
 
     <h2>Contributing and Collaborating</h2>
+    <div className="alert alert-info">
+      <p><span className="glyphicon glyphicon-alert"></span> There is a major data cleanup and standardization effort underway <a href="https://github.com/jamesdabbs/pi-base-data">on Github</a>. Data will be in-flux while that effort is in progress.</p>
+    </div>
     <p>See something wrong? Want to add a property or theorem of your own?</p>
     <p>The data powering this site is hosted <a href="https://github.com/jamesdabbs/pi-base-data">on Github</a> and pull requests are welcome. If you're interested in getting involved but unsure about how this all works, do feel free to post an issue on the <a href="http://github.com/jamesdabbs/pi-base-viewer/issues">issue tracker</a> or get in touch <a href="mailto:jamesdabbs@gmail.com">by email</a>.</p>
 
     <h3>On Definitions</h3>
     <Tex>
+
       We have broken with Counterexamples in a few notable places, mostly to
       update things like the separation axioms to their more modern useage
-      (where $T_i \Rightarrow T_j$ whenever $i > j$). Our definitions should
+      (where $T_i$ ⇒ $T_j$ whenever $i > j$). Our definitions should
       match those given in e.g. <a href="http://www.amazon.com/General-Topology-Dover-Books-Mathematics/dp/0486434796">Willard's <i>General Topology</i></a>.
     </Tex>
 
-    <div class="page-header">
-      <h3> Acknowledgements</h3>
-    </div>
+    <h3> Acknowledgements</h3>
     <p> Many people have contributed to this project, and all contributions are appreciated, but a few individuals deserve special recognition:</p>
     <ul>
       <li><a href="http://clontz.org/">Steven Clontz</a> for continued advice and friendship</li>

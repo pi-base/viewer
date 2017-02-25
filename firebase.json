@@ -4,6 +4,13 @@
   },
   "hosting": {
     "public": "build",
+    "headers": [ {
+        "source" : "**",
+        "headers" : [ {
+          "key" : "Access-Control-Allow-Origin",
+          "value" : "*"
+        } ]
+    } ],
     "rewrites": [
       {
         "source": "**",
