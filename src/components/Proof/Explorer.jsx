@@ -10,6 +10,7 @@ class Explorer extends React.Component {
   render() {
     const { space, proof } = this.props
 
+    // TODO: log error if this happens
     if (!proof) { return null }
 
     return <div className="proofExplorer">

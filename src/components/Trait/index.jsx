@@ -26,11 +26,12 @@ class Trait extends React.Component {
 
     const space = trait.get('space')
     const property = trait.get('property')
+    const label = trait.get('value') === false ? '¬' : ''
 
     return (
       <Tex>
         <h3>
-          <span>{property.get('name')}</span>
+          <span>{label}{property.get('name')}</span>
           {' '}
           <button
             className="btn btn-default btn-xs"
