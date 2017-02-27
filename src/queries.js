@@ -18,6 +18,9 @@ const hydrateTheorem = (state, t) => {
   })
 }
 
+const escapeRegExp = (string) =>
+  string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+
 const getFragment = (str) => {
   if (!str) {
     return ''
@@ -32,7 +35,7 @@ export const replaceFragment = (q, expanded) => {
   }
 
   const frag = getFragment(q)
-  const rexp = new RegExp(frag + '$')
+  const rexp = new RegExp(escapeRegExp(frag) + '$')
 
   return q.replace(rexp, expanded)
 }
