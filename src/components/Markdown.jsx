@@ -1,8 +1,29 @@
 import React from 'react'
 
 import showdown from 'showdown'
-const converter = new showdown.Converter()
-converter.setFlavor('github')
+
+const escapeTeX = () => {
+  const escape = (match) => {
+    // Escape any markdown special characters
+    return match.replace(/([\\`*_{}\[\]()#+-.!])/g, '\\$1')
+  }
+
+  return [
+    {
+      type: 'lang',
+      regex: /\\\((.*?)\\\)/g, // Inside TeX delimiters
+      replace: (_, s) => ('\\(' + escape(s) + '\\)')
+    },
+    {
+      type: 'lang',
+      regex: /¨D(.*?)¨D/g, // Showdown converts $ internally into ¨D
+      replace: (_, s) => ('$' + escape(s) + '$')
+    }
+  ]
+}
+
+const converter = new showdown.Converter({extensions: [escapeTeX]})
+// converter.setFlavor('github')
 
 const rawMarkup = (text) => {
   return { __html: converter.makeHtml(text) }

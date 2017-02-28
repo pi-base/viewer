@@ -18,7 +18,7 @@ class Theorem extends React.Component {
         <h1>
           <Implication theorem={theorem} link={true}/>
         </h1>
-        <Tex><Markdown text={theorem.description}/></Tex>
+        <Tex><Markdown text={theorem.get('description')}/></Tex>
         <hr/>
 
         <div className="row">
