@@ -57,6 +57,8 @@ class Search extends React.Component {
     formula = formula || this.props.parseFormula(q)
     if (formula) {
       updates.formula = formula
+    } else if (!q) {
+      updates.formula = null
     }
 
     this.setPath({ q, text: this.state.text })
