@@ -1,7 +1,14 @@
 Formula "formula" = And / Or / Atom
 
 Atom = neg:Negation? _ prop:Property {
-    var value = neg ? false : true;
+    var value;
+    if (neg === '?') {
+        value = undefined
+    } else if (neg) {
+        value = false
+    } else {
+        value = true
+    }
     return { property: prop, value: value }
 }
 
@@ -27,7 +34,7 @@ _ "whitespace"
 // /!\ Important /!\
 // If you add any new important symbols, make sure that the are also removed
 //   from the character set for properties
-Negation    "negation"      = "~" / "not "
+Negation    "negation"      = "~" / "not " / "?"
 Conjunction "conjunction"   = "++" / "+" / "&&" / "&"  // N.B. "+" / "++" breaks!
 Disjunction "disjunction"   = "||" / "|"
 Property    "property name" = prop:[^~+&|()]+ {

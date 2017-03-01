@@ -4,6 +4,7 @@ import * as I from 'immutable'
 import * as F from '../../models/Formula'
 
 import Examples   from './Examples'
+import Formula    from '../Formula'
 import TraitTable from '../Trait/Table'
 
 class Results extends React.Component {
@@ -14,7 +15,9 @@ class Results extends React.Component {
       return <Examples onSelect={onSelect}/>
     }
     if (results.size === 0) {
-      return <p>No results found</p>
+      return <div>
+        <p>No results found for formula <Formula formula={formula}/></p>
+      </div>
     }
 
     return (

@@ -98,31 +98,29 @@ export const filterByText = (state, {
 
 export const filterByFormula = (state, {
   formula,
-  spaces,
-  value
+  spaces
 }) => {
   return spaces.filter(s => {
     const traits = state.getIn(['traitTable', s.get('uid')])
     if (!traits) {
       return false
     }
-    return formula.evaluate(traits) === value
+
+    return formula.matches(traits)
   })
 }
 
 export const filter = (state, {
   text,
   formula,
-  spaces,
-  value
+  spaces
 }) => {
   // TODO: validate params
   spaces = spaces || state.get('spaces')
   if (formula) {
     return filterByFormula(state, {
       formula,
-      spaces,
-      value
+      spaces
     })
   } else {
     return filterByText(state, {
@@ -156,52 +154,11 @@ export const parseFormula = (state, q) => {
   }
 }
 
-const searchByText = (state, q) => {
-  return state.get('spaces.finder').search(q)
-}
-
+// TODO: do we still need this?
 const searchByFormula = (state, formula, value = true) => {
   return state.get('traitTable').filter((traits) => {
     return formula.evaluate(traits) === value
   }).keySeq()
-}
-
-const searchWhereUnknown = (state, formula) =>
-  searchByFormula(state, formula, undefined)
-
-
-export const BY_TEXT = 'BY_TEXT'
-export const BY_FORMULA = 'BY_FORMULA'
-export const WHERE_UNKOWN = 'WHERE_UNKOWN'
-export const runSearch = (state, query, formula) => {
-  if (!query) {
-    return
-  }
-
-  let type, ids
-  switch (query[0]) {
-    case ':':
-      type = BY_TEXT
-      ids = searchByText(state, query)
-      break
-    case '?':
-      type = WHERE_UNKOWN
-      ids = searchWhereUnknown(state, formula)
-      break
-    default:
-      type = BY_FORMULA
-      ids = searchByFormula(state, formula)
-  }
-
-  const coll = state.get('spaces')
-  const spaces = ids.map(id => coll.get(id))
-
-  return {
-    type,
-    query,
-    formula,
-    spaces
-  }
 }
 
 export const suggestionsFor = (state, query, limit) => {

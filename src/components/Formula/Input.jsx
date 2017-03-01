@@ -34,6 +34,8 @@ class FormulaInput extends React.Component {
 
   expandFragment(index) {
     index = index || this.state.selected
+    if (!this.state.suggestions) { return }
+
     const selected = this.state.suggestions.get(''+index)
     const updated  = Q.replaceFragment(this.props.q, selected.get('name'))
 
@@ -57,7 +59,6 @@ class FormulaInput extends React.Component {
       return this.changeSelection(1)
     case ENTER:
     case TAB:
-    case RIGHT:
       return this.expandFragment()
     default:
       return

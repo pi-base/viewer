@@ -48,6 +48,16 @@ class Conjunction extends Formula {
     }
     return result
   }
+
+  matches(traits) {
+    for (let sub of this.subs) {
+      const sv = sub.matches(traits)
+      if (sv === false) {
+        return false
+      }
+    }
+    return true
+  }
 }
 
 class Disjunction extends Formula {
@@ -73,6 +83,16 @@ class Disjunction extends Formula {
       }
     }
     return result
+  }
+
+  matches(traits) {
+    for (let sub of this.subs) {
+      const sv = sub.matches(traits)
+      if (sv === true) {
+        return true
+      }
+    }
+    return false
   }
 }
 
@@ -107,6 +127,15 @@ class Atom extends Formula {
   evaluate(traits) {
     const trait = traits.get(this.property.get('uid'))
     return trait ? trait.get('value') === this.value : undefined
+  }
+
+  matches(traits) {
+    const trait = traits.get(this.property.get('uid'))
+    if (trait === undefined) {
+      return this.value === undefined
+    } else {
+      return this.value === trait.get('value')
+    }
   }
 }
 

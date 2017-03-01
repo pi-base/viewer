@@ -73,7 +73,7 @@ class Search extends React.Component {
   results() {
     const { filter } = this.props
     const spaces = filter({ text: this.state.text })
-    return filter({ spaces: spaces, formula: this.state.formula, value: true }).valueSeq().toList()
+    return filter({ spaces: spaces, formula: this.state.formula }).valueSeq().toList()
   }
 
   render() {
