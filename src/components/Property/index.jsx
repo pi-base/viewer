@@ -4,10 +4,10 @@ import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
+import Aliases         from '../Aliases'
 import Markdown        from '../Markdown'
 import RelatedTheorems from './RelatedTheorems'
 import Tex             from '../Tex'
-
 
 class Property extends React.Component {
   render () {
@@ -16,7 +16,12 @@ class Property extends React.Component {
 
     return (
       <div>
-        <h1>{property.get('name')}</h1>
+        <h1>
+          <Tex>
+            {property.get('name')}
+            <Aliases aliases={property.get('aliases')}/>
+          </Tex>
+        </h1>
         <Tex><Markdown text={property.get('description')}/></Tex>
         <hr/>
 

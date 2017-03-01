@@ -4,6 +4,7 @@ import * as I from 'immutable'
 
 import * as Q from '../../queries'
 
+import Aliases    from '../Aliases'
 import Markdown   from '../Markdown'
 import TraitPager from '../Trait/Pager'
 import Tex        from '../Tex'
@@ -14,7 +15,12 @@ class Space extends React.Component {
 
     return (
       <div>
-        <h1><Tex>{space.get('name')}</Tex></h1>
+        <h1>
+          <Tex>
+            {space.get('name')}
+            <Aliases aliases={space.get('aliases')}/>
+          </Tex>
+        </h1>
         <Tex><Markdown text={space.get('description')}/></Tex>
 
         <hr/>
