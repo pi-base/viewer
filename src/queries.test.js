@@ -23,12 +23,12 @@ it('can pull collections', () => {
 })
 
 it('can find spaces', () => {
-  const s = Q.findSpaceByName(state, 'Finite Discrete Topology')
+  const s = Q.findSpace(state, 'Finite Discrete Topology')
   expect(s.get('uid')).toEqual('S000001')
 })
 
 it('can find properties', () => {
-  const p = Q.findPropertyByName(state, 'Compact').toJS()
+  const p = Q.findProperty(state, 'Compact').toJS()
   expect(p.uid).toEqual('P000016')
 
   const rel = Q.relatedTheorems(state, p)

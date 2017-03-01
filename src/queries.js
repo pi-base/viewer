@@ -58,15 +58,8 @@ export const allTheorems = (state) => {
   return ts.map(t => hydrateTheorem(state, t))
 }
 
-const scan = (state, coll, key, val) => {
-  const objs = state.get(coll)
-  return objs.find((o, _id) => o.get(key) === val)
-}
-
-export const findSpaceByName = (state, name) =>
-  scan(state, 'spaces', 'name', name)
-export const findPropertyByName = (state, name) =>
-  scan(state, 'properties', 'name', name)
+export const findSpace = (state, uid) => state.getIn(['spaces', uid])
+export const findProperty = (state, uid) => state.getIn(['properties', uid])
 
 const fetchTheorem = (state) => {
   return (id) => {
@@ -237,9 +230,9 @@ export const traitTable = (state, spaces, properties) => {
   return state.get('traitTable')
 }
 
-export const findTrait = (state, space, property) => {
-  const s = findSpaceByName(state, space)
-  const p = findPropertyByName(state, property)
+export const findTrait = (state, spaceId, propertyId) => {
+  const s = findSpace(state, spaceId)
+  const p = findProperty(state, propertyId)
 
   const trait = state.getIn(['traitTable', s.get('uid')]).find(t => {
     return t.get('property') === p.get('uid')

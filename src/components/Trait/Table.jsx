@@ -21,7 +21,7 @@ class TraitTable extends React.Component {
     }
 
     return (
-      <Link to={`/spaces/${space.get('name')}/properties/${property.get('name')}`}>
+      <Link to={`/spaces/${space.get('uid')}/properties/${property.get('uid')}`}>
         <Icon type={type}/>
       </Link>
     )
@@ -36,7 +36,7 @@ class TraitTable extends React.Component {
             <th>Space</th>
             {properties.map(p =>
               <th key={p.get('uid')}>
-                <Link to={`/properties/${p.get('name')}`}>
+                <Link to={`/properties/${p.get('uid')}`}>
                   <Tex>{p.get('name')}</Tex>
                 </Link>
               </th>
@@ -47,7 +47,7 @@ class TraitTable extends React.Component {
           {spaces.map(s =>
             <tr key={s.get('uid')}>
               <td>
-                <Link to={`/spaces/${s.get('name')}`}>
+                <Link to={`/spaces/${s.get('uid')}`}>
                   <Tex>{s.get('name')}</Tex>
                 </Link>
               </td>

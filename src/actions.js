@@ -22,14 +22,14 @@ const ROOT = process.env.NODE_ENV === 'production' ?
 
 const path = (rel) => (`${ROOT}/${rel}`)
 
-const storage = typeof(localStorage) === 'undefined' ? {
+const storage = localStorage || {
   getItem: () => {
     return
   },
   setItem: () => {
     return
   }
-} : localStorage
+}
 
 const doFetch = ({
     type,

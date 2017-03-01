@@ -1,11 +1,8 @@
 var _rollbarConfig = {
-  accessToken: "1d48576f7fa242babd4f366dda8e57b5",
   captureUncaught: true,
-  captureUnhandledRejections: true,
-  payload: {
-    environment: "production"
-  }
+  captureUnhandledRejections: true
 };
+
 // Rollbar Snippet
 ! function(r) {
   function e(n) {

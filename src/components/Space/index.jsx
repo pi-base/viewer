@@ -39,6 +39,6 @@ Space.propTypes = {
 
 export default connect(
   (state, ownProps) => ({
-    space: Q.findSpaceByName(state, ownProps.params.spaceName)
+    space: Q.findSpace(state, ownProps.params.spaceId)
   })
 )(Space)

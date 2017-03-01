@@ -59,6 +59,6 @@ Trait.propTypes = {
 
 export default connect(
   (state, ownProps) => ({
-    trait: Q.findTrait(state, ownProps.params.spaceName, ownProps.params.propertyName)
+    trait: Q.findTrait(state, ownProps.params.spaceId, ownProps.params.propertyId)
   })
 )(Trait)

@@ -18,7 +18,7 @@ class Explorer extends React.Component {
       <ul>
         {proof.get('traits').map(t =>
           <li key={'prop' + t.getIn(['property', 'uid'])}>
-            <Link to={`/spaces/${space.get('name')}/properties/${t.getIn(['property', 'name'])}`}>
+            <Link to={`/spaces/${space.get('uid')}/properties/${t.getIn(['property', 'uid'])}`}>
               {t.get('value') ? '' : '¬'}
               {t.getIn(['property', 'name'])}
             </Link>

@@ -26,7 +26,7 @@ class Property extends React.Component {
       <Tex className="row">
         <div className="col-md-2">
           <h4>
-            <Link to={`/properties/${property.get('name')}`}>
+            <Link to={`/properties/${property.get('uid')}`}>
               {property.get('name')}
             </Link>
           </h4>

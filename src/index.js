@@ -19,12 +19,13 @@ if (window) {
     err(e)
   }
 
-  if (window.Rollbar) {
+  if (window.Rollbar && process.env.NODE_ENV === 'production') {
     window.Rollbar.configure({
-      context: {
-        enabled: process.env.NODE_ENV === 'production'
-      },
+      accessToken: "1d48576f7fa242babd4f366dda8e57b5",
+      captureUncaught: true,
+      captureUnhandledRejections: true,
       payload: {
+        environment: process.env.NODE_ENV,
         db: V.db,
         client: {
           javascript: {

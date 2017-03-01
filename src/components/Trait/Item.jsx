@@ -11,7 +11,7 @@ const TraitItem = ({ space, property, trait }) => {
         <Icon type={trait.get('value') ? 'ok' : 'remove'}></Icon>
       </td>
       <td>
-        <Link to={`/spaces/${space.get('name')}/properties/${property.get('name')}`}>
+        <Link to={`/spaces/${space.get('uid')}/properties/${property.get('uid')}`}>
           {property.get('name')}
         </Link>
       </td>
