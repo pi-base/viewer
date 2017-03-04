@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import V from '../../config/version'
 
 import Navbar from './Navbar'
 import Debug  from './Debug'
@@ -34,6 +35,6 @@ class Layout extends React.Component {
 export default connect(
   (state)    => ({ loaded: state.get('spaces').size > 0 }),
   (dispatch) => ({
-    fetchUniverse: () => { A.fetchUniverse(dispatch) }
+    fetchUniverse: () => { A.fetchUniverse(dispatch, V.db) }
   })
 )(Layout)

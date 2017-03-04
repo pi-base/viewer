@@ -2,24 +2,10 @@ import * as I from 'immutable'
 
 import * as F from './models/Formula'
 
-
 // Utilities
 
-const hydrateTheorem = (state, t) => {
-  // TODO: refactor formulae to be immutable
-  const hydrate = (f) =>
-    F.map(f.toJS(), (p) => {
-      return state.getIn(['properties', p]).toJS()
-    })
-
-  return t.merge({
-    antecedent: hydrate(t.get('antecedent')),
-    consequent: hydrate(t.get('consequent'))
-  })
-}
-
 const escapeRegExp = (string) =>
-  string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+  string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const getFragment = (str) => {
   if (!str) {
@@ -53,18 +39,14 @@ const all = (coll, key) => {
 
 export const allSpaces = all('spaces')
 export const allProperties = all('properties')
-export const allTheorems = (state) => {
-  const ts = all('theorems', 'uid')(state)
-  return ts.map(t => hydrateTheorem(state, t))
-}
+export const allTheorems = all('theorems')
 
 export const findSpace = (state, uid) => state.getIn(['spaces', uid])
 export const findProperty = (state, uid) => state.getIn(['properties', uid])
 
 const fetchTheorem = (state) => {
   return (id) => {
-    const t = state.getIn(['theorems', id])
-    return hydrateTheorem(state, t)
+    return state.getIn(['theorems', id])
   }
 }
 
@@ -106,7 +88,7 @@ export const filterByFormula = (state, {
       return false
     }
 
-    return formula.matches(traits)
+    return formula.evaluate(traits)
   })
 }
 
@@ -214,23 +196,22 @@ export const getProof = (state, trait) => {
 }
 
 export const counterexamples = (state, theorem) => {
-  const f = F.and([
-    F.negate(theorem.get('antecedent')),
+  const f = F.and(
+    theorem.get('antecedent').negate(),
     theorem.get('consequent')
-  ])
+  )
 
   return searchByFormula(state, f).map(id => state.getIn(['spaces', id]))
 }
 
 export const theoremProperties = (t) => {
-  const a = F.properties(t.get('antecedent'))
-  const c = F.properties(t.get('consequent'))
-
-  return I.List(a.concat(c))
+  return t.get('antecedent').properties().union(
+    t.get('consequent').properties()
+  )
 }
 
 export const relatedTheorems = (state, prop) => {
-  return state.get('theorems').filter(t => {
-    return theoremProperties(t).includes(prop.get('uid'))
-  }).keySeq().map(id => findTheorem(state, id))
+  return allTheorems(state).filter(t => {
+    return theoremProperties(t).includes(prop)
+  }).valueSeq().toList()
 }

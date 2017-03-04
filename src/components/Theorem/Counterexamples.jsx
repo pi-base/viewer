@@ -12,12 +12,12 @@ class Counterexamples extends React.Component {
   render () {
     const { counterexamples, theorem } = this.props
 
-    if (theorem.converse) {
+    if (theorem.get('converse')) {
       return <aside>
         <p>The converse of this theorem also holds</p>
         <table className="table table-condensed">
           <tbody>
-            {theorem.converse.map(id =>
+            {theorem.get('converse').map(id =>
               <tr key={id}>
                 <td>
                   <Link to={`/theorems/${id}`}>{id}</Link>

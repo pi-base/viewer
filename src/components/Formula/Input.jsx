@@ -34,6 +34,7 @@ class FormulaInput extends React.Component {
 
   expandFragment(index) {
     index = index || this.state.selected
+
     if (!this.state.suggestions) { return }
 
     const selected = this.state.suggestions.get(''+index)

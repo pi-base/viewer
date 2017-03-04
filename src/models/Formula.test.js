@@ -1,138 +1,181 @@
 /* global it expect */
-import {
-  parse,
-  negate,
-} from './Formula'
+import * as I from 'immutable'
+import * as F from './Formula'
 
-it('can parse a simple formula', () => {
-  expect(
-    parse('Compact').toJSON()
-  ).toEqual({
-    property: 'Compact',
-    value: true
+const f = F.parse('compact + (connected || not second countable) + ~first countable')
+
+it('has accessors', () => {
+  expect(f.and[1].or[1].property).toEqual('second countable')
+})
+
+describe('parsing', () => {
+  it('can parse a simple formula', () => {
+    expect(
+      F.parse('Compact')
+    ).toEqual(
+      F.atom('Compact', true)
+    )
+  })
+
+  it('handles whitespace', () => {
+    expect(
+      F.parse('   \t   Second Countable \n ')
+    ).toEqual(
+      F.atom('Second Countable', true)
+    )
+  })
+
+  it('can negate properties', () => {
+    expect(
+      F.parse('not compact')
+    ).toEqual(
+      F.atom('compact', false)
+    )
+  })
+
+  it('can inserts parens', () => {
+    expect(
+      F.parse('compact + connected + ~t_2')
+    ).toEqual(
+      F.and(
+        F.atom('compact', true),
+        F.atom('connected', true),
+        F.atom('t_2', false)
+      )
+    )
+  })
+
+  it('allows parens', () => {
+    expect(F.parse('(foo + bar)')).toEqual(
+      F.and(
+        F.atom('foo', true),
+        F.atom('bar', true)
+      )
+    )
+  })
+
+  it('handles errors with parens', () => {
+    expect(F.parse('(some stuff + |)')).toBeUndefined()
+  })
+
+  it('can parse nested formulae', () => {
+    expect(f).toEqual(
+      F.and(
+        F.atom('compact', true),
+        F.or(
+          F.atom('connected', true),
+          F.atom('second countable', false)
+        ),
+        F.atom('first countable', false)
+      )
+    )
+  })
+
+  it('handles empty strings', () => {
+    expect(F.parse()).toBeUndefined()
+    expect(F.parse('')).toBeUndefined()
   })
 })
 
-it('handles whitespace', () => {
-  expect(
-    parse('   \t   Second Countable \n ').toJSON()
-  ).toEqual({
-    property: 'Second Countable',
-    value: true
+describe('mapping', () => {
+  it('can map over atoms', () => {
+    expect(
+      f.map(atom => ({
+        property: atom.property.length,
+        value: !atom.value
+      }))
+    ).toEqual(
+      F.and(
+        F.atom(7, false),
+        F.or(
+          F.atom(9, false),
+          F.atom(16, true)
+        ),
+        F.atom(15, true)
+      )
+    )
+  })
+
+  it('accumulate property lists', () => {
+    expect(f.properties()).toEqual(I.OrderedSet([
+      'compact', 'connected', 'second countable', 'first countable'
+    ]))
+  })
+
+  it('can negate', () => {
+    expect(f.negate()).toEqual(
+      F.or(
+        F.atom('compact', false),
+        F.and(
+          F.atom('connected', false),
+          F.atom('second countable', true)
+        ),
+        F.atom('first countable', true)
+      )
+    )
+  })
+
+  it('can map over properties', () => {
+    expect(f.mapProperty(p => p[0])).toEqual(
+      F.and(
+        F.atom('c', true),
+        F.or(
+          F.atom('c', true),
+          F.atom('s', false)
+        ),
+        F.atom('f', false)
+      )
+    )
   })
 })
 
-it('can negate properties', () => {
-  expect(
-    parse('not compact').toJSON()
-  ).toEqual({
-    property: 'compact',
-    value: false
-  })
-})
+describe('evaluation', () => {
+  const h = f.mapProperty(p => I.Map({
+    uid: p
+  }))
 
-it('can parse conjunctions', () => {
-  expect(
-    parse('compact + connected + ~t_2').toJSON()
-  ).toEqual({
-    and: [{
-        property: 'compact',
+  it('can find a match', () => {
+    const traits = I.fromJS({
+      compact: {
         value: true
       },
-      {
-        property: 'connected',
-        value: true
+      'second countable': {
+        value: false
       },
-      {
-        property: 't_2',
+      'first countable': {
         value: false
       }
-    ]
+    })
+    expect(h.evaluate(traits)).toEqual(true)
   })
-})
 
-it('can parse nested formulae', () => {
-  expect(
-    parse('compact + (connected || not second countable) + ~first countable').toJSON()
-  ).toEqual({
-    and: [{
-        property: 'compact',
+  it('can find a miss', () => {
+    const traits = I.fromJS({
+      compact: {
         value: true
       },
-      {
-        or: [{
-            property: 'connected',
-            value: true
-          },
-          {
-            property: 'second countable',
-            value: false
-          }
-        ]
-      },
-      {
-        property: 'first countable',
-        value: false
-      }
-    ]
-  })
-})
-
-it('can map over formulae', () => {
-  const parsed = parse('compact + (connected || not second countable) + ~first countable')
-  const mapped = parsed.map(atom => ({
-    property: atom.property.length,
-    value: !atom.value
-  })).toJSON()
-
-  expect(mapped).toEqual({
-    and: [{
-        property: 7,
+      'second countable': {
         value: false
       },
-      {
-        or: [{
-            property: 9,
-            value: false
-          },
-          {
-            property: 16,
-            value: true
-          }
-        ]
-      },
-      {
-        property: 15,
+      'first countable': {
         value: true
       }
-    ]
+    })
+    expect(h.evaluate(traits)).toEqual(false)
   })
-})
 
-it('can negate formulae', () => {
-  const parsed = parse('compact + (connected || not second countable) + ~first countable')
-  const mapped = negate(parsed).toJSON()
-
-  expect(mapped).toEqual({
-    or: [{
-        property: "compact",
-        value: false
-      },
-      {
-        and: [{
-            property: "connected",
-            value: false
-          },
-          {
-            property: "second countable",
-            value: true
-          }
-        ]
-      },
-      {
-        property: "first countable",
+  it('can be undefined', () => {
+    const traits = I.fromJS({
+      compact: {
         value: true
+      },
+      'second countable': {
+        value: true
+      },
+      'first countable': {
+        value: false
       }
-    ]
+    })
+    expect(h.evaluate(traits)).toBeUndefined()
   })
 })

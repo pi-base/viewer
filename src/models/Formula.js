@@ -1,18 +1,8 @@
-// TODO: this should be .pegjs with appropriate build tooling,
-//       but I'm not sure how to get that to play nice with
-//       the test environment
 import parser from './formula/parser.js'
 import * as I from 'immutable'
 
 export class Formula {
-  constructor(subs) {
-    this.subs = subs
-  }
-
-  map(f) {
-    return new this.constructor(this.subs.map(sub => sub.map(f)))
-  }
-
+  // TODO: fluent-style map.property
   mapProperty(f) {
     return this.map(({
       property,
@@ -24,15 +14,30 @@ export class Formula {
   }
 }
 
-class Conjunction extends Formula {
+class Compound extends Formula {
+  constructor(subs) {
+    super()
+    this.subs = subs
+  }
+
+  map(f) {
+    return new this.constructor(this.subs.map(sub => sub.map(f)))
+  }
+
+  properties() {
+    return this.subs.reduce((acc, sf) => {
+      return acc.union(sf.properties())
+    }, I.OrderedSet())
+  }
+}
+
+class Conjunction extends Compound {
   get and() {
     return this.subs
   }
 
-  toJSON() {
-    return {
-      and: this.subs.map(f => f.toJSON())
-    }
+  negate() {
+    return new Disjunction(this.subs.map(f => f.negate()))
   }
 
   evaluate(traits) {
@@ -48,27 +53,15 @@ class Conjunction extends Formula {
     }
     return result
   }
-
-  matches(traits) {
-    for (let sub of this.subs) {
-      const sv = sub.matches(traits)
-      if (sv === false) {
-        return false
-      }
-    }
-    return true
-  }
 }
 
-class Disjunction extends Formula {
+class Disjunction extends Compound {
   get or() {
     return this.subs
   }
 
-  toJSON() {
-    return {
-      or: this.subs.map(f => f.toJSON())
-    }
+  negate() {
+    return new Conjunction(this.subs.map(f => f.negate()))
   }
 
   evaluate(traits) {
@@ -84,16 +77,6 @@ class Disjunction extends Formula {
     }
     return result
   }
-
-  matches(traits) {
-    for (let sub of this.subs) {
-      const sv = sub.matches(traits)
-      if (sv === true) {
-        return true
-      }
-    }
-    return false
-  }
 }
 
 class Atom extends Formula {
@@ -102,6 +85,7 @@ class Atom extends Formula {
     value
   }) {
     super()
+
     if (typeof(property) === 'object') {
       this.property = I.Map(property)
     } else {
@@ -117,25 +101,20 @@ class Atom extends Formula {
     }))
   }
 
-  toJSON() {
-    return {
+  properties() {
+    return I.OrderedSet([this.property])
+  }
+
+  negate() {
+    return new this.constructor({
       property: this.property,
-      value: this.value
-    }
+      value: !this.value
+    })
   }
 
   evaluate(traits) {
     const trait = traits.get(this.property.get('uid'))
     return trait ? trait.get('value') === this.value : undefined
-  }
-
-  matches(traits) {
-    const trait = traits.get(this.property.get('uid'))
-    if (trait === undefined) {
-      return this.value === undefined
-    } else {
-      return this.value === trait.get('value')
-    }
   }
 }
 
@@ -144,20 +123,13 @@ export const fromJSON = (json) => {
     return new Conjunction(json.and.map(fromJSON))
   } else if (json.or) {
     return new Disjunction(json.or.map(fromJSON))
-  } else {
+  } else if (json.property) {
     return new Atom(json)
-  }
-}
-
-export const negate = (f) => {
-  if (f.and) {
-    return new Disjunction(f.subs.map(sf => negate(sf)))
-  } else if (f.or) {
-    return new Conjunction(f.subs.map(sf => negate(sf)))
   } else {
+    const property = Object.keys(json)[0]
     return new Atom({
-      property: f.property,
-      value: !f.value
+      property: property,
+      value: json[property]
     })
   }
 }
@@ -181,67 +153,19 @@ export const parse = (q) => {
   return fromJSON(parsed)
 }
 
-export const map = (formula, func) => {
-  if (!formula) {
-    return
-  }
-
-  if (formula.and) {
-    return new Conjunction(formula.and.map(sf => map(sf, func)))
-  } else if (formula.or) {
-    return new Disjunction(formula.or.map(sf => map(sf, func)))
-  } else if (formula.property) {
-    return new Atom({
-      property: func(formula.property),
-      value: formula.value
-    })
-  } else {
-    for (let prop in formula) {
-      // { prop: value } -- really only want the first one
-      if (Object.prototype.hasOwnProperty.call(formula, prop)) {
-        return new Atom({
-          property: func(prop),
-          value: formula[prop]
-        })
-      }
-    }
-  }
-}
-
-export const and = (subs) => new Conjunction(subs)
-export const or = (subs) => new Disjunction(subs)
+export const and = (...subs) => new Conjunction(subs)
+export const or = (...subs) => new Disjunction(subs)
 export const atom = (p, v) => new Atom({
   property: p,
   value: v
 })
 
-export const withProperty = (f) =>
-  (a) => atom(f(a.property), a.value)
-
-export const properties = (f) => {
-  if (!f) {
-    return []
-  }
-  if (f.toJS) {
-    f = f.toJS()
-  }
-
+export const toString = (f) => {
   if (f.and) {
-    return f.and.reduce((acc, sf) => {
-      return acc.concat(properties(sf))
-    }, [])
+    return '(' + f.and.map(sf => toString(sf)).join(' + ') + ')'
   } else if (f.or) {
-    return f.or.reduce((acc, sf) => {
-      return acc.concat(properties(sf))
-    }, [])
-  } else if (f.property) {
-    return [f.property]
+    return '(' + f.or.map(sf => toString(sf)).join(' | ') + ')'
   } else {
-    for (let prop in f) {
-      // { prop: value } -- really only want the first one
-      if (Object.prototype.hasOwnProperty.call(f, prop)) {
-        return [prop]
-      }
-    }
+    return f.property.get('name') + '=' + f.value
   }
 }

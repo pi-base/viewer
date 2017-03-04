@@ -28,10 +28,12 @@ class Trait extends React.Component {
     const property = trait.get('property')
     const label = trait.get('value') === false ? '¬' : ''
 
+    console.log("property", property.get('name'), property)
+
     return (
-      <Tex>
+      <div>
         <h3>
-          <span>{label}{property.get('name')}</span>
+          {label}{property.get('name')}
           {' '}
           <button
             className="btn btn-default btn-xs"
@@ -42,13 +44,13 @@ class Trait extends React.Component {
         </h3>
 
         { this.state.showProperty
-        ? <div className="well">
-            <Markdown text={property.get('description')}/>
-          </div>
+        ? <Tex className="well">
+          <Markdown text={property.get('description')}/>
+        </Tex>
         : ''}
 
         <Proof space={space} trait={trait}/>
-      </Tex>
+      </div>
     )
   }
 }

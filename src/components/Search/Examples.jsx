@@ -41,7 +41,7 @@ class Examples extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={this.props.className}>
         <p>Not sure where to start? Try one of the following searches</p>
         {this.examples().map(ex =>
           this.example(ex)

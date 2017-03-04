@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import * as Q from '../../queries'
 
 import Implication from '../Implication'
+import Tex from '../Tex'
 
 class Explorer extends React.Component {
   render() {
@@ -20,7 +21,7 @@ class Explorer extends React.Component {
           <li key={'prop' + t.getIn(['property', 'uid'])}>
             <Link to={`/spaces/${space.get('uid')}/properties/${t.getIn(['property', 'uid'])}`}>
               {t.get('value') ? '' : '¬'}
-              {t.getIn(['property', 'name'])}
+              <Tex>{t.getIn(['property', 'name'])}</Tex>
             </Link>
           </li>
         )}

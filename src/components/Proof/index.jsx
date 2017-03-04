@@ -3,6 +3,7 @@ import * as I from 'immutable'
 
 import Markdown      from '../Markdown'
 import ProofExplorer from './Explorer'
+import Tex           from '../Tex'
 
 class Proof extends React.Component {
   render() {
@@ -11,7 +12,7 @@ class Proof extends React.Component {
     if (trait.get('deduced')) {
       return <ProofExplorer space={space} trait={trait}/>
     } else if (trait.get('description')) {
-      return <Markdown text={trait.get('description')}/>
+      return <Tex><Markdown text={trait.get('description')}/></Tex>
     } else {
       return <p>
         <i>No proof given</i>

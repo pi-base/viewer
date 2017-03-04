@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import * as I from 'immutable'
 
-import * as F from '../../models/Formula'
 import * as Q from '../../queries'
 
 import FormulaInput from '../Formula/Input'
@@ -15,8 +13,7 @@ class Search extends React.Component {
     this.state = {
       q: '',
       formula: null,
-      text: '',
-      properties: []
+      text: ''
     }
   }
 
@@ -77,8 +74,7 @@ class Search extends React.Component {
   }
 
   render() {
-    const results    = this.results()
-    const properties = this.state.properties.concat(F.properties(this.state.formula))
+    const results = this.results()
 
     // TODO: add widget to allow displaying extra traits inline
     return (
@@ -111,7 +107,6 @@ class Search extends React.Component {
             text={this.state.text}
             formula={this.state.formula}
             results={results}
-            properties={I.List(properties)}
             onSelect={this.setFormulaFilter.bind(this)}
           />
         </div>

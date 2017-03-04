@@ -1,7 +1,9 @@
 import ifetch from 'isomorphic-fetch'
-import V from '../config/version'
 
-export const STORAGE_KEY = ':pi-base:'
+import Cache from './cache'
+
+const storage = typeof(window.localStorage === 'undefined') ? {} : window.localStorage
+const cache = new Cache(storage)
 
 // Fetch states
 export const STARTING = 'STARTING'
@@ -22,83 +24,61 @@ const ROOT = process.env.NODE_ENV === 'production' ?
 
 const path = (rel) => (`${ROOT}/${rel}`)
 
-const storage = localStorage || {
-  getItem: () => {
-    return
-  },
-  setItem: () => {
-    return
-  }
+export const PAGE_NOT_FOUND = 'PAGE_NOT_FOUND'
+export const pageNotFound = (path) => ({
+  type: PAGE_NOT_FOUND,
+  path
+})
+
+const doFetch = (dispatch, {
+  type,
+  url
+}) => {
+  dispatch({
+    type: fetch(STARTING, type)
+  })
+
+  return ifetch(path(url))
+    .then(r => r.json())
+    .then(data => {
+      dispatch({
+        type: fetch(DONE, type),
+        payload: data
+      })
+      return data
+    })
+    .catch(err => {
+      dispatch({
+        type: fetch(FAILED, type),
+        payload: err
+      })
+      throw err
+    })
 }
 
-const doFetch = ({
-    type,
-    url,
-    onSuccess
-  }) =>
-  (dispatch) => {
-    dispatch({
-      type: fetch(STARTING, type)
-    })
-
-    return ifetch(path(url))
-      .then(r => r.json())
-      .then(data => {
-        const processed = onSuccess(data) || data
-        return dispatch({
-          type: fetch(DONE, type),
-          payload: processed
-        })
-      })
-      .catch(err =>
-        dispatch({
-          type: fetch(FAILED, type),
-          payload: err
-        })
-      )
-  }
-
-const cacheKey = (type) => `${STORAGE_KEY}:${type}`
-
-export const cachedFetch = ({
-    type,
-    url,
-    force,
-    onSuccess
-  }) =>
-  (dispatch) => {
-    let key = cacheKey(type)
-    if (force) {
-      storage.removeItem(key)
-    }
-    let cached = storage.getItem(key)
-
-    if (cached && !force) {
-      return dispatch({
-        type: fetch(DONE, type),
-        payload: JSON.parse(cached)
+export const cachedFetch = (dispatch, {
+  type,
+  url,
+  force
+}) => {
+  return cache.load({
+    key: type,
+    force: force,
+    loader: () => {
+      return doFetch(dispatch, {
+        type,
+        url
       })
     }
+  })
+}
 
-    doFetch({
-      type: type,
-      url: url,
-      onSuccess: (data) => {
-        storage.setItem(key, JSON.stringify(data))
-        onSuccess(data)
-        return data
-      }
-    })(dispatch)
-  }
-
-export const fetchUniverse = (dispatch, force) => {
-  const loaded = storage.getItem(cacheKey('version'))
-  cachedFetch({
+export const fetchUniverse = (dispatch, version) => {
+  cachedFetch(dispatch, {
     type: OBJECTS,
-    url: `db/${V.db}.json`,
-    force: force || (loaded !== V.db),
-    onSuccess: () => {
-      storage.setItem(cacheKey('version'), V.db)
-    }
-  })(dispatch)
+    url: `db/${version}.json`,
+    force: version !== cache.get('version'),
+  }).then(data => {
+    cache.set('version', data.version)
+  })
 }
