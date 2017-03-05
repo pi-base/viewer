@@ -7,7 +7,10 @@ import Search from './index'
 
 it('smoke test', () => {
   const loc = {
-    query: ''
+    query: {
+      text: 'plank',
+      q: 'compact'
+    }
   }
 
   const search = mount(
@@ -16,5 +19,7 @@ it('smoke test', () => {
     </Provider>
   )
 
-  console.log("search", search.text())
+  const text = search.text()
+  expect(text).toContain("Compact")
+  expect(text).toContain("Tychonoff Plank")
 })

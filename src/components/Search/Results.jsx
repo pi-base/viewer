@@ -51,8 +51,10 @@ class Results extends React.Component {
       }
     }
 
+    const properties = formula ? formula.properties().toList() : I.List()
+
     return (
-      <TraitTable spaces={results} properties={formula.properties().toList()}/>
+      <TraitTable spaces={results} properties={properties}/>
     )
   }
 }
