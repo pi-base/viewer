@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/jamesdabbs/pi-base-viewer.svg?branch=master)](https://travis-ci.org/jamesdabbs/pi-base-viewer)
 [![Coverage Status](https://coveralls.io/repos/github/jamesdabbs/pi-base-viewer/badge.svg?branch=master)](https://coveralls.io/github/jamesdabbs/pi-base-viewer?branch=master)
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).

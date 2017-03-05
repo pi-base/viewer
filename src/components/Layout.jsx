@@ -41,6 +41,6 @@ class Layout extends React.Component {
 export default connect(
   (state)    => ({ loaded: state.get('spaces').size > 0 }),
   (dispatch) => ({
-    fetchUniverse: () => { A.fetchUniverse(dispatch, process.env.DB_VERSION) }
+    fetchUniverse: () => { A.fetchUniverse(dispatch, process.env.REACT_APP_DB_VERSION) }
   })
 )(Layout)

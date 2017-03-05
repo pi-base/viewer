@@ -7,4 +7,10 @@ cache:
   directories:
     - node_modules
 env:
-- DB_VERSION=test
+  - REACT_APP_DB_VERSION=test
+notifications:
+  email:
+    recipients:
+      - jamesdabbs@gmail.com
+      - on_success: change
+      - on_failure: always
