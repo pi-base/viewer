@@ -11,6 +11,7 @@ def run cmd
   unless system cmd
     exit 1
   end
+  puts
 end
 
 # Record git / db revisions
@@ -32,6 +33,7 @@ Dir["./build/static/js/main.*.js"].find do |f|
 end
 run [
   "curl https://api.rollbar.com/api/1/sourcemap",
+  "-F access_token=#{ROLLBAR_ACCESS_TOKEN}",
   "-F version=#{version['source']}",
   "-F minified_url=#{DOMAIN}/static/js/main.#{fragment}.js",
   "-F source_map=@build/static/js/main.#{fragment}.js.map"

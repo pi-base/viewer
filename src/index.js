@@ -26,10 +26,12 @@ if (window) {
       captureUnhandledRejections: true,
       payload: {
         environment: process.env.NODE_ENV,
-        db: V.db,
+        db: process.env.REACT_APP_DB_VERSION,
         client: {
           javascript: {
-            code_version: V.app
+            code_version: V.source,
+            source_map_enabled: true,
+            guess_uncaught_frames: true
           }
         }
       }
