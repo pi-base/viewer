@@ -2,10 +2,36 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import * as A from '../actions'
+import * as Q from '../queries'
+
+const lpad = (str, pad, len) => {
+  const padLen = len - str.length
+  while (pad.length < padLen) {
+    pad += pad
+  }
+  return pad + str
+}
 
 class NotFound extends React.Component {
   render() {
     const path = this.props.router.location.pathname
+
+    // Redirect cached URLs
+    // Searches - TODO: preserve old q= parameter
+    if (path.match(/search/)) {
+      this.props.router.push(`/spaces`)
+      return null
+    }
+
+    // Redirect traits by id to their canonical URL
+    const m = path.match(/traits\/(\d+)/)
+    if (m) {
+      const trait = this.props.findTrait('T' + lpad(m[1], '0', 6))
+      if (trait) {
+        this.props.router.push(`/spaces/${trait.get('space').get('uid')}/properties/${trait.get('property').get('uid')}`)
+        return null
+      }
+    }
 
     this.props.report(path)
 
@@ -24,7 +50,9 @@ class NotFound extends React.Component {
 }
 
 export default connect(
-  (state) => ({}),
+  (state) => ({
+    findTrait: (id) => Q.fetchTrait(state)(id)
+  }),
   (dispatch) => ({
     report: (path) => dispatch(A.pageNotFound(path))
   })

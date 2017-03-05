@@ -52,9 +52,12 @@ const fetchTheorem = (state) => {
 
 export const findTheorem = (state, id) => fetchTheorem(state)(id)
 
-const fetchTrait = (state) =>
+export const fetchTrait = (state) =>
   (id) => {
     const t = state.getIn(['traits', id])
+    if (!t) {
+      return
+    }
     return t.merge({
       space: state.getIn(['spaces', t.get('space')]),
       property: state.getIn(['properties', t.get('property')])
