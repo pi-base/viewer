@@ -38,7 +38,7 @@ class Counterexamples extends React.Component {
     return (
       <aside>
         <p>This implication does not reverse, as shown by</p>
-        <TraitTable spaces={counterexamples} properties={Q.theoremProperties(theorem)}/>
+        <TraitTable spaces={counterexamples} properties={Q.theoremProperties(theorem).toList()}/>
       </aside>
     )
   }

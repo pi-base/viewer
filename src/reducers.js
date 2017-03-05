@@ -16,8 +16,8 @@ const hydrate = (state) => {
 
   const theorems = state.get('theorems').map(t => {
     return t.merge({
-      antecedent: h(t.get('antecedent')),
-      consequent: h(t.get('consequent'))
+      if: h(t.get('if')),
+      then: h(t.get('then'))
     })
   })
 

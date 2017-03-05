@@ -29,7 +29,7 @@ class Theorems extends React.Component {
 
   doFilter(theorems) {
     this.setState({
-      limit: 10,
+      limit: 300,
       theorems: theorems.size ? theorems : this.props.theorems
     })
   }
@@ -43,8 +43,8 @@ class Theorems extends React.Component {
           collection={this.props.theorems}
           onChange={this.doFilter.bind(this)}
           weights={[
-            { name: 'antecedent',  weight: 0.7 },
-            { name: 'consequent',  weight: 0.7 },
+            { name: 'if',          weight: 0.7 },
+            { name: 'then',        weight: 0.7 },
             { name: 'description', weight: 0.5 }
           ]}
           placeholder="Filter theorems"

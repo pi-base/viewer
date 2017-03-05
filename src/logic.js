@@ -88,8 +88,8 @@ export const disprove = (state, formula) => {
   }
 
   const apply = (theorem) => {
-    const a = theorem.get('antecedent')
-    const c = theorem.get('consequent')
+    const a = theorem.get('if')
+    const c = theorem.get('then')
     const av = a.evaluate(traits)
     const cv = c.evaluate(traits)
 

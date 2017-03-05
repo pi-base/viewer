@@ -197,16 +197,16 @@ export const getProof = (state, trait) => {
 
 export const counterexamples = (state, theorem) => {
   const f = F.and(
-    theorem.get('antecedent').negate(),
-    theorem.get('consequent')
+    theorem.get('if').negate(),
+    theorem.get('then')
   )
 
   return searchByFormula(state, f).map(id => state.getIn(['spaces', id]))
 }
 
 export const theoremProperties = (t) => {
-  return t.get('antecedent').properties().union(
-    t.get('consequent').properties()
+  return t.get('if').properties().union(
+    t.get('then').properties()
   )
 }
 

@@ -41,6 +41,7 @@ class Results extends React.Component {
             <p>No spaces found satisfying <Formula formula={formula}/>. Do you
               know an example from the literature, or can you provide a
               reference proving that no such spaces exist?
+              {' '}
               <a href="https://github.com/jamesdabbs/pi-base-data/blob/master/CONTRIBUTING.md">
                 [Go here to learn how to contribute.]
               </a>

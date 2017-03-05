@@ -30,5 +30,5 @@ it ('can use keyboard shortcuts', () => {
   const calls = cb.mock.calls
   expect(calls.length).toEqual(2)
   expect(calls[0][0].q).toEqual('comp')
-  expect(calls[1][0].q).toEqual('Completely Normal')
+  expect(calls[1][0].q).toEqual('Compact')
 })

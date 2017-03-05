@@ -9,9 +9,9 @@ class Implication extends React.Component {
     const { theorem, link } = this.props
 
     return <Tex component="span">
-      <Formula formula={theorem.get('antecedent')} link={link}/>
+      <Formula formula={theorem.get('if')} link={link}/>
       {' ⇒ '}
-      <Formula formula={theorem.get('consequent')} link={link}/>
+      <Formula formula={theorem.get('then')} link={link}/>
     </Tex>
   }
 }

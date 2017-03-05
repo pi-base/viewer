@@ -30,13 +30,13 @@ it('can find theorems', () => {
   const t = Q.findTheorem(state, 'I000059')
   const f = (name) => t.get(name).mapProperty(p => p.get('name'))
 
-  expect(f('antecedent')).toEqual(
+  expect(f('if')).toEqual(
     F.and(
-      F.atom('$T_2$', true),
-      F.atom('Locally Compact', true)
+      F.atom('Locally Compact', true),
+      F.atom('$T_2$', true)
     )
   )
-  expect(f('consequent')).toEqual(
+  expect(f('then')).toEqual(
     F.atom('Second Category', true)
   )
 
@@ -57,8 +57,8 @@ it('can parse search formula', () => {
 it('can get suggestions for the search fragment', () => {
   const sugs = Q.suggestionsFor(state, 'normal + comple')
 
-  expect(sugs.getIn(['0', 'name'])).toEqual('Completely Regular')
-  expect(sugs.getIn(['1', 'name'])).toEqual('Completely Normal')
+  expect(sugs.getIn(['0', 'name'])).toEqual('Completely Normal')
+  expect(sugs.getIn(['1', 'name'])).toEqual('Completely Regular')
   expect(sugs.size).toBeGreaterThan(20)
 })
 
