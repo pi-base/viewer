@@ -4,17 +4,43 @@ require 'httparty'
 require 'json'
 
 ROLLBAR_ACCESS_TOKEN='b3c8ae937ce5402a8b7166c12eae9d86'
+DOMAIN='http://topology.jdabbs.com'
 
+def run cmd
+  puts "Running `#{cmd}`"
+  unless system cmd
+    exit 1
+  end
+end
+
+# Record git / db revisions
 revision = `git log -n 1 --pretty=format:"%H"`.strip
 
 version_path = File.expand_path '../../config/version.json', __FILE__
 version = JSON.parse File.read version_path
 version['app'] = revision
+version['source'] = "#{revision}:#{version['db']}"
 File.write version_path, version.to_json
 
-system 'npm run build'
-system 'firebase deploy'
+# Build bundle
+run 'npm run build'
 
+# Upload source map to Rollbar
+fragment = nil
+Dir["./build/static/js/main.*.js"].find do |f|
+  fragment = f =~ /main\.(.*)\.js/ && $1
+end
+run [
+  "curl https://api.rollbar.com/api/1/sourcemap",
+  "-F version=#{version['source']}",
+  "-F minified_url=#{DOMAIN}/static/js/main.#{fragment}.js",
+  "-F source_map=@build/static/js/main.#{fragment}.js.map"
+].join(' ')
+
+# Deploy to Firebase
+run 'firebase deploy'
+
+# Record deploy to Rollbar
 HTTParty.post 'https://api.rollbar.com/api/1/deploy', body: {
   access_token:   ROLLBAR_ACCESS_TOKEN,
   environment:    'production',

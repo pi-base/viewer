@@ -42,7 +42,7 @@ const reducer = (state, action) => {
   state = state || init
 
   switch (action.type) {
-    case A.fetch(A.DONE, A.OBJECTS):
+    case A.fetching(A.DONE, A.OBJECTS):
       const u = I.fromJS(action.payload)
 
       return hydrate(state.merge({

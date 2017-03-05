@@ -13,6 +13,7 @@
     "case-sensitive-paths-webpack-plugin": "1.1.4",
     "chalk": "1.1.3",
     "connect-history-api-fallback": "1.3.0",
+    "coveralls": "^2.11.16",
     "cross-spawn": "4.0.2",
     "css-loader": "0.26.0",
     "detect-port": "1.0.1",
@@ -29,7 +30,6 @@
     "file-loader": "0.9.0",
     "filesize": "3.3.0",
     "fs-extra": "0.30.0",
-    "graphiql": "^0.9.3",
     "gzip-size": "3.0.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.2",
@@ -69,7 +69,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "ci": "node scripts/test.js --env=jsdom --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -102,5 +103,9 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesdabbs/pi-base-viewer"
   }
 }

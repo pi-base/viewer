@@ -1,5 +1,3 @@
-import ifetch from 'isomorphic-fetch'
-
 import Cache from './cache'
 
 const storage = typeof(window.localStorage === 'undefined') ? {} : window.localStorage
@@ -13,7 +11,7 @@ export const FAILED = 'FAILED'
 // Fetch types
 export const OBJECTS = 'OBJECTS'
 
-export const fetch = (status, type) => {
+export const fetching = (status, type) => {
   return `FETCH:${type}:${status}`
 }
 
@@ -35,21 +33,21 @@ const doFetch = (dispatch, {
   url
 }) => {
   dispatch({
-    type: fetch(STARTING, type)
+    type: fetching(STARTING, type)
   })
 
-  return ifetch(path(url))
+  return fetch(path(url))
     .then(r => r.json())
     .then(data => {
       dispatch({
-        type: fetch(DONE, type),
+        type: fetching(DONE, type),
         payload: data
       })
       return data
     })
     .catch(err => {
       dispatch({
-        type: fetch(FAILED, type),
+        type: fetching(FAILED, type),
         payload: err
       })
       throw err
@@ -79,6 +77,10 @@ export const fetchUniverse = (dispatch, version) => {
     url: `db/${version}.json`,
     force: version !== cache.get('version'),
   }).then(data => {
+    dispatch({
+      type: fetching(DONE, OBJECTS),
+      payload: data
+    })
     cache.set('version', data.version)
   })
 }

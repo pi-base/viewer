@@ -20,7 +20,7 @@ import paths from '../config/paths'
 const data = JSON.parse(fs.readFileSync(paths.appPublic + '/db/test.json', 'utf8'))
 
 export const state = reducer(null, {
-  type: A.fetch(A.DONE, A.OBJECTS),
+  type: A.fetching(A.DONE, A.OBJECTS),
   payload: data
 })
 

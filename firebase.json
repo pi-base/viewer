@@ -4,6 +4,9 @@
   },
   "hosting": {
     "public": "build",
+    "ignore": [
+      "db/test.json"
+    ],
     "headers": [ {
         "source" : "**",
         "headers" : [ {

@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import V from '../../config/version'
 
 import Navbar from './Navbar'
 import Debug  from './Debug'
@@ -8,8 +7,16 @@ import Debug  from './Debug'
 import * as A from '../actions'
 
 class Layout extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      debug: process.env.NODE_ENV === 'development'
+    }
+  }
+
   componentWillMount() {
     this.props.fetchUniverse()
+    window._pi_base_debug = () => this.setState({debug: !this.state.debug})
   }
 
   render() {
@@ -23,10 +30,9 @@ class Layout extends React.Component {
           : 'Loading...' }
         </div>
 
-        {process.env.NODE_ENV === 'development'
+        { this.state.debug
         ? <Debug/>
-        : ''
-        }
+        : ''}
       </div>
     );
   }
@@ -35,6 +41,6 @@ class Layout extends React.Component {
 export default connect(
   (state)    => ({ loaded: state.get('spaces').size > 0 }),
   (dispatch) => ({
-    fetchUniverse: () => { A.fetchUniverse(dispatch, V.db) }
+    fetchUniverse: () => { A.fetchUniverse(dispatch, process.env.DB_VERSION) }
   })
 )(Layout)
