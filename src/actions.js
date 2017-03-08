@@ -71,11 +71,13 @@ export const cachedFetch = (dispatch, {
   })
 }
 
-export const fetchUniverse = (dispatch, version) => {
+export const fetchUniverse = (dispatch, version, force) => {
+  version = version || process.env.REACT_APP_DB_VERSION
+
   cachedFetch(dispatch, {
     type: OBJECTS,
     url: `db/${version}.json`,
-    force: version !== cache.get('version'),
+    force: force || version !== cache.get('version'),
   }).then(data => {
     dispatch({
       type: fetching(DONE, OBJECTS),

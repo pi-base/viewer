@@ -14,10 +14,11 @@ class Debug extends React.Component {
   error() {
     return ''.floop('')
   }
-  
-  render() {
-    const { state } = this.props
 
+  render() {
+    const version = (label, val) => {
+      <a href="#" title="{val}">{label} | {val ? val.slice(0,7) : '??'}</a>
+    }
     return (
       <nav className="navbar navbar-inverse navbar-fixed-bottom">
         <div className="container">
@@ -28,9 +29,8 @@ class Debug extends React.Component {
             <li><Link to="/invalid/path">404</Link></li>
           </ul>
           <ul className="nav navbar-nav pull-right">
-            <li><a href="#">App {state.getIn(['version', 'app'])}</a></li>
-            <li><a href="#">DB {state.getIn(['version', 'db'])}</a></li>
-            <li><a href="#">Data {state.getIn(['version', 'data'])}</a></li>
+            <li>{version('App', process.env.REACT_APP_GIT_VERSION)}</li>
+            <li>{version('DB', process.env.REACT_APP_DB_VERSION)}}</li>
           </ul>
         </div>
       </nav>
@@ -41,6 +41,6 @@ class Debug extends React.Component {
 export default connect(
   (state) => { return { state } },
   (dispatch) => ({
-    refetch: () => { A.fetchUniverse(dispatch, true) }
+    refetch: () => { A.fetchUniverse(dispatch, null, true) }
   })
 )(Debug)

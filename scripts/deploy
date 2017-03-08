@@ -17,14 +17,8 @@ end
 # Record git / db revisions
 revision = `git log -n 1 --pretty=format:"%H"`.strip
 
-version_path = File.expand_path '../../config/version.json', __FILE__
-version = JSON.parse File.read version_path
-version['app'] = revision
-version['source'] = "#{revision}:#{version['db']}"
-File.write version_path, version.to_json
-
 # Build bundle
-run 'npm run build'
+run "REACT_APP_GIT_VERSION=#{revision} npm run build"
 
 # Upload source map to Rollbar
 fragment = nil
@@ -34,7 +28,7 @@ end
 run [
   "curl https://api.rollbar.com/api/1/sourcemap",
   "-F access_token=#{ROLLBAR_ACCESS_TOKEN}",
-  "-F version=#{version['source']}",
+  "-F version=#{revision}:",
   "-F minified_url=#{DOMAIN}/static/js/main.#{fragment}.js",
   "-F source_map=@build/static/js/main.#{fragment}.js.map"
 ].join(' ')

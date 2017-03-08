@@ -10,7 +10,7 @@ const k = (key) => `:pi-base:${key}`
 
 class Cache {
   constructor(storage) {
-    if (typeof window.localStorage === 'undefined') {
+    if (typeof(window.localStorage) === 'undefined' || !window.localStorage.getItem) {
       this.storage = dummyStorage()
     } else {
       this.storage = localStorage
