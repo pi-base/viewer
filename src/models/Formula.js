@@ -166,6 +166,7 @@ export const toString = (f) => {
   } else if (f.or) {
     return '(' + f.or.map(sf => toString(sf)).join(' | ') + ')'
   } else {
-    return f.property.get('name') + '=' + f.value
+    const name = f.property.get('name')
+    return f.value ? name : '~'+name
   }
 }

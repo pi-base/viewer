@@ -40,7 +40,7 @@ class NotFound extends React.Component {
           path += `?q=${encodeURIComponent(F.toString(f))}`
         }
       }
-      this.props.router.push(path)
+      return this.props.router.push(path)
     }
 
     // Redirect traits by id to their canonical URL
@@ -48,8 +48,7 @@ class NotFound extends React.Component {
     if (m) {
       const trait = this.props.findTrait(padId('T', m[1]))
       if (trait) {
-        this.props.router.push(`/spaces/${trait.get('space').get('uid')}/properties/${trait.get('property').get('uid')}`)
-        return null
+        return this.props.router.push(`/spaces/${trait.get('space').get('uid')}/properties/${trait.get('property').get('uid')}`)
       }
     }
 
