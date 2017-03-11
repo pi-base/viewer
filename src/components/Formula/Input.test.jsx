@@ -10,7 +10,7 @@ it ('can use keyboard shortcuts', () => {
 
   const input = mount(
     <Provider store={store}>
-      <Input q="comp" onChange={cb}/>
+      <Input q="reg" onChange={cb}/>
     </Provider>
   )
 
@@ -29,6 +29,6 @@ it ('can use keyboard shortcuts', () => {
 
   const calls = cb.mock.calls
   expect(calls.length).toEqual(2)
-  expect(calls[0][0].q).toEqual('comp')
-  expect(calls[1][0].q).toEqual('Compact')
+  expect(calls[0][0].q).toEqual('reg')
+  expect(calls[1][0].q).toEqual('Semiregular')
 })

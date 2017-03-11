@@ -59,7 +59,7 @@ it('can get suggestions for the search fragment', () => {
 
   expect(sugs.getIn(['0', 'name'])).toEqual('Completely Normal')
   expect(sugs.getIn(['1', 'name'])).toEqual('Completely Regular')
-  expect(sugs.size).toBeGreaterThan(20)
+  expect(sugs.size).toBeGreaterThan(11)
 })
 
 it('can filter space traits', () => {

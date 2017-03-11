@@ -12,9 +12,9 @@ class PropertyFinder {
     this.fuse = new Fuse(props.toJS(), {
       caseSensitive: false,
       shouldSort: true,
-      keys: ['name'],
+      keys: ['name', 'aliases'],
       id: 'uid',
-      threshold: 0.5
+      threshold: 0.4
     })
   }
 
