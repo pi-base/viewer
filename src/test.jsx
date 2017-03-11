@@ -8,16 +8,22 @@ import {
 
 import * as A from './actions'
 
-import {
-  makeStore
-} from './store'
+import { makeStore } from './store'
 import reducer from './reducers'
 import routes from './routes'
 
 import fs from 'fs'
 import paths from '../config/paths'
 
-const data = JSON.parse(fs.readFileSync(paths.appPublic + '/db/test.json', 'utf8'))
+const dataPath = paths.appPublic
+let data
+if (!process.env.CI) {
+  var request = require('sync-request')
+  const result = request('GET', 'https://topology.jdabbs.com/db/test.json')
+  data = JSON.parse(result.getBody())
+} else {
+  data = JSON.parse(fs.readFileSync(paths.appPublic + '/db/test.json', 'utf8'))
+}
 
 export const state = reducer(null, {
   type: A.fetching(A.DONE, A.OBJECTS),
