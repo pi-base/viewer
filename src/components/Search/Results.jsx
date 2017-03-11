@@ -11,6 +11,40 @@ import Formula     from '../Formula'
 import Implication from '../Implication'
 import TraitTable  from '../Trait/Table'
 
+const Tautology = ({ formula }) => (
+  <div>
+    <p>No spaces exist satisfying <Formula formula={formula}/>, tautologically.</p>
+  </div>
+)
+
+const Disproven = ({formula, disproof}) => (
+  <div>
+    <p>No spaces exist satisfying <Formula formula={formula}/> due to the following theorems:</p>
+    <ul>
+      {disproof.map(t =>
+        <li key={t.get('uid')}>
+          <Link to={`/theorems/${t.get('uid')}`}>
+            <Implication theorem={t} link={false}/>
+          </Link>
+        </li>
+      )}
+    </ul>
+  </div>
+)
+
+const NoneFound = ({formula}) => (
+  <div>
+    <p>No spaces found satisfying <Formula formula={formula}/>. Do you
+      know an example from the literature, or can you provide a
+      reference proving that no such spaces exist?
+      {' '}
+      <a href="https://github.com/jamesdabbs/pi-base-data/blob/master/CONTRIBUTING.md">
+        [Go here to learn how to contribute.]
+      </a>
+    </p>
+  </div>
+)
+
 class Results extends React.Component {
   render() {
     const { text, formula, results, onSelect } = this.props
@@ -18,36 +52,15 @@ class Results extends React.Component {
     if (!text && !formula) {
       return <Examples className="search-examples" onSelect={onSelect}/>
     }
-    if (results.size === 0) {
+
+    if (formula && results.size === 0) {
       const disproof = this.props.disprove(formula)
-      if (disproof) {
-        return (
-          <div>
-            <p>No spaces exist satisfying <Formula formula={formula}/> due to the following theorems:</p>
-            <ul>
-              {disproof.map(t =>
-                <li key={t.get('uid')}>
-                  <Link to={`/theorems/${t.get('uid')}`}>
-                    <Implication theorem={t} link={false}/>
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </div>
-        )
+      if (disproof === L.TAUTOLOGY) {
+        return <Tautology formula={formula}/>
+      } else if (disproof) {
+        return <Disproven formula={formula} disproof={disproof}/>
       } else {
-        return (
-          <div>
-            <p>No spaces found satisfying <Formula formula={formula}/>. Do you
-              know an example from the literature, or can you provide a
-              reference proving that no such spaces exist?
-              {' '}
-              <a href="https://github.com/jamesdabbs/pi-base-data/blob/master/CONTRIBUTING.md">
-                [Go here to learn how to contribute.]
-              </a>
-            </p>
-          </div>
-        )
+        return <NoneFound formula={formula}/>
       }
     }
 

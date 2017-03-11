@@ -1,6 +1,10 @@
 import * as I from 'immutable'
 
+import report from './errors'
 import * as Q from './queries'
+
+const GIVEN = 'GIVEN'
+export const TAUTOLOGY = 'TAUTOLOGY'
 
 const buildContradiction = (theorem, evidence) => {
   let theorems = I.Map() // prop => theorem
@@ -10,10 +14,12 @@ const buildContradiction = (theorem, evidence) => {
     const pid = properties.shift().uid
     if (!theorems.get(pid)) {
       const ev = evidence[pid]
-      if (ev.theorem !== 'GIVEN') {
-        theorems = theorems.set(pid, ev.theorem)
+      if (ev) { // TODO: understand when this happens
+        if (ev.theorem !== GIVEN) {
+          theorems = theorems.set(pid, ev.theorem)
+        }
+        properties = properties.concat(ev.properties.toJS())
       }
-      properties = properties.concat(ev.properties.toJS())
     }
   }
   return theorems.valueSeq().toList().push(theorem)
@@ -72,7 +78,8 @@ export const disprove = (state, formula) => {
       const trait = traits.get(prop)
       if (trait) {
         if (trait.get('value') !== f.value) {
-          throw new Error('in force', evidence[prop], theorem)
+          contradiction = TAUTOLOGY
+          throw new Error('in force', theorem)
         }
       } else {
         traits = traits.set(prop, I.Map({
@@ -82,7 +89,7 @@ export const disprove = (state, formula) => {
           theorem: theorem,
           properties: properties
         }
-        checkQ = checkQ.concat(theoremsByProp[prop])
+        checkQ = checkQ.concat(theoremsByProp[prop] || [])
       }
     }
   }
@@ -103,15 +110,16 @@ export const disprove = (state, formula) => {
     }
   }
 
-  force(formula, 'GIVEN', I.List())
-
   try {
+    force(formula, GIVEN, I.List())
+
     while (checkQ.length > 0) {
       apply(checkQ.shift())
     }
   } catch (e) {
     if (!contradiction) {
-      throw e
+      report(e)
+      return
     }
     return contradiction
   }

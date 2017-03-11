@@ -42,11 +42,18 @@ it.skip('can disprove one that it had trouble with', () => {
   )
 })
 
-it.skip('handles tautologies', () => {
-  const f = Q.parseFormula(state, 'compact + ~compact')
+it('handles reversing conjunctions', () => {
+  const f = Q.parseFormula(state, 'second countable + ~separable')
   const result = L.disprove(state, f)
 
   expect(result.map(t => t.get('uid'))).toEqual(
-    I.List(['I000171'])
+    I.List(['I000125'])
   )
+})
+
+it('handles tautologies', () => {
+  const f = Q.parseFormula(state, 'compact + ~compact')
+  const result = L.disprove(state, f)
+
+  expect(result).toEqual(L.TAUTOLOGY)
 })

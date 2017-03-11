@@ -5,22 +5,14 @@ import * as A from '../actions'
 import * as F from '../models/Formula'
 import * as Q from '../queries'
 
-const lpad = (str, pad, len) => {
-  const padLen = len - str.length
-  while (pad.length < padLen) {
-    pad += pad
-  }
-  return pad + str
-}
-
-const padId = (pre, num) => (pre + lpad(num, '0', 6))
+import Id from '../models/Id'
 
 const tryConvertFormula = (state, q) => {
   if (!q) { return }
 
   try {
     const f = F.fromJSON(JSON.parse(q))
-    return f.mapProperty(id => state.getIn(['properties', padId('P', id)]))
+    return f.mapProperty(id => state.getIn(['properties', Id('P', id)]))
   } catch (e) {
     return
   }
@@ -43,10 +35,16 @@ class NotFound extends React.Component {
       return this.props.router.push(path)
     }
 
-    // Redirect traits by id to their canonical URL
-    const m = path.match(/traits\/(\d+)/)
+    let m = path.match(/spaces\/(\d+)/)
     if (m) {
-      const trait = this.props.findTrait(padId('T', m[1]))
+      const space = this.props.findSpace(Id('S', m[1]))
+      return this.props.router.push(`/spaces/${space.get('uid')}`)
+    }
+
+    // Redirect traits by id to their canonical URL
+    m = path.match(/traits\/(\d+)/)
+    if (m) {
+      const trait = this.props.findTrait(Id('T', m[1]))
       if (trait) {
         return this.props.router.push(`/spaces/${trait.get('space').get('uid')}/properties/${trait.get('property').get('uid')}`)
       }
@@ -76,6 +74,7 @@ class NotFound extends React.Component {
 
 export default connect(
   (state) => ({
+    findSpace: (id) => Q.findSpace(state, id),
     findTrait: (id) => Q.fetchTrait(state)(id),
     tryConvertFormula: (f) => tryConvertFormula(state, f)
   }),

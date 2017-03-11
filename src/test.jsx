@@ -26,6 +26,10 @@ export const state = reducer(null, {
 
 export const store = makeStore(state)
 
+import {cache} from './cache'
+cache.set('version', process.env.REACT_APP_DB_VERSION)
+cache.set(A.OBJECTS, data)
+
 export class App extends React.Component {
   render() {
     return (

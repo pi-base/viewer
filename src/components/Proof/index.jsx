@@ -14,9 +14,11 @@ class Proof extends React.Component {
     } else if (trait.get('description')) {
       return <Tex><Markdown text={trait.get('description')}/></Tex>
     } else {
-      return <p>
-        <i>No proof given</i>
-      </p>
+      return (
+        <p>
+          <i>No proof given</i>
+        </p>
+      )
     }
   }
 }

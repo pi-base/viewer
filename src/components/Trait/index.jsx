@@ -28,8 +28,6 @@ class Trait extends React.Component {
     const property = trait.get('property')
     const label = trait.get('value') === false ? '¬' : ''
 
-    console.log("property", property.get('name'), property)
-
     return (
       <div>
         <h3>

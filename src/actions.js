@@ -1,7 +1,4 @@
-import Cache from './cache'
-
-const storage = typeof(window.localStorage === 'undefined') ? {} : window.localStorage
-const cache = new Cache(storage)
+import {cache} from './cache'
 
 // Fetch states
 export const STARTING = 'STARTING'

@@ -5,6 +5,7 @@ import * as I from 'immutable'
 import * as Q from '../../queries'
 
 import Aliases    from '../Aliases'
+import NotFound   from '../NotFound'
 import Markdown   from '../Markdown'
 import TraitPager from '../Trait/Pager'
 import Tex        from '../Tex'
@@ -12,6 +13,10 @@ import Tex        from '../Tex'
 class Space extends React.Component {
   render() {
     const space = this.props.space
+
+    if (!space) {
+      return <NotFound {...this.props}/>
+    }
 
     return (
       <div>

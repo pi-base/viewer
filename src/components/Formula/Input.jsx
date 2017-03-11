@@ -6,7 +6,7 @@ import * as Q from '../../queries'
 
 import Suggestions from './Suggestions'
 
-const TAB = 9, ENTER = 13, UP = 38, RIGHT = 39, DOWN = 40
+const TAB = 9, ENTER = 13, UP = 38, DOWN = 40 //, RIGHT = 39
 
 class FormulaInput extends React.Component {
   constructor() {

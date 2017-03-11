@@ -2,7 +2,7 @@ const dummyStorage = () => {
   const store = {}
   return {
     getItem: (key) => (store[key]),
-    setItem: (key, item) => (store[key] = item),
+    setItem: (key, item) => (store[key] = item)
   }
 }
 
@@ -48,3 +48,5 @@ class Cache {
 }
 
 export default Cache
+
+export const cache = new Cache()

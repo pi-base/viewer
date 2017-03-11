@@ -2,6 +2,7 @@ import I from 'immutable'
 
 import * as A from './actions'
 
+import * as E from './errors'
 import * as F from './models/Formula'
 import PropertyFinder from './models/PropertyFinder'
 
@@ -60,11 +61,7 @@ const reducer = (state, action) => {
       }))
 
     case A.PAGE_NOT_FOUND:
-      if (window.Rollbar) {
-        window.Rollbar.info('404', {
-          path: action.path
-        })
-      }
+      E.info('404', { path: action.path })
       return state
 
     default:

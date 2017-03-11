@@ -37,6 +37,7 @@ class Conjunction extends Compound {
   }
 
   negate() {
+    // eslint-disable-next-line no-use-before-define
     return new Disjunction(this.subs.map(f => f.negate()))
   }
 

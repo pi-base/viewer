@@ -16,9 +16,10 @@ class Debug extends React.Component {
   }
 
   render() {
-    const version = (label, val) => {
+    const version = (label, val) => (
       <a href="#" title="{val}">{label} | {val ? val.slice(0,7) : '??'}</a>
-    }
+    )
+    
     return (
       <nav className="navbar navbar-inverse navbar-fixed-bottom">
         <div className="container">

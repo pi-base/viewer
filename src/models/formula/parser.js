@@ -3,6 +3,7 @@
  *
  * http://pegjs.org/
  */
+ /* eslint-disable */
 
 "use strict";
 
