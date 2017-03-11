@@ -23,7 +23,7 @@ class TraitPager extends React.Component {
     this.state = {
       limit: 10,
       tabs: {
-        'Asserted': true,
+        'Asserted': false,
         'Deduced': false
       },
       filtered: I.List()
@@ -45,8 +45,8 @@ class TraitPager extends React.Component {
   }
 
   toggleTab(name) {
-    const tabs = this.state.tabs
-    tabs[name] = !tabs[name]
+    const tabs = { 'Asserted': false, 'Deduced': false }
+    tabs[name] = !this.state.tabs[name]
     this.setState({ tabs: tabs })
   }
 
