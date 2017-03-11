@@ -10,6 +10,11 @@ import TraitTable  from '../Trait/Table'
 
 
 class Counterexamples extends React.Component {
+  theoremConverse() {
+    const { theorem } = this.props
+    return theorem.merge({ if: theorem.get('then'), then: theorem.get('if') })
+  }
+
   render () {
     const { counterexamples, theorem, proveConverse } = this.props
 
@@ -27,16 +32,22 @@ class Counterexamples extends React.Component {
     if (converse) {
       return (
         <aside>
-          <p>The converse of this theorem also holds</p>
+          <p>The converse also holds</p>
           <table className="table table-condensed">
+            <thead>
+              <tr>
+                <th><Implication theorem={this.theoremConverse()} link={false}/></th>
+                <th>By</th>
+              </tr>
+            </thead>
             <tbody>
               {converse.map(thrm =>
                 <tr key={thrm.get('uid')}>
                   <td>
-                    <Link to={`/theorems/${thrm.get('uid')}`}>{thrm.get('uid')}</Link>
+                    <Implication theorem={thrm} link={false}/>
                   </td>
                   <td>
-                    <Implication theorem={thrm} link={false}/>
+                    <Link to={`/theorems/${thrm.get('uid')}`}>{thrm.get('uid')}</Link>
                   </td>
                 </tr>
               )}
