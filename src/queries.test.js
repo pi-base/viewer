@@ -70,7 +70,7 @@ it('can filter space traits', () => {
   expect(ts[0].property.name).toEqual('$T_0$')
   expect(ts[0].value).toEqual(true)
 
-  expect(ts[30].property.name).toEqual('Fréchet Urysohn')
+  expect(ts.map(t => t.property.name)).toContain('Fréchet Urysohn')
 
   expect(ts.length).toBeGreaterThan(77)
 })
