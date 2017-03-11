@@ -17,7 +17,7 @@ import paths from '../config/paths'
 
 const dataPath = paths.appPublic
 let data
-if (!process.env.CI) {
+if (process.env.CI) {
   var request = require('sync-request')
   const result = request('GET', 'https://topology.jdabbs.com/db/test.json')
   data = JSON.parse(result.getBody())
