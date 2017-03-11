@@ -33,12 +33,12 @@ it('can disprove with compound implications', () => {
   )
 })
 
-it.skip('can disprove one that it had trouble with', () => {
+it('can disprove one that it had trouble with', () => {
   const f = Q.parseFormula(state, 't_3 + ~t_2')
   const result = L.disprove(state, f)
 
   expect(result.map(t => t.get('uid'))).toEqual(
-    I.List(['I000171'])
+    I.List(['I000236', 'I000032'])
   )
 })
 
