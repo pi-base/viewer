@@ -198,6 +198,10 @@ export const getProof = (state, trait) => {
   })
 }
 
+export const hasProof = (state, trait) => {
+  return state.hasIn(['proofs', trait.get('uid')])
+}
+
 export const counterexamples = (state, theorem) => {
   const f = F.and(
     theorem.get('if').negate(),

@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 import * as I from 'immutable'
+
+import * as Q from '../../queries'
 
 import Markdown      from '../Markdown'
 import ProofExplorer from './Explorer'
@@ -7,10 +10,10 @@ import Tex           from '../Tex'
 
 class Proof extends React.Component {
   render() {
-    const { space, trait } = this.props
+    const { space, trait, proof } = this.props
 
-    if (trait.get('deduced')) {
-      return <ProofExplorer space={space} trait={trait}/>
+    if (proof) {
+      return <ProofExplorer space={space} trait={trait} proof={proof}/>
     } else if (trait.get('description')) {
       return <Tex><Markdown text={trait.get('description')}/></Tex>
     } else {
@@ -28,4 +31,8 @@ Proof.propTypes = {
   trait: PropTypes.instanceOf(I.Map)
 }
 
-export default Proof
+export default connect(
+  (state, ownProps) => ({
+    proof: Q.getProof(state, ownProps.trait)
+  })
+)(Proof)

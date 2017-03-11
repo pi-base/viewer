@@ -70,9 +70,9 @@ class TraitPager extends React.Component {
     if (asserted && deduced) {
       return seq
     } else if (asserted) {
-      return seq.filter(t => !t.get('deduced'))
+      return seq.filter(t => !this.props.hasProof(t))
     } else if (deduced) {
-      return seq.filter(t => t.get('deduced'))
+      return seq.filter(t => this.props.hasProof(t))
     } else {
       return seq
     }
@@ -88,14 +88,16 @@ class TraitPager extends React.Component {
     const tab = ({ name, icon }) => {
       const active = this.state.tabs[name] ? 'active' : ''
 
-      return <button key={name}
-        className={`btn btn-default ${active}`}
-        onClick={() => this.toggleTab(name)}
-      >
-        <Icon type={icon}/>
-        {' '}
-        {name}
-      </button>
+      return (
+        <button key={name}
+          className={`btn btn-default ${active}`}
+          onClick={() => this.toggleTab(name)}
+        >
+          <Icon type={icon}/>
+          {' '}
+          {name}
+        </button>
+      )
     }
 
     return (
@@ -137,6 +139,7 @@ TraitPager.propTypes = {
 
 export default connect(
   (state, ownProps) => ({
-    allTraits: Q.spaceTraits(state, ownProps.space)
+    allTraits: Q.spaceTraits(state, ownProps.space),
+    hasProof: (t) => Q.hasProof(state, t)
   })
 )(TraitPager)
