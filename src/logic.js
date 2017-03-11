@@ -1,6 +1,8 @@
 import * as I from 'immutable'
+// import * as D from './display'
 
 import report from './errors'
+import * as F from './models/Formula'
 import * as Q from './queries'
 
 const GIVEN = 'GIVEN'
@@ -25,8 +27,9 @@ const buildContradiction = (theorem, evidence) => {
   return theorems.valueSeq().toList().push(theorem)
 }
 
-
 export const disprove = (state, formula) => {
+  // console.log(D.formula(state, formula))
+  
   let traits = I.Map()
   let evidence = {}
   let contradiction = null
@@ -68,6 +71,7 @@ export const disprove = (state, formula) => {
 
       if (result) {
         if (result.falses.length === f.or.length) {
+          contradiction = buildContradiction(theorem, result.falses)
           throw new Error('Contradiction')
         } else if (result.unknown) {
           force(result.unknown, theorem, result.falses.reduce((acc, props) => acc.concat(props)))
@@ -114,8 +118,21 @@ export const disprove = (state, formula) => {
     force(formula, GIVEN, I.List())
 
     while (checkQ.length > 0) {
-      apply(checkQ.shift())
+      const theorem = checkQ.shift()
+      const before = traits
+      // console.log(D.theorem(state, theorem))
+      apply(theorem)
+      if (traits !== before) {
+        // console.log(D.traits(state, traits))
+
+        // If our initial formula to force is (a | b) => c
+        //   and we have just proved ~b, we need to re-force
+        // TODO: diff traits and only run this when the formula applies
+        force(formula, theorem, I.List())
+      }
     }
+
+    force(formula, GIVEN, I.List())
   } catch (e) {
     if (!contradiction) {
       report(e)
@@ -123,4 +140,11 @@ export const disprove = (state, formula) => {
     }
     return contradiction
   }
+}
+
+export const proveConverse = (state, theorem) => {
+  return disprove(state, F.and(
+    theorem.get('if').negate(),
+    theorem.get('then')
+  ))
 }
