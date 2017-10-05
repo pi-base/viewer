@@ -1,0 +1,26 @@
+{
+  "name": "viewer",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "apollo-client": "^1.9.3",
+    "graphql-tag": "^2.4.2",
+    "react": "^15.6.2",
+    "react-apollo": "^1.4.16",
+    "react-dom": "^15.6.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^21.1.1",
+    "@types/node": "^8.0.31",
+    "@types/react": "^16.0.7",
+    "@types/react-dom": "^15.5.4",
+    "isomorphic-fetch": "^2.2.1",
+    "react-scripts-ts": "2.7.0"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject"
+  }
+}

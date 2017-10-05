@@ -1,0 +1,11 @@
+test:
+  image: pibase/server:latest
+  command: pi-base-server
+  working_dir: /app
+  environment:
+    - DEFAULT_BRANCH=development
+    - APP_ENV=test
+    - LOG_REQUESTS=true
+    - PORT=4000
+  ports:
+    - 4000:4000
