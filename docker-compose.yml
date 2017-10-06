@@ -22,6 +22,7 @@ server:
   environment:
     - DEFAULT_BRANCH=development
     - LOG_REQUESTS=true
+    - LOG_ALL=true
     - PORT=3141
     - REPO_PATH=/data/repo
     - SQLITE_DATABASE=/data/pi-base.sqlite3
