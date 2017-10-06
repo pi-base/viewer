@@ -99,6 +99,55 @@ export const traits = gql`
   }
 `
 
+export type ViewerResponse = {
+  viewer: {
+    spaces: {
+      uid: string
+      name: string
+      traits: {
+        property: {
+          uid: string
+        }
+        value: boolean
+      }
+    }[]
+    properties: {
+      uid: string
+      name: string
+    }[]
+    theorems: {
+      uid: string
+      if: string
+      then: string
+    }[]
+  }
+}
+export const viewer = gql`
+  query Viewer {
+    viewer {
+      spaces {
+        uid
+        name
+        traits {
+          property {
+            uid
+          }
+          value
+        }
+      }
+      properties {
+        uid
+        name
+      }
+      theorems {
+        uid
+        if
+        then
+      }
+    }
+  }
+`
+
 export type MeResponse = {
   me: {
     name: string
@@ -140,6 +189,19 @@ export type CreateSpaceResponse = {
 export const createSpace = gql`
   mutation createSpace($input: CreateSpaceInput!) {
     createSpace(input: $input) {
+      version
+      spaces {
+        uid
+        name
+        description
+      }
+    }
+  }
+`
+
+export const createProperty = gql`
+  mutation createProperty($input: CreateSpaceInput!) {
+    createProperty(input: $input) {
       version
       spaces {
         uid

@@ -39,7 +39,7 @@ function buildClient(uri: string) {
 
 function buildTestClient() {
     (global as any).fetch = require('isomorphic-fetch')
-    return buildClient('http://localhost:3000/graphql')
+    return buildClient('http://localhost:3141/graphql')
 }
 
 export function setupTest(): Promise<ApolloClient> {
@@ -51,8 +51,6 @@ export function getClient(): ApolloClient {
     if (process.env.NODE_ENV === 'test') {
         return buildTestClient()
     } else {
-        throw `No client configured for ${process.env.NODE_ENV}`
+        return buildClient('http://localhost:3141/graphql')
     }
 }
-
-export default buildClient('http://localhost:4000/graphql')

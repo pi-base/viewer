@@ -1,5 +1,13 @@
 body {
   margin: 0;
-  padding: 0;
+  padding: 0 0 60px;
   font-family: sans-serif;
+}
+
+.search article {
+  margin-bottom: 2em;
+}
+
+.traitFilter table {
+  margin-top: 1em;
 }

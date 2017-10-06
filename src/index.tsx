@@ -1,11 +1,28 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
-import './index.css';
+import 'babel-polyfill'
+
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+
+import makeApp from './components/App'
+import './index.css'
+
+import './errors'
+
+if (window) {
+  const err = window.onerror
+  window.onerror = (e) => {
+    // const m = window.$('#errorModal')
+
+    // m.find('.details').html(`<pre>${e}</pre>`)
+    // m.modal('show')
+
+    err(e)
+  }
+}
+
+const App = makeApp()
 
 ReactDOM.render(
-  <App />,
-  document.getElementById('root') as HTMLElement
-);
-registerServiceWorker();
+  <App/>,
+  document.getElementById('root')
+)
