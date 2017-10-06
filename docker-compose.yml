@@ -1,11 +1,34 @@
-test:
+frontend:
+  build: .
+  command: "yarn start"
+  working_dir: /app
+  volumes:
+    - ".:/app"
+  environment:
+    # FIXME?: only var names that start with REACT_APP_ are available to the app
+    - REACT_APP_DATA_PATH=/data
+    - REACT_APP_SERVER_URL=http://localhost:3141
+  ports:
+    - 3000:3000
+  volumes_from:
+    - server:ro
+
+server:
   image: pibase/server:latest
   command: pi-base-server
   working_dir: /app
+  env_file:
+    - .env.server
   environment:
     - DEFAULT_BRANCH=development
-    - APP_ENV=test
     - LOG_REQUESTS=true
-    - PORT=4000
+    - PORT=3141
+    - REPO_PATH=/data/repo
+    - SQLITE_DATABASE=/data/pi-base.sqlite3
+    - TEST_MODE=true
+    - VIEWER_REDIRECT_URL=http://localhost:3000
   ports:
-    - 4000:4000
+    - 3141:3141
+  volumes:
+    - "../data:/data"
+

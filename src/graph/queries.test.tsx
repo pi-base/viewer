@@ -87,7 +87,7 @@ describe('mutations', () => {
         }) 
     })
 
-    it.only('can create a space', () => {
+    it('can create a space', () => {
         return m(Q.createSpace, { 
             name: 'New Space', 
             description: 'Description of new space' 
