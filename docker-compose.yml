@@ -1,6 +1,6 @@
 frontend:
   build: .
-  command: "yarn start"
+  command: "npm start"
   working_dir: /app
   volumes:
     - ".:/app"
@@ -32,4 +32,3 @@ server:
     - 3141:3141
   volumes:
     - "../data:/data"
-

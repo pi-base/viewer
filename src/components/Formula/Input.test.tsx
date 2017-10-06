@@ -1,18 +1,16 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
-import { store } from '../../test'
+import { wrap } from '../App'
 
 import Input from './Input'
 
 it ('can use keyboard shortcuts', () => {
   const cb = jest.fn()
 
-  const input = mount(
-    <Provider store={store}>
-      <Input q="reg" onChange={cb} suggestionLimit={10} placeholder="test"/>
-    </Provider>
-  )
+  const input = mount(wrap(
+    <Input q="reg" onChange={cb} suggestionLimit={10} placeholder="test"/>
+  ))
 
   const i = input.find('input')
 

@@ -2,9 +2,8 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
 import makeApp from './App'
-import {store} from '../test'
 
-const App = makeApp(store)
+const App = makeApp()
 
 it('renders without crashing', () => {
   const div = document.createElement('div')

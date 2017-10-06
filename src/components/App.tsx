@@ -6,25 +6,31 @@ import { browserHistory } from 'react-router'
 
 import * as T from '../types'
 
-import {makeStore} from '../store'
-import routes      from '../routes'
+import { makeStore } from '../store'
+import routes from '../routes'
 
+import { ApolloClient } from 'apollo-client'
 import { ApolloProvider } from 'react-apollo'
 import { getClient } from '../graph'
 
-const makeApp = (store?: Store<T.StoreState>) => {
-  const client = getClient()
-  store = store || makeStore(client)
+interface Props {
+  state?: T.StoreState
+  client?: ApolloClient
+}
+export const wrap = (component, { state, client }: Props) => {
+  const store = makeStore(client || getClient(), state)
 
   return () => (
-    <ApolloProvider client={client}>
+    <ApolloProvider client={client!}>
       <Provider store={store}>
         <Router history={browserHistory}>
-          {routes}
+          {component}
         </Router>
       </Provider>
     </ApolloProvider>
   )
 }
+
+const makeApp = ({ state, client }) => wrap(routes, { state, client })
 
 export default makeApp

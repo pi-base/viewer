@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
-import { store } from '../../test'
+import { wrap } from '../App'
 
 import Search from './index'
 
@@ -18,11 +18,7 @@ it('smoke test', () => {
     replace: (path: string) => { return }
   }
 
-  const search = mount(
-    <Provider store={store}>
-      <Search router={router}/>
-    </Provider>
-  )
+  const search = mount(wrap(Search, {}))
 
   const text = search.text()
   expect(text).toContain('Compact')
