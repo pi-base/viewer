@@ -1,8 +1,10 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { graphql, gql } from 'react-apollo'
 import { Link } from 'react-router'
 
-import { GRAPHQL_SERVER_URL } from '../../constants'
+import { client } from '../../graph'
+import * as T from '../../types'
 
 interface GraphProps {
   me: {
@@ -14,20 +16,18 @@ interface Props {
   data?: GraphProps
 }
 
-function UserTab(data: any) {
-  const me = data && data.me
-
+function UserTab(user?: T.User) {
   return (
     <ul className="nav navbar-nav pull-right">
-      { me
+      { user
       ? (
         <li>
-          <Link to="/user">{me.name}</Link>
+          <Link to="/user">{user.name}</Link>
         </li>
       )
       : (
         <li>
-          <a href={`${GRAPHQL_SERVER_URL}/auth/page/github/forward?location=${window.location}`}>
+          <a href={client.loginUrl({redirectTo: window.location})}>
             Login with Github
           </a>
         </li>
@@ -36,14 +36,8 @@ function UserTab(data: any) {
   )
 }
 
-export default graphql(gql`{
-  me {
-    name
-  }
-  viewer {
-    properties {
-      uid
-      name
-    }
-  }
-}`)(UserTab)
+export default connect(
+  (state) => ({
+    user: state.user
+  })
+)(UserTab)

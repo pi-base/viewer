@@ -12,7 +12,7 @@ interface Props {
 }
 
 function User(data: any) {
-  if (!data.me) { return <span/> }
+  if (!data.me) { return <span /> }
 
   return (
     <p>Name: {data.me.name}</p>

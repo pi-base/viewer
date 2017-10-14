@@ -1,20 +1,17 @@
 import ApolloClient from 'apollo-client'
-import * as Client from './client'
+import { client } from '../graph'
 import * as Q from './queries'
 
-let client: ApolloClient
 beforeAll(() => {
-    return Client.setupTest().then(c => {
-        client = c
-    })
+    return client.ping()
 })
 
 const q = (query) => {
-    return client.query({ query: query }).then(result => result.data)
+    return client.apollo.query({ query: query }).then(result => result.data)
 }
 
 const m = (query, input) => {
-    return client.
+    return client.apollo.
       mutate({ mutation: query, variables: { input: input }}).
       then(result => result.data)
 }
@@ -66,7 +63,7 @@ describe('queries', () => {
   it('can lookup user info', () => {
       let token = '1234'
       return reset(token).then(() => {
-          Client.setToken(token)
+          return client.login(token)
       }).then(() => {
           return q(Q.me)
       }).then((data: Q.MeResponse) => {
@@ -83,7 +80,7 @@ describe('mutations', () => {
         return reset(token).then((data: Q.TestResetResponse) => {
             version = data.testReset.version
             expect(version).toEqual('b91cbfb12122fc4fc5379f7a9f68cc42c487aa81')
-            Client.setToken(token)
+            return client.login(token)
         }) 
     })
 

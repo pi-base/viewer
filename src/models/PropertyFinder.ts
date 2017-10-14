@@ -26,6 +26,10 @@ export class Finder<T extends Record> {
     })
   }
 
+  find(q: string): T | undefined {
+    return this.search(q, 1)[0]
+  }
+
   getId(q: string): string | undefined {
     return this.fuse.search<string>(q)[0]
   }

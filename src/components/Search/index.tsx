@@ -5,18 +5,21 @@ import * as I from 'immutable'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
+import { Finder } from '../../models/PropertyFinder'
 import FormulaInput from '../Formula/Input'
-import Results      from './Results'
+import Results from './Results'
 
 interface Filterable {
-  text?:    string
+  text?: string
   formula?: T.Formula
-  spaces?:  I.List<T.Space>
+  spaces?: I.List<T.Space>
 }
 
-interface StoreProps {
-  filter: ({text, formula, spaces}: Filterable) => I.List<T.Space>
-  parseFormula: (q: string) => (T.Formula | undefined)
+interface Props {
+  spaces: I.List<T.Space> & { finder: Finder<T.Space> }
+  finder: Finder<T.Property>
+  traits: T.TraitTable
+  theorems: I.List<T.Theorem>
 }
 
 export interface State {
@@ -25,8 +28,9 @@ export interface State {
   text: string
 }
 
-class Search extends React.Component<StoreProps & T.RouterProps, State> {
-  constructor(props: StoreProps & T.RouterProps) {
+class Search extends React.Component<Props & T.RouterProps, State> {
+  constructor(props: Props & T.RouterProps) {
+    console.log('Search props', props)
     super(props)
     this.state = {
       q: '',
@@ -39,7 +43,7 @@ class Search extends React.Component<StoreProps & T.RouterProps, State> {
     const { query } = this.props.router.location
     this.setState({
       q: query.q || '',
-      formula: this.props.parseFormula(query.q || ''),
+      formula: this.parseFormula(query.q || ''),
       text: query.text || ''
     })
   }
@@ -69,7 +73,7 @@ class Search extends React.Component<StoreProps & T.RouterProps, State> {
   setFormulaFilter({ q, formula }: { q: string, formula: T.Formula | undefined }) {
     const updates: { q: string, formula: (T.Formula | undefined) } = { q, formula: undefined }
 
-    formula = formula || this.props.parseFormula(q)
+    formula = formula || this.parseFormula(q)
     if (formula) {
       updates.formula = formula
     } else if (!q) {
@@ -86,13 +90,21 @@ class Search extends React.Component<StoreProps & T.RouterProps, State> {
   }
 
   results() {
-    const { filter } = this.props
-    const spaces = filter({ text: this.state.text })
-    return filter({ spaces: spaces, formula: this.state.formula }).valueSeq().toList()
+    return Q.filter(
+      this.props.spaces.finder,
+      this.props.traits,
+      this.props.spaces,
+      { text: this.state.text, formula: this.state.formula }
+    )
+  }
+
+  parseFormula(q: string) {
+    return Q.parseFormula(this.props.finder, q)
   }
 
   render() {
     const results = this.results()
+    const { theorems, traits } = this.props
 
     // TODO: add widget to allow displaying extra traits inline
     return (
@@ -112,9 +124,10 @@ class Search extends React.Component<StoreProps & T.RouterProps, State> {
           <div className="form-group">
             <label htmlFor="formulaFilter">Filter by Formula</label>
             <FormulaInput
+              finder={this.props.finder}
               q={this.state.q}
               placeholder="e.g. compact + ~metrizable"
-              onChange={(q, formula) => this.setFormulaFilter({q, formula})}
+              onChange={(q, formula) => this.setFormulaFilter({ q, formula })}
             />
           </div>
         </div>
@@ -123,8 +136,10 @@ class Search extends React.Component<StoreProps & T.RouterProps, State> {
           <Results
             text={this.state.text}
             formula={this.state.formula}
+            theorems={theorems}
+            traits={traits}
             results={results}
-            onSelect={(q) => this.setFormulaFilter({q, formula: undefined})}
+            onSelect={(q) => this.setFormulaFilter({ q, formula: undefined })}
           />
         </div>
       </div>
@@ -132,11 +147,4 @@ class Search extends React.Component<StoreProps & T.RouterProps, State> {
   }
 }
 
-function mapStateToProps(state: T.StoreState): StoreProps {
-  return {
-    parseFormula: (q) => Q.parseFormula(state, q),
-    filter: ({ text, formula, spaces }: Filterable) => Q.filter(state, { text, formula, spaces })
-  }
-}
-
-export default connect<StoreProps, {}, T.RouterProps>(mapStateToProps)(Search)
+export default Search

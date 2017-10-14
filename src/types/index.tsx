@@ -3,11 +3,12 @@ import * as I from 'immutable'
 import * as F from '../models/Formula'
 import { Finder } from '../models/PropertyFinder'
 
+export type Branch = string
 export type Id = string
+export type Token = string
 
 export interface User {
   readonly name: string
-  readonly token: string
 }
 
 export interface Space {
@@ -57,6 +58,12 @@ export type TraitTable = I.Map<Id, I.Map<Id, Trait>> // spaceId, propertyId => t
 
 export type Index<P> = I.Map<Id, P>
 
+export interface UserState {
+  user: User | null
+  token: Token | null
+  branch: Branch
+}
+
 export interface StoreState {
   // Space data
   version:             string
@@ -68,7 +75,7 @@ export interface StoreState {
   'properties.finder': Finder<Property>
   proofs:              Index<ProofIds> // trait id => proof
   // User data
-  user?: User
+  user: UserState
 }
 
 // There's probably a cleaner way to handle this, but this gives us an escape

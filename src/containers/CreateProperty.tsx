@@ -3,9 +3,9 @@ import { graphql } from 'react-apollo'
 
 import { createProperty } from '../graph/queries'
 
-class CreateProperty extends React.Component<any, {}> {
-    save() {
-        this.props.mutate({
+const CreateProperty = ({ mutate }) => {
+    const save = () => {
+        mutate({
             variables: {
                 input: {
                     name: 'New Property',
@@ -15,12 +15,11 @@ class CreateProperty extends React.Component<any, {}> {
         })
     }
 
-    render() {
-        return (
-            <div>
-                <button className="btn btn-default" onClick={this.save.bind(this)}>Save</button>
-            </div>
-        )
-    }
+    return (
+        <div>
+            <button className="btn btn-default" onClick={save}>Save</button>
+        </div>
+    )
 }
+
 export default graphql(createProperty)(CreateProperty)

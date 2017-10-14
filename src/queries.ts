@@ -1,5 +1,6 @@
 import * as I from 'immutable'
 
+import { Finder } from './models/PropertyFinder'
 import * as F from './models/Formula'
 import * as T from './types'
 
@@ -29,18 +30,18 @@ export const replaceFragment = (q: string, expanded: string) => {
 
 // Generic finders
 
-function all<T>(coll: string, key: string = 'name') {
+function all<X>(coll: string, key: string = 'name') {
   return (state: T.StoreState) => {
     const objs = state[coll] || I.List()
-    return objs.sortBy((obj: I.Map<string, T>) =>
+    return objs.sortBy((obj: I.Map<string, X>) =>
       obj[key]
     ).valueSeq()
   }
 }
 
-export const allSpaces     = all<T.Space>('spaces')
+export const allSpaces = all<T.Space>('spaces')
 export const allProperties = all<T.Property>('properties')
-export const allTheorems   = all<T.Theorem>('theorems')
+export const allTheorems = all<T.Theorem>('theorems')
 
 export const findSpace = (state: T.StoreState, uid: T.Id) =>
   state.spaces.get(uid)
@@ -66,57 +67,58 @@ export const fetchTrait = (state: T.StoreState) =>
 // Filtration
 
 export function filterByText(
-  state: T.StoreState,
-  { text, spaces }: { text?: string, spaces?: I.List<T.Space> }
+  finder: Finder<T.Space>,
+  spaces: I.List<T.Space>,
+  text: string | undefined
 ): I.List<T.Space> {
-  const finder = state['spaces.finder']
-  spaces = spaces || I.List(state.spaces.values())
-
   if (!text) { return spaces }
-
   return I.List<T.Space>(finder.search(text)) // FIXME: might have results not in `spaces`
 }
 
 export function filterByFormula(
-  state: T.StoreState,
-  { formula, spaces }: { formula: T.Formula, spaces: I.List<T.Space> }
+  traits: T.TraitTable,
+  spaces: I.List<T.Space>,
+  formula: T.Formula
 ): I.List<T.Space> {
   return spaces.filter((s: T.Space) => {
-    const traits = state.traits.get(s.uid)
-    if (!traits) { return false }
-
-    return F.evaluate(formula, traits) === true
+    const ts = traits.get(s.uid)
+    if (!ts) { return false }
+    return F.evaluate(formula, ts) === true
   }).toList()
 }
 
 export function filter(
-  state: T.StoreState,
-  { text, formula, spaces }: { text?: string, formula?: T.Formula, spaces?: I.List<T.Space> }
+  finder: Finder<T.Space>,
+  traits: T.TraitTable,
+  spaces: I.List<T.Space>,
+  { text, formula }: { text?: string, formula?: T.Formula }
 ): I.List<T.Space> {
   // TODO: validate params
-  spaces = spaces || state.spaces.valueSeq().toList()
   if (formula) {
-    return filterByFormula(state, { formula, spaces })
-  } else {
-    return filterByText(state, { text, spaces })
+    spaces = filterByFormula(traits, spaces, formula)
   }
+  if (text) {
+    spaces = filterByText(finder, spaces, text)
+  }
+  return spaces
 }
 
 // Other exports
 
-export function parseFormula(state: T.StoreState, q: string) {
+export function parseFormula(
+  finder: Finder<T.Property>,
+  q: string
+): F.Formula<T.Property> | undefined {
   const parsed = F.parse(q)
   if (!parsed) { return }
 
-  const finder = state['properties.finder']
-
   try {
     const f = (p: string) => {
-      const id = finder.getId(p)
-      if (!id) {
+      const property = finder.find(p)
+      if (!property) {
         throw new Error('id not found')
       }
-      return state.properties.get(id)
+      return property
     }
     return F.mapProperty(f, parsed)
   } catch (e) {
@@ -125,10 +127,7 @@ export function parseFormula(state: T.StoreState, q: string) {
   }
 }
 
-export function suggestionsFor(state: T.StoreState, query: string, limit: number): I.List<T.Property> {
-  if (!query) { return I.List([]) }
-
-  const finder = state['properties.finder']
+export function suggestionsFor(finder: Finder<T.Property>, query: string, limit: number): I.List<T.Property> {
   return finder.search(getFragment(query), limit).toList()
 }
 
@@ -151,7 +150,7 @@ export function getProof(state: T.StoreState, trait: T.Trait): T.Proof | undefin
 
   return {
     theorems: proof.theorems.map(id => findTheorem(state, id!)).toList(),
-    traits:   proof.traits.map(id => findTraitById(state, id!)).toList()
+    traits: proof.traits.map(id => findTraitById(state, id!)).toList()
   }
 }
 
@@ -159,17 +158,24 @@ export function hasProof(state: T.StoreState, trait: T.Trait) {
   return state.proofs.has(trait.uid)
 }
 
-export function counterexamples(state: T.StoreState, theorem: T.Theorem) {
+export function counterexamples(
+  spaces: I.List<T.Space>,
+  traits: T.TraitTable,
+  theorem: T.Theorem
+): I.List<T.Space> {
   const formula = F.and(F.negate(theorem.if), theorem.then)
-  return filterByFormula(state, {formula, spaces: state.spaces.valueSeq().toList()})
+  return filterByFormula(traits, spaces, formula)
 }
 
 export function theoremProperties(t: T.Theorem) {
   return F.properties(t.if).union(F.properties(t.then))
 }
 
-export function relatedTheorems(state: T.StoreState, prop: T.Property) {
-  return allTheorems(state).filter((t: T.Theorem) => {
+export function relatedTheorems(
+  theorems: I.List<T.Theorem>,
+  prop: T.Property
+): I.List<T.Theorem> {
+  return theorems.filter((t: T.Theorem) => {
     return theoremProperties(t).includes(prop)
   }).valueSeq().toList()
 }

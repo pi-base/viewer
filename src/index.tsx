@@ -3,6 +3,7 @@ import 'babel-polyfill'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
+import { client } from './graph'
 import makeApp from './components/App'
 import './index.css'
 
@@ -20,7 +21,7 @@ if (window) {
   }
 }
 
-const App = makeApp()
+const App = makeApp({ state: undefined, client })
 
 ReactDOM.render(
   <App/>,

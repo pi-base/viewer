@@ -1,20 +1,26 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 
+import * as I from 'immutable'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
 import Counterexamples from './Counterexamples'
 import Implication     from '../Implication'
 import Markdown        from '../Markdown'
+import NotFound        from '../NotFound'
 import Tex             from '../Tex'
 
 interface Props {
-  theorem: T.Theorem
+  theorems: I.List<T.Theorem>
+  spaces: I.List<T.Space>
+  traits: T.TraitTable
   params: { theoremId: string }
 }
 
-function Theorem({ theorem }: Props) {
+function Theorem({ theorems, spaces, traits, params: { theoremId } }: Props) {
+  const theorem = theorems.find(t => t && t.uid === theoremId || false)
+  if (!theorem) { return <NotFound/> }
+
   return (
     <div>
       <h1>
@@ -25,7 +31,12 @@ function Theorem({ theorem }: Props) {
 
       <div className="row">
         <div className="col-md-6">
-          <Counterexamples theorem={theorem}/>
+          <Counterexamples 
+            spaces={spaces} 
+            traits={traits} 
+            theorems={theorems} 
+            theorem={theorem}
+          />
         </div>
         <div className="col-md-6"/>
       </div>
@@ -33,10 +44,4 @@ function Theorem({ theorem }: Props) {
   )
 }
 
-function mapStateToProps(state: T.StoreState, { params }: Props) {
-  return {
-    theorem: Q.findTheorem(state, params.theoremId)
-  }
-}
-
-export default connect(mapStateToProps)(Theorem)
+export default Theorem

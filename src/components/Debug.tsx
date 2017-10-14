@@ -48,7 +48,4 @@ class Debug extends React.Component<Props, undefined> {
 
 export default connect(
   (state: T.StoreState) => { return { state } },
-  (dispatch: Dispatch<A.FetchStart>) => ({
-    refetch: () => { A.fetchUniverse(dispatch, undefined, true) }
-  })
 )(Debug)

@@ -1,6 +1,6 @@
 /* tslint:disable switch-default */
 
-import * as P from './formula/parser.js'
+import * as Parser from './formula/parser.js'
 import * as I from 'immutable'
 
 import * as T from '../types'
@@ -28,7 +28,8 @@ export function map<P, Q>(func: (p: Atom<P>) => Atom<Q>, formula: Formula<P>): F
     case 'atom':
       return func(formula)
     default:
-      return { ...formula,
+      return {
+        ...formula,
         subs: I.List<Formula<Q>>(
           formula.subs.map(sub => map(func, sub!))
         )
@@ -37,8 +38,8 @@ export function map<P, Q>(func: (p: Atom<P>) => Atom<Q>, formula: Formula<P>): F
 }
 
 export function mapProperty<P, Q>(func: (p: P) => Q, formula: Formula<P>): Formula<Q> {
-  function mapAtom(atom: Atom<P>): Atom<Q> {
-    return { ...atom, property: func(atom.property) }
+  function mapAtom(a: Atom<P>): Atom<Q> {
+    return { ...a, property: func(a.property) }
   }
   return map<P, Q>(mapAtom, formula)
 }
@@ -117,9 +118,9 @@ export function evaluate(f: Formula<T.Property>, traits: TraitMap): boolean | un
 // tslint:disable-next-line no-any
 export function fromJSON(json: any): Formula<string> {
   if (json.and) {
-    return and<string>(... json.and.map(fromJSON))
+    return and<string>(...json.and.map(fromJSON))
   } else if (json.or) {
-    return or<string>(... json.or.map(fromJSON))
+    return or<string>(...json.or.map(fromJSON))
   } else if (json.property) {
     return atom<string>(json.property, json.value)
   } else {
@@ -135,7 +136,7 @@ export function parse(q: string): Formula<string> | undefined {
 
   let parsed
   try {
-    parsed = P.parse(q)
+    parsed = Parser.parse(q)
   } catch (e) {
     if (q && q.startsWith('(')) {
       return

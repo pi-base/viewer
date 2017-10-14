@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import * as I from 'immutable'
 
@@ -11,12 +10,10 @@ import Implication from '../Implication'
 import TraitTable  from '../Trait/Table'
 
 export interface Props {
+  spaces: I.List<T.Space>
+  traits: T.TraitTable
+  theorems: I.List<T.Theorem>
   theorem: T.Theorem
-}
-
-interface StoreProps {
-  counterexamples: I.List<T.Space>
-  proofOfConverse: L.Disproof | undefined // TODO: this type name is unfortunate
 }
 
 function converse(theorem: T.Theorem) {
@@ -27,12 +24,20 @@ function converse(theorem: T.Theorem) {
   }
 }
 
-function Counterexamples({ theorem, counterexamples, proofOfConverse }: Props & StoreProps) {
+function Counterexamples({ spaces, traits, theorems, theorem }: Props) {
+
+  const counterexamples = Q.counterexamples(spaces, traits, theorem)
+  const proofOfConverse = L.proveConverse(theorems, theorem)
+
   if (counterexamples.size > 0) {
     return (
       <aside>
         <p>This implication does not reverse, as shown by</p>
-        <TraitTable spaces={counterexamples} properties={Q.theoremProperties(theorem).toList()}/>
+        <TraitTable 
+          spaces={counterexamples} 
+          properties={Q.theoremProperties(theorem).toList()}
+          traits={traits}
+        />
       </aside>
     )
   }
@@ -70,11 +75,4 @@ function Counterexamples({ theorem, counterexamples, proofOfConverse }: Props & 
   return <aside>No examples found disproving the converse.{theorem.converse}</aside>
 }
 
-function mapStateToProps(state: T.StoreState, props: Props): StoreProps {
-  return {
-    counterexamples: Q.counterexamples(state, props.theorem).toList(),
-    proofOfConverse: L.proveConverse(state, props.theorem)
-  }
-}
-
-export default connect(mapStateToProps)(Counterexamples)
+export default Counterexamples

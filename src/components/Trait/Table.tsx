@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import * as I from 'immutable'
 
@@ -8,13 +7,10 @@ import * as T from '../../types'
 import Icon from '../Icon'
 import Tex  from '../Tex'
 
-export interface StoreProps {
-  traits: T.TraitTable
-}
-
 export interface Props {
   spaces: I.List<T.Space>
   properties: I.List<T.Property>
+  traits: T.TraitTable
 }
 
 function check(traits: T.TraitTable, space: T.Space, property: T.Property) {
@@ -35,7 +31,7 @@ function check(traits: T.TraitTable, space: T.Space, property: T.Property) {
   )
 }
 
-function TraitTable({ spaces, properties, traits }: Props & StoreProps) {
+function TraitTable({ spaces, properties, traits }: Props) {
   return (
     <table className="table table-condensed table-striped table-hover">
       <thead>
@@ -68,10 +64,4 @@ function TraitTable({ spaces, properties, traits }: Props & StoreProps) {
   )
 }
 
-function mapStateToProps(state: T.StoreState): StoreProps {
-  return {
-    traits: state.traits
-  }
-}
-
-export default connect<StoreProps, {}, Props>(mapStateToProps)(TraitTable)
+export default TraitTable

@@ -11,12 +11,13 @@ import Tex             from '../Tex'
 
 export interface Props {
   properties: I.List<T.Property>
+  theorems: I.List<T.Theorem>
   params: {
     propertyId: string
   }
 }
 
-export default function Show({ properties, params: { propertyId } }: Props) {
+export default function Show({ properties, theorems, params: { propertyId } }: Props) {
   const property = properties.find(p => p && p.uid === propertyId || false)
   if (!property) { return <NotFound/> }
 
@@ -31,7 +32,7 @@ export default function Show({ properties, params: { propertyId } }: Props) {
       <Tex><Markdown text={property.description}/></Tex>
       <hr/>
 
-      <RelatedTheorems property={property}/>
+      <RelatedTheorems property={property} theorems={theorems}/>
     </div>
   )
 }

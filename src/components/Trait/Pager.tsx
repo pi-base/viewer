@@ -6,10 +6,10 @@ import * as I from 'immutable'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
-import Icon      from '../Icon'
-import Filter    from '../Filter'
-import Limiter   from '../Limiter'
-import Tex       from '../Tex'
+import Icon from '../Icon'
+import Filter from '../Filter'
+import Limiter from '../Limiter'
+import Tex from '../Tex'
 import TraitItem from './Item'
 
 export interface Props {
@@ -28,7 +28,7 @@ interface Tab {
 
 const Tabs: Tab[] = [
   { name: 'Asserted', icon: 'pencil' },
-  { name: 'Deduced',  icon: 'search' }
+  { name: 'Deduced', icon: 'search' }
 ]
 
 export interface State {
@@ -64,7 +64,7 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
 
   toggleTab(name: string) {
     this.setState((state: State) => ({
-      ... state,
+      ...state,
       tabs: state.tabs.set(name, !state.tabs.get(name))
     }))
   }
@@ -84,7 +84,7 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
 
   tabbed(seq: I.Iterable<number, T.Trait>) {
     const asserted = this.state.tabs.get('Asserted')
-    const deduced  = this.state.tabs.get('Deduced')
+    const deduced = this.state.tabs.get('Deduced')
 
     if (asserted && deduced) {
       return seq
@@ -100,18 +100,19 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
   render() {
     const { allTraits } = this.props
 
-    const tabbed  = this.tabbed(this.state.filtered)
+    const tabbed = this.tabbed(this.state.filtered)
     const limited = this.limited(tabbed)
 
     const tab = ({ icon, name }: Tab) => {
       const active = this.state.tabs.get(name) ? 'active' : ''
 
       return (
-        <button key={name}
+        <button
+          key={name}
           className={`btn btn-default ${active}`}
           onClick={() => this.toggleTab(name)}
         >
-          <Icon type={icon}/>
+          <Icon type={icon} />
           {' '}
           {name}
         </button>
@@ -131,10 +132,10 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
         />
 
         <table className="table table-condensed">
-          <thead/>
+          <thead />
           <tbody>
             {limited.map((trait: T.Trait) =>
-              <TraitItem key={trait.property.uid} trait={trait}/>
+              <TraitItem key={trait.property.uid} trait={trait} />
             )}
           </tbody>
         </table>

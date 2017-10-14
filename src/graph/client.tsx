@@ -1,56 +1,58 @@
 import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import * as Q from './queries'
+import * as T from '../types'
 
 interface Uid { uid: string }
 
-// TODO: encapsulate token in a client object rather than a global
-let token: String
-export const setToken = (t: string) => { token = t }
+export class Client {
+    token: T.Token
+    url: string
+    apollo: ApolloClient
 
-function buildNetworkInterface(uri: string) {
-    const network = createNetworkInterface({
-        uri,
-        opts: {
-            credentials: 'same-origin'
-        }
-    })
+    constructor(url?: string) {
+        this.url = url || 'http://localhost:3141'
+        this.apollo = this.buildApollo(`${this.url}/graphql`)
+    }
 
-    network.use([{
-        applyMiddleware: (req, next) => {
-          if (token) {
-            if (!req.options.headers) {
-              req.options.headers = {};  // Create the header object if needed.
+    login(token: T.Token) {
+        this.token = token
+        return this.apollo.query({query: Q.me}).then(response =>  {
+            const user = (response.data as Q.MeResponse).me
+            return user
+        })
+    }
+
+    loginUrl({ redirectTo }: { redirectTo: Location }) {
+        return `${this.url}/auth/page/github/forward?location=${redirectTo}`
+    }
+
+    ping(): Promise<Client> {
+        return this.apollo.query({query: Q.version}).then(() => this)
+    }
+
+    buildApollo(uri: string): ApolloClient {
+        const network = createNetworkInterface({
+            uri,
+            opts: {
+                credentials: 'same-origin'
             }
-            req.options.headers.authorization = token
-          }
-          next();
-        }
-      }]);
+        })
 
-    return network
-}
+        network.use([{
+            applyMiddleware: (req, next) => {
+              if (this.token) {
+                if (!req.options.headers) {
+                  req.options.headers = {};  // Create the header object if needed.
+                }
+                req.options.headers.authorization = this.token
+              }
+              next();
+            }
+          }]);
 
-function buildClient(uri: string) {
-    return new ApolloClient({
-        dataIdFromObject: (o: Uid) => o.uid,
-        networkInterface: buildNetworkInterface(uri)
-    })
-}
-
-function buildTestClient() {
-    (global as any).fetch = require('isomorphic-fetch')
-    return buildClient('http://localhost:3141/graphql')
-}
-
-export function setupTest(): Promise<ApolloClient> {
-    const client = buildTestClient()
-    return client.query({ query: Q.version }).then(() => client)
-}
-
-export function getClient(): ApolloClient {
-    if (process.env.NODE_ENV === 'test') {
-        return buildTestClient()
-    } else {
-        return buildClient('http://localhost:3141/graphql')
+        return new ApolloClient({
+            dataIdFromObject: (o: Uid) => o.uid,
+            networkInterface: network
+        })
     }
 }

@@ -39,7 +39,7 @@ function buildContradiction(theorem: T.Theorem | 'given', evidence: EvidenceMap)
   return theorems.valueSeq().toList().push(theorem)
 }
 
-export function disprove(state: T.StoreState, formula: T.Formula): (Disproof | undefined) {
+export function disprove(theorems: I.List<T.Theorem>, formula: T.Formula): (Disproof | undefined) {
   // console.log(D.formula(state, formula))
 
   let traits = I.Map<string, { value: boolean, deduced: boolean }>()
@@ -47,7 +47,7 @@ export function disprove(state: T.StoreState, formula: T.Formula): (Disproof | u
   let contradiction: Disproof | undefined = undefined
 
   let theoremsByProp = {}
-  Q.allTheorems(state).forEach(t => {
+  theorems.forEach((t: T.Theorem) => {
     Q.theoremProperties(t).forEach((p: T.Property) => {
       theoremsByProp[p.uid] = theoremsByProp[p.uid] || []
       theoremsByProp[p.uid].push(t)
@@ -155,9 +155,9 @@ export function disprove(state: T.StoreState, formula: T.Formula): (Disproof | u
 }
 
 // TODO: this should probably rule out tautologies
-export function proveConverse(state: T.StoreState, theorem: T.Theorem): Disproof | undefined {
+export function proveConverse(theorems: I.List<T.Theorem>, theorem: T.Theorem): Disproof | undefined {
   return disprove(
-    state,
+    theorems,
     F.and(
       F.negate(theorem.if),
       theorem.then

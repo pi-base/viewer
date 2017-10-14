@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import * as I from 'immutable'
 
@@ -13,15 +12,13 @@ import Implication from '../Implication'
 import TraitTable  from '../Trait/Table'
 
 interface Props {
+  theorems:    I.List<T.Theorem>
+  traits:      T.TraitTable
   text?:       string
   formula?:    T.Formula
   results:     I.List<T.Space>
   properties?: I.List<T.Property>
   onSelect:    (q: string) => void
-}
-
-interface StoreProps {
-  disprove: (f: T.Formula) => L.Disproof | undefined
 }
 
 const Tautology = ({ formula }) => (
@@ -58,13 +55,13 @@ const NoneFound = ({formula}) => (
   </div>
 )
 
-function Results({ text, formula, results, onSelect, disprove }: Props & StoreProps) {
+function Results({ text, formula, results, onSelect, traits, theorems }: Props) {
   if (!text && !formula) {
     return <Examples className="search-examples" viewExample={onSelect}/>
   }
 
   if (formula && results.size === 0) {
-    const disproof = disprove(formula)
+    const disproof = L.disprove(theorems, formula)
     if (disproof === 'tautology') {
       return <Tautology formula={formula}/>
     } else if (disproof) {
@@ -77,14 +74,8 @@ function Results({ text, formula, results, onSelect, disprove }: Props & StorePr
   const properties: I.List<T.Property> = formula ? F.properties(formula).toList() : I.List<T.Property>()
 
   return (
-    <TraitTable spaces={results} properties={properties}/>
+    <TraitTable spaces={results} properties={properties} traits={traits}/>
   )
 }
 
-function mapStateToProps(state: T.StoreState): StoreProps {
-  return {
-    disprove: (f: T.Formula) => L.disprove(state, f)
-  }
-}
-
-export default connect<StoreProps, {}, Props>(mapStateToProps)(Results)
+export default Results

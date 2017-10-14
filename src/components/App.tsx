@@ -9,19 +9,19 @@ import * as T from '../types'
 import { makeStore } from '../store'
 import routes from '../routes'
 
-import { ApolloClient } from 'apollo-client'
 import { ApolloProvider } from 'react-apollo'
-import { getClient } from '../graph'
+import { Client, client } from '../graph'
 
-interface Props {
+interface Config {
   state?: T.StoreState
-  client?: ApolloClient
+  client?: Client
 }
-export const wrap = (component, { state, client }: Props) => {
-  const store = makeStore(client || getClient(), state)
+export const wrap = (component, props: Config) => {
+  const apollo = (props.client || client).apollo
+  const store = makeStore(apollo, props.state)
 
   return () => (
-    <ApolloProvider client={client!}>
+    <ApolloProvider client={apollo}>
       <Provider store={store}>
         <Router history={browserHistory}>
           {component}
@@ -31,6 +31,6 @@ export const wrap = (component, { state, client }: Props) => {
   )
 }
 
-const makeApp = ({ state, client }) => wrap(routes, { state, client })
+const makeApp = (config) => wrap(routes, config)
 
 export default makeApp

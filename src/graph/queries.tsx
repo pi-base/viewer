@@ -75,6 +75,7 @@ export const theorems = gql`
 export type TraitsResponse = {
   viewer: {
     spaces: {
+      uid: string
       traits: {
         property: {
           uid: string
@@ -88,6 +89,7 @@ export const traits = gql`
   query Traits {
     viewer {
       spaces {
+        uid
         traits {
           property {
             uid

@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import * as I from 'immutable'
 
+import { Finder } from '../../models/PropertyFinder'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
@@ -10,15 +10,11 @@ import Suggestions from './Suggestions'
 const TAB = 9, ENTER = 13, UP = 38, DOWN = 40 // RIGHT = 39
 
 export interface Props {
+  finder:           Finder<T.Property>
   q:                string
   suggestionLimit?: number
   placeholder:      string
   onChange:         (q: string, formula: (T.Formula | undefined)) => void
-}
-
-interface StoreProps {
-  parseFormula:   (q: string) => (T.Formula | undefined)
-  getSuggestions: (q: string) => I.List<T.Property>
 }
 
 export interface State {
@@ -32,7 +28,7 @@ interface Event {
   preventDefault: () => void
 }
 
-class FormulaInput extends React.Component<Props & StoreProps, State> {
+class FormulaInput extends React.Component<Props, State> {
   constructor() {
     super()
     this.state = {
@@ -40,6 +36,14 @@ class FormulaInput extends React.Component<Props & StoreProps, State> {
       suggestions:     I.List([]),
       dropdownVisible: false
     }
+  }
+
+  parseFormula(str: string) {
+    return Q.parseFormula(this.props.finder, str)
+  }
+
+  getSuggestions(str: string) {
+    return Q.suggestionsFor(this.props.finder, str, 10)
   }
 
   changeSelection(delta: number) {
@@ -63,7 +67,7 @@ class FormulaInput extends React.Component<Props & StoreProps, State> {
     const selected = this.state.suggestions.get(index)
     const updated  = Q.replaceFragment(this.props.q, selected.name)
 
-    this.props.onChange(updated, this.props.parseFormula(updated))
+    this.props.onChange(updated, this.parseFormula(updated))
 
     this.setState({ selected: 0, dropdownVisible: false })
   }
@@ -87,8 +91,7 @@ class FormulaInput extends React.Component<Props & StoreProps, State> {
   }
 
   handleChange(q: string) {
-    const { parseFormula, getSuggestions } = this.props
-    const formula = parseFormula(q)
+    const formula = this.parseFormula(q)
 
     // Updates for parent component
     this.props.onChange(q, formula)
@@ -97,7 +100,7 @@ class FormulaInput extends React.Component<Props & StoreProps, State> {
     const dropdownVisible = !!q && q[0] !== ':'
     this.setState((state: State, props: Props) => {
       if (formula) {
-        const suggestions = getSuggestions(q)
+        const suggestions = this.getSuggestions(q)
         return { q, dropdownVisible, formula, suggestions }
       } else {
         return { q, dropdownVisible }
@@ -134,11 +137,4 @@ class FormulaInput extends React.Component<Props & StoreProps, State> {
   }
 }
 
-function mapStateToProps(state: T.StoreState): StoreProps {
-  return {
-    parseFormula:   (str: string) => Q.parseFormula(state, str),
-    getSuggestions: (str: string) => Q.suggestionsFor(state, str, 10)
-  }
-}
-
-export default connect<StoreProps, {}, Props>(mapStateToProps)(FormulaInput)
+export default FormulaInput

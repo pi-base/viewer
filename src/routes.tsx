@@ -4,6 +4,7 @@ import { Route, IndexRoute } from 'react-router'
 
 import Home           from './components/Home'
 import Layout         from './components/Layout'
+import Login          from './containers/Login'
 import NotFound       from './components/NotFound'
 import PropertyCreate from './containers/CreateProperty'
 import PropertySearch from './components/Property/Search'
@@ -26,7 +27,7 @@ const routes = (
   >
     <IndexRoute component={Home}/>
 
-    <Route path="login/:token" component={UserTab}/>
+    <Route path="login/:token" component={Login}/>
     <Route path="user" component={User}/>
 
     <Route path="spaces" component={Search}/>

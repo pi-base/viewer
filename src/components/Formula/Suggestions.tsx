@@ -5,14 +5,14 @@ import * as T from '../../types'
 
 export interface Props {
   suggestions: I.List<T.Property>
-  selected:    number
-  visible:     boolean
-  onSelect:    (selected: number) => void
+  selected: number
+  visible: boolean
+  onSelect: (selected: number) => void
 }
 
 function Suggestions({ suggestions, selected, visible, onSelect }: Props) {
   const divStyle = {
-    display:   (visible ? 'block' : 'none'),
+    display: (visible ? 'block' : 'none'),
     marginTop: '5px'
   }
 
@@ -23,7 +23,8 @@ function Suggestions({ suggestions, selected, visible, onSelect }: Props) {
           className={'list-group-item ' + (selected === i ? 'active' : '')}
           key={p!.uid}
           onMouseDown={() => onSelect(i!)}
-          href="#">
+          href="#"
+        >
           {p!.name}
         </a>
       ))}
