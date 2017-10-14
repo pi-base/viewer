@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as I from 'immutable'
 
 import { Finder } from '../../models/PropertyFinder'
+import * as F from '../../models/Formula'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
@@ -10,16 +11,16 @@ import Suggestions from './Suggestions'
 const TAB = 9, ENTER = 13, UP = 38, DOWN = 40 // RIGHT = 39
 
 export interface Props {
-  finder:           Finder<T.Property>
-  q:                string
+  finder: Finder<T.Property>
+  q: string
   suggestionLimit?: number
-  placeholder:      string
-  onChange:         (q: string, formula: (T.Formula | undefined)) => void
+  placeholder: string
+  onChange: (q: string, formula: (F.Formula<T.Property> | undefined)) => void
 }
 
 export interface State {
-  selected:        number
-  suggestions:     I.List<T.Property>
+  selected: number
+  suggestions: I.List<T.Property>
   dropdownVisible: boolean
 }
 
@@ -29,11 +30,11 @@ interface Event {
 }
 
 class FormulaInput extends React.Component<Props, State> {
-  constructor() {
-    super()
+  constructor(props: Props) {
+    super(props)
     this.state = {
-      selected:        0,
-      suggestions:     I.List([]),
+      selected: 0,
+      suggestions: I.List([]),
       dropdownVisible: false
     }
   }
@@ -65,7 +66,7 @@ class FormulaInput extends React.Component<Props, State> {
     index = index || this.state.selected
 
     const selected = this.state.suggestions.get(index)
-    const updated  = Q.replaceFragment(this.props.q, selected.name)
+    const updated = Q.replaceFragment(this.props.q, selected.name)
 
     this.props.onChange(updated, this.parseFormula(updated))
 
@@ -78,15 +79,15 @@ class FormulaInput extends React.Component<Props, State> {
     }
 
     switch (e.which) {
-    case UP:
-      return this.changeSelection(-1)
-    case DOWN:
-      return this.changeSelection(1)
-    case ENTER:
-    case TAB:
-      return this.expandFragment()
-    default:
-      return
+      case UP:
+        return this.changeSelection(-1)
+      case DOWN:
+        return this.changeSelection(1)
+      case ENTER:
+      case TAB:
+        return this.expandFragment()
+      default:
+        return
     }
   }
 

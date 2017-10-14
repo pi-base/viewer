@@ -78,7 +78,7 @@ export function filterByText(
 export function filterByFormula(
   traits: T.TraitTable,
   spaces: I.List<T.Space>,
-  formula: T.Formula
+  formula: F.Formula<T.Id>
 ): I.List<T.Space> {
   return spaces.filter((s: T.Space) => {
     const ts = traits.get(s.uid)
@@ -91,9 +91,8 @@ export function filter(
   finder: Finder<T.Space>,
   traits: T.TraitTable,
   spaces: I.List<T.Space>,
-  { text, formula }: { text?: string, formula?: T.Formula }
+  { text, formula }: { text?: string, formula?: F.Formula<T.Id> }
 ): I.List<T.Space> {
-  // TODO: validate params
   if (formula) {
     spaces = filterByFormula(traits, spaces, formula)
   }
@@ -109,6 +108,8 @@ export function parseFormula(
   finder: Finder<T.Property>,
   q: string
 ): F.Formula<T.Property> | undefined {
+  if (!finder) { return }
+
   const parsed = F.parse(q)
   if (!parsed) { return }
 
@@ -116,7 +117,7 @@ export function parseFormula(
     const f = (p: string) => {
       const property = finder.find(p)
       if (!property) {
-        throw new Error('id not found')
+        throw new Error(`${p} not found`)
       }
       return property
     }
@@ -176,6 +177,6 @@ export function relatedTheorems(
   prop: T.Property
 ): I.List<T.Theorem> {
   return theorems.filter((t: T.Theorem) => {
-    return theoremProperties(t).includes(prop)
+    return theoremProperties(t).includes(prop.uid)
   }).valueSeq().toList()
 }

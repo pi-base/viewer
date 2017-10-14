@@ -7,35 +7,39 @@ import * as Q from '../../queries'
 import * as T from '../../types'
 
 import Implication from '../Implication'
-import TraitTable  from '../Trait/Table'
+import TraitTable from '../Trait/Table'
 
 export interface Props {
   spaces: I.List<T.Space>
   traits: T.TraitTable
   theorems: I.List<T.Theorem>
+  properties: T.Finder<T.Property>
   theorem: T.Theorem
 }
 
 function converse(theorem: T.Theorem) {
   return {
-    ... theorem,
+    ...theorem,
     if: theorem.then,
     then: theorem.if
   }
 }
 
-function Counterexamples({ spaces, traits, theorems, theorem }: Props) {
+function Counterexamples({ spaces, traits, theorems, properties, theorem }: Props) {
 
   const counterexamples = Q.counterexamples(spaces, traits, theorem)
   const proofOfConverse = L.proveConverse(theorems, theorem)
+
+  const theoremProperties: I.List<T.Property> = Q.theoremProperties(theorem)
+    .map(uid => properties.records.get(uid!)).toList()
 
   if (counterexamples.size > 0) {
     return (
       <aside>
         <p>This implication does not reverse, as shown by</p>
-        <TraitTable 
-          spaces={counterexamples} 
-          properties={Q.theoremProperties(theorem).toList()}
+        <TraitTable
+          spaces={counterexamples}
+          properties={theoremProperties}
           traits={traits}
         />
       </aside>
@@ -43,7 +47,7 @@ function Counterexamples({ spaces, traits, theorems, theorem }: Props) {
   }
 
   if (proofOfConverse) {
-    if (proofOfConverse === 'tautology') { return <span/> }
+    if (proofOfConverse === 'tautology') { return <span /> }
 
     return (
       <aside>
@@ -51,7 +55,7 @@ function Counterexamples({ spaces, traits, theorems, theorem }: Props) {
         <table className="table table-condensed">
           <thead>
             <tr>
-              <th><Implication theorem={converse(theorem)} link={false}/></th>
+              <th><Implication theorem={converse(theorem)} properties={properties} link={false} /></th>
               <th>By</th>
             </tr>
           </thead>
@@ -59,7 +63,7 @@ function Counterexamples({ spaces, traits, theorems, theorem }: Props) {
             {proofOfConverse.map((thrm: T.Theorem) => (
               <tr key={thrm.uid}>
                 <td>
-                  <Implication theorem={thrm} link={false}/>
+                  <Implication theorem={thrm} properties={properties} link={false} />
                 </td>
                 <td>
                   <Link to={`/theorems/${thrm.uid}`}>{thrm.uid}</Link>

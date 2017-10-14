@@ -6,13 +6,14 @@ import * as I from 'immutable'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
-import Filter      from '../Filter'
+import Filter from '../Filter'
 import Implication from '../Implication'
-import Preview     from '../Preview'
-import Tex         from '../Tex'
+import Preview from '../Preview'
+import Tex from '../Tex'
 
 interface Props {
   theorems: I.List<T.Theorem>
+  properties: T.Finder<T.Property>
 }
 
 interface State {
@@ -53,8 +54,8 @@ class Theorems extends React.Component<Props, State> {
           collection={this.props.theorems}
           onChange={(ts) => this.doFilter(I.List<T.Theorem>(ts))}
           weights={[
-            { name: 'if',          weight: 0.7 },
-            { name: 'then',        weight: 0.7 },
+            { name: 'if', weight: 0.7 },
+            { name: 'then', weight: 0.7 },
             { name: 'description', weight: 0.5 }
           ]}
           placeholder="Filter theorems"
@@ -64,16 +65,16 @@ class Theorems extends React.Component<Props, State> {
           <Tex key={t.uid}>
             <h3>
               <Link to={`/theorems/${t.uid}`}>
-                <Implication theorem={t} link={false}/>
+                <Implication theorem={t} link={false} properties={this.props.properties} />
               </Link>
             </h3>
-            <Preview text={t.description}/>
+            <Preview text={t.description} />
           </Tex>
         ))}
 
-        { this.props.theorems.size > this.state.limit
-        ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
-        : ''}
+        {this.props.theorems.size > this.state.limit
+          ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
+          : ''}
       </section>
     )
   }

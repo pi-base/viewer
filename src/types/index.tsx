@@ -1,7 +1,9 @@
 import * as I from 'immutable'
 
 import * as F from '../models/Formula'
+
 import { Finder } from '../models/PropertyFinder'
+export { Finder } from '../models/PropertyFinder'
 
 export type Branch = string
 export type Id = string
@@ -25,32 +27,30 @@ export interface Property {
   readonly description: string
 }
 
-export type Formula = F.Formula<Property>
-
 export interface Trait {
-  readonly uid:         Id
-  readonly space:       Space
-  readonly property:    Property
+  readonly uid: Id
+  readonly space: Space
+  readonly property: Property
   readonly description: string
-  readonly value:       boolean
-  readonly deduced:     boolean
+  readonly value: boolean
+  readonly deduced: boolean
 }
 
 export interface Theorem {
-  readonly uid:         Id
-  readonly if:          Formula
-  readonly then:        Formula
-  readonly converse:    any // FIXME
+  readonly uid: Id
+  readonly if: F.Formula<Id>
+  readonly then: F.Formula<Id>
+  readonly converse: any // FIXME
   readonly description: string
 }
 
 export interface ProofIds {
-  readonly traits:   I.List<Id>
+  readonly traits: I.List<Id>
   readonly theorems: I.List<Id>
 }
 
 export interface Proof {
-  readonly traits:   I.List<Trait>
+  readonly traits: I.List<Trait>
   readonly theorems: I.List<Theorem>
 }
 
@@ -66,14 +66,14 @@ export interface UserState {
 
 export interface StoreState {
   // Space data
-  version:             string
-  spaces:              Index<Space>
-  properties:          Index<Property>
-  theorems:            Index<Theorem>
-  traits:              TraitTable
-  'spaces.finder':     Finder<Space>
+  version: string
+  spaces: Index<Space>
+  properties: Index<Property>
+  theorems: Index<Theorem>
+  traits: TraitTable
+  'spaces.finder': Finder<Space>
   'properties.finder': Finder<Property>
-  proofs:              Index<ProofIds> // trait id => proof
+  proofs: Index<ProofIds> // trait id => proof
   // User data
   user: UserState
 }

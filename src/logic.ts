@@ -10,10 +10,12 @@ export type Disproof = I.List<T.Theorem> | 'tautology'
 
 type Evidence = {
   theorem: T.Theorem | 'given'
-  properties: I.List<T.Property>
+  properties: I.List<T.Id>
 }
 
-type EvidenceMap = I.Map<string, Evidence> // propertyId => ...
+type EvidenceMap = I.Map<T.Id, Evidence> // propertyId => ...
+
+type Formula = F.Formula<T.Id>
 
 function buildContradiction(theorem: T.Theorem | 'given', evidence: EvidenceMap): Disproof {
   if (theorem === 'given') {
@@ -39,7 +41,7 @@ function buildContradiction(theorem: T.Theorem | 'given', evidence: EvidenceMap)
   return theorems.valueSeq().toList().push(theorem)
 }
 
-export function disprove(theorems: I.List<T.Theorem>, formula: T.Formula): (Disproof | undefined) {
+export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Disproof | undefined) {
   // console.log(D.formula(state, formula))
 
   let traits = I.Map<string, { value: boolean, deduced: boolean }>()
@@ -48,18 +50,18 @@ export function disprove(theorems: I.List<T.Theorem>, formula: T.Formula): (Disp
 
   let theoremsByProp = {}
   theorems.forEach((t: T.Theorem) => {
-    Q.theoremProperties(t).forEach((p: T.Property) => {
-      theoremsByProp[p.uid] = theoremsByProp[p.uid] || []
-      theoremsByProp[p.uid].push(t)
+    Q.theoremProperties(t).forEach((uid: T.Id) => {
+      theoremsByProp[uid] = theoremsByProp[uid] || []
+      theoremsByProp[uid].push(t)
     })
   })
 
   let checkQ = []
-  const force = (f: T.Formula, theorem: T.Theorem | 'given', properties: I.List<T.Property>) => {
+  const force = (f: Formula, theorem: T.Theorem | 'given', properties: I.List<T.Id>) => {
     if (f.kind === 'and') {
-      f.subs.forEach((sf: T.Formula) => force(sf, theorem, properties))
+      f.subs.forEach((sf: Formula) => force(sf, theorem, properties))
     } else if (f.kind === 'or') {
-      const reducer = (support, sf: T.Formula) => {
+      const reducer = (support, sf: Formula) => {
         if (!support) {
           return null
         }
@@ -90,7 +92,7 @@ export function disprove(theorems: I.List<T.Theorem>, formula: T.Formula): (Disp
         }
       }
     } else {
-      const prop = f.property.uid
+      const prop = f.property
       const trait = traits.get(prop)
       if (trait) {
         if (trait.value !== f.value) {
@@ -125,7 +127,7 @@ export function disprove(theorems: I.List<T.Theorem>, formula: T.Formula): (Disp
   }
 
   try {
-    force(formula, 'given', I.List<T.Property>())
+    force(formula, 'given', I.List<T.Id>())
 
     while (checkQ.length > 0) {
       const theorem = checkQ.shift()
@@ -138,11 +140,11 @@ export function disprove(theorems: I.List<T.Theorem>, formula: T.Formula): (Disp
         // If our initial formula to force is (a | b) => c
         //   and we have just proved ~b, we need to re-force
         // TODO: diff traits and only run this when the formula applies
-        force(formula, theorem!, I.List<T.Property>())
+        force(formula, theorem!, I.List<T.Id>())
       }
     }
 
-    force(formula, 'given', I.List<T.Property>())
+    force(formula, 'given', I.List<T.Id>())
   } catch (e) {
     if (!contradiction) {
       report(e)

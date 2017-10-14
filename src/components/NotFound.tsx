@@ -20,7 +20,7 @@ const tryConvertFormula = (state: T.StoreState, q: string) => {
 }
 
 interface StateProps {
-  tryConvertFormula: (q: string) => (T.Formula | undefined)
+  tryConvertFormula: (q: string) => (F.Formula<T.Property> | undefined)
   findSpace: (id: string) => (T.Space | undefined)
   findTrait: (id: string) => (T.Trait | undefined)
 }

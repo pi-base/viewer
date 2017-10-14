@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router'
+import * as I from 'immutable'
 
 import * as T from '../../types'
 
@@ -8,10 +9,11 @@ import Tex from '../Tex'
 
 export interface Props {
   space: T.Space
+  properties: T.Finder<T.Property>
   proof: T.Proof
 }
 
-function Explorer({ space, proof }: Props) {
+function Explorer({ space, properties, proof }: Props) {
   return (
     <div className="proofExplorer">
       <p>Automatically deduced from the following properties</p>
@@ -31,7 +33,7 @@ function Explorer({ space, proof }: Props) {
         {proof.theorems.map((t: T.Theorem) => (
           <li key={`implication${t.uid}`}>
             <Link to={`/theorems/${t.uid}`}>
-              <Implication theorem={t} link={false}/>
+              <Implication theorem={t} properties={properties} link={false} />
             </Link>
           </li>
         ))}

@@ -10,9 +10,10 @@ import Implication from '../Implication'
 export interface Props {
   property: T.Property
   theorems: I.List<T.Theorem>
+  properties: T.Finder<T.Property>
 }
 
-function RelatedTheorems({ property, theorems }: Props) {
+function RelatedTheorems({ property, theorems, properties }: Props) {
   const related = Q.relatedTheorems(theorems, property)
 
   return (
@@ -21,7 +22,7 @@ function RelatedTheorems({ property, theorems }: Props) {
       {theorems.map((t: T.Theorem) => (
         <div key={t.uid}>
           <Link to={`/theorems/${t.uid}`}>
-            <Implication theorem={t} link={false}/>
+            <Implication theorem={t} link={false} properties={properties} />
           </Link>
         </div>
       ))}

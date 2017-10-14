@@ -81,12 +81,14 @@ export function properties<P>(f: Formula<P>): I.OrderedSet<P> {
 
 type TraitMap = I.Map<string, { value: boolean, deduced: boolean }>
 
-export function evaluate(f: Formula<T.Property>, traits: TraitMap): boolean | undefined {
+export function evaluate(f: Formula<T.Id>, traits: TraitMap): boolean | undefined {
   let result: boolean | undefined
+
+  // console.log('traits', traits.toJS())
 
   switch (f.kind) {
     case 'atom':
-      const trait = traits.get(f.property.uid)
+      const trait = traits.get(f.property)
       return trait ? trait.value === f.value : undefined
     case 'and':
       result = true // by default

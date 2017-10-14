@@ -5,6 +5,7 @@ import Navbar from './Navbar'
 import Debug from './Debug'
 
 import * as A from '../actions'
+import * as F from '../models/Formula'
 import * as T from '../types'
 
 import { Finder } from '../models/PropertyFinder'
@@ -40,23 +41,36 @@ class Layout extends React.Component<Props, State> {
     const loaded = this.props.location.pathname === '/' ||
       (this.props.data && this.props.data.viewer)
 
-    let spaces, traits, properties
+    let spaces, traits, properties, theorems
     if (loaded) {
       const viewer = this.props.data.viewer
-      traits = {}
-      spaces = viewer.spaces.map(s => {
-        traits[s.uid] = {}
-        s.traits.forEach(t => {
-          traits[s.uid][t.property.uid] = t.value
+
+      traits = I.Map().withMutations(ts => {
+        spaces = viewer.spaces.map(s => {
+          s.traits.forEach(t => {
+            ts.setIn([s.uid, t.property.uid], {
+              value: t.value,
+              deduced: false // FIXME
+            })
+          })
+          return { uid: s.uid, name: s.name }
         })
-        return { uid: s.uid, name: s.name }
       })
+
       properties = viewer.properties.map(p => {
         return { uid: p.uid, name: p.name }
       })
 
+      theorems = viewer.theorems.map(t => {
+        const r: any = { uid: t.uid }
+        r.if = F.fromJSON(JSON.parse(t.if))
+        r.then = F.fromJSON(JSON.parse(t.then))
+        return r
+      })
+
       spaces = I.List(spaces)
       properties = I.List(properties)
+      theorems = I.List(theorems)
       traits = I.fromJS(traits)
 
       spaces.finder = new Finder(spaces)
@@ -73,7 +87,8 @@ class Layout extends React.Component<Props, State> {
             ? React.cloneElement(this.props.children as any, {
               spaces: spaces,
               properties: properties,
-              traits: traits
+              traits: traits,
+              theorems: theorems
             })
             : 'Loading...'}
         </div>

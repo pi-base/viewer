@@ -5,32 +5,35 @@ import * as I from 'immutable'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
-import { Finder } from '../../models/PropertyFinder'
 import FormulaInput from '../Formula/Input'
 import Results from './Results'
 
+import * as F from '../../models/Formula'
+import { Finder } from '../../models/PropertyFinder'
+
 interface Filterable {
   text?: string
-  formula?: T.Formula
+  formula?: F.Formula<T.Property>
   spaces?: I.List<T.Space>
 }
 
 interface Props {
   spaces: I.List<T.Space> & { finder: Finder<T.Space> }
-  finder: Finder<T.Property>
+  properties: I.List<T.Property> & { finder: Finder<T.Property> }
   traits: T.TraitTable
   theorems: I.List<T.Theorem>
 }
 
+type Formula = F.Formula<T.Property>
+
 export interface State {
   q: string
-  formula: T.Formula | undefined
+  formula: Formula | undefined
   text: string
 }
 
 class Search extends React.Component<Props & T.RouterProps, State> {
   constructor(props: Props & T.RouterProps) {
-    console.log('Search props', props)
     super(props)
     this.state = {
       q: '',
@@ -70,8 +73,8 @@ class Search extends React.Component<Props & T.RouterProps, State> {
     }
   }
 
-  setFormulaFilter({ q, formula }: { q: string, formula: T.Formula | undefined }) {
-    const updates: { q: string, formula: (T.Formula | undefined) } = { q, formula: undefined }
+  setFormulaFilter({ q, formula }: { q: string, formula: Formula | undefined }) {
+    const updates: { q: string, formula: (Formula | undefined) } = { q, formula: undefined }
 
     formula = formula || this.parseFormula(q)
     if (formula) {
@@ -90,16 +93,20 @@ class Search extends React.Component<Props & T.RouterProps, State> {
   }
 
   results() {
+    const f = this.state.formula
+      ? F.mapProperty(p => p.uid, this.state.formula)
+      : undefined
+
     return Q.filter(
       this.props.spaces.finder,
       this.props.traits,
       this.props.spaces,
-      { text: this.state.text, formula: this.state.formula }
+      { text: this.state.text, formula: f }
     )
   }
 
   parseFormula(q: string) {
-    return Q.parseFormula(this.props.finder, q)
+    return Q.parseFormula(this.props.properties.finder, q)
   }
 
   render() {
@@ -124,7 +131,7 @@ class Search extends React.Component<Props & T.RouterProps, State> {
           <div className="form-group">
             <label htmlFor="formulaFilter">Filter by Formula</label>
             <FormulaInput
-              finder={this.props.finder}
+              finder={this.props.properties.finder}
               q={this.state.q}
               placeholder="e.g. compact + ~metrizable"
               onChange={(q, formula) => this.setFormulaFilter({ q, formula })}
@@ -134,10 +141,11 @@ class Search extends React.Component<Props & T.RouterProps, State> {
 
         <div className="col-md-8">
           <Results
-            text={this.state.text}
-            formula={this.state.formula}
             theorems={theorems}
             traits={traits}
+            properties={this.props.properties.finder}
+            text={this.state.text}
+            formula={this.state.formula}
             results={results}
             onSelect={(q) => this.setFormulaFilter({ q, formula: undefined })}
           />

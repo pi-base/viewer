@@ -7,8 +7,8 @@ import * as F from '../../models/Formula'
 
 export interface Props {
   formula: F.Formula<T.Property>
-  link:    boolean
-  key?:    number
+  link: boolean
+  key?: number
 }
 
 export function Formula({ formula, link }: Props) {
@@ -37,7 +37,7 @@ function sepWith(delimiter: string, link: boolean, subs: I.List<F.Formula<T.Prop
   let result: JSX.Element[] = []
 
   subs.forEach((sub, i) => {
-    result.push(<Formula key={i} formula={sub!} link={link}/>)
+    result.push(<Formula key={i} formula={sub!} link={link} />)
     result.push(<span key={'sepWith' + i}> {delimiter} </span>)
   })
   result.pop()
