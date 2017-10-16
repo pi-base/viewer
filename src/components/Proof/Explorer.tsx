@@ -4,7 +4,7 @@ import * as I from 'immutable'
 
 import * as T from '../../types'
 
-import Implication from '../Implication'
+import Implication from '../../containers/Implication'
 import Tex from '../Tex'
 
 export interface Props {

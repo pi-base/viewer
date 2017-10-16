@@ -7,7 +7,7 @@ import * as Q from '../../queries'
 import * as T from '../../types'
 
 import Filter from '../Filter'
-import Implication from '../Implication'
+import Implication from '../../containers/Implication'
 import Preview from '../Preview'
 import Tex from '../Tex'
 

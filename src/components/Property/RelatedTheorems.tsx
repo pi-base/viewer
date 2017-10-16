@@ -5,7 +5,7 @@ import * as I from 'immutable'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
-import Implication from '../Implication'
+import Implication from '../../containers/Implication'
 
 export interface Props {
   property: T.Property
@@ -19,7 +19,7 @@ function RelatedTheorems({ property, theorems, properties }: Props) {
   return (
     <div>
       <h4>Related Theorems</h4>
-      {theorems.map((t: T.Theorem) => (
+      {related.map((t: T.Theorem) => (
         <div key={t.uid}>
           <Link to={`/theorems/${t.uid}`}>
             <Implication theorem={t} link={false} properties={properties} />

@@ -4,6 +4,7 @@ import * as T from './types'
 export function login(token: string) {
   return dispatch => {
     return client.login(token).then(user => {
+      dispatch(setToken(token))
       dispatch(setUser(user))
     })
   }
@@ -12,6 +13,16 @@ export function login(token: string) {
 export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: string }
 export function changeBranch(branch: string): ChangeBranch {
   return { type: 'CHANGE_BRANCH', branch }
+}
+
+export type UpdateVersion = { type: 'UPDATE_VERSION', version: string }
+export function updateVersion(version: string): UpdateVersion {
+  return { type: 'UPDATE_VERSION', version }
+}
+
+export type LoadedView = { type: 'LOADED_VIEW', view: any }
+export function loadedView(view: any): LoadedView {
+  return { type: 'LOADED_VIEW', view }
 }
 
 export type SetToken = { type: 'SET_TOKEN', token: T.Token }
@@ -30,6 +41,8 @@ export function pageNotFound(path: string): PageNotFound {
 }
 
 export type Action = SetToken
-                   | SetUser
-                   | ChangeBranch
-                   | PageNotFound
+  | SetUser
+  | ChangeBranch
+  | LoadedView
+  | UpdateVersion
+  | PageNotFound

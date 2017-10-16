@@ -127,6 +127,7 @@ export type ViewerResponse = {
 export const viewer = gql`
   query Viewer {
     viewer {
+      version
       spaces {
         uid
         name
@@ -202,10 +203,10 @@ export const createSpace = gql`
 `
 
 export const createProperty = gql`
-  mutation createProperty($input: CreateSpaceInput!) {
+  mutation createProperty($input: CreatePropertyInput!) {
     createProperty(input: $input) {
       version
-      spaces {
+      properties {
         uid
         name
         description

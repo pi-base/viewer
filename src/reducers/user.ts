@@ -2,7 +2,7 @@ import * as A from '../actions'
 import * as T from '../types'
 
 const initialState: T.UserState = {
-    user: null,
+    name: null,
     token: null,
     branch: 'default'
 }
@@ -10,7 +10,9 @@ const initialState: T.UserState = {
 function reducer(previous: T.UserState = initialState, action: A.Action): T.UserState {
     switch (action.type) {
         case 'SET_USER':
-            return { ...previous, user: action.user }
+            return { ...previous, name: action.user.name }
+        case 'SET_TOKEN':
+            return { ...previous, token: action.token }
         case 'CHANGE_BRANCH':
             return { ...previous, branch: action.branch }
         default:

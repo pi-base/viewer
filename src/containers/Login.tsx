@@ -13,11 +13,12 @@ interface Props {
     }
 }
 
-class Login extends React.Component<Props, {}> {
+class Login extends React.Component<Props & T.RouterProps, {}> {
     componentWillMount() {
         const { params: { token }, login } = this.props
         login(token).then(() => {
-            console.log('login done')
+            // TODO: track last path before login and redirect there
+            this.props.router.push('/')
         })
     }
 

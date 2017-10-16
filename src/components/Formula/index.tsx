@@ -31,7 +31,6 @@ export function Formula({ formula, link }: Props) {
       )
   }
 }
-export default Formula
 
 function sepWith(delimiter: string, link: boolean, subs: I.List<F.Formula<T.Property>>) {
   let result: JSX.Element[] = []
@@ -44,3 +43,5 @@ function sepWith(delimiter: string, link: boolean, subs: I.List<F.Formula<T.Prop
 
   return result
 }
+
+export default Formula

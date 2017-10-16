@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import * as I from 'immutable'
 
@@ -6,8 +7,10 @@ import * as L from '../../logic'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
-import Implication from '../Implication'
-import TraitTable from '../Trait/Table'
+import Implication from '../../containers/Implication'
+import TraitTable from '../../components/Trait/Table'
+
+import { Finder } from '../../models/PropertyFinder'
 
 export interface Props {
   spaces: I.List<T.Space>
@@ -16,6 +19,8 @@ export interface Props {
   properties: T.Finder<T.Property>
   theorem: T.Theorem
 }
+
+interface StoreProps { }
 
 function converse(theorem: T.Theorem) {
   return {
@@ -79,4 +84,14 @@ function Counterexamples({ spaces, traits, theorems, properties, theorem }: Prop
   return <aside>No examples found disproving the converse.{theorem.converse}</aside>
 }
 
-export default Counterexamples
+export default connect(
+  (state) => {
+    const properties = new Finder(state.viewer.properties.valueSeq())
+    return {
+      spaces: state.viewer.spaces.valueSeq().toList(),
+      theorems: state.viewer.theorems.valueSeq().toList(),
+      traits: state.viewer.traits,
+      properties
+    }
+  }
+)(Counterexamples)

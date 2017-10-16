@@ -11,12 +11,6 @@ import Results from './Results'
 import * as F from '../../models/Formula'
 import { Finder } from '../../models/PropertyFinder'
 
-interface Filterable {
-  text?: string
-  formula?: F.Formula<T.Property>
-  spaces?: I.List<T.Space>
-}
-
 interface Props {
   spaces: I.List<T.Space> & { finder: Finder<T.Space> }
   properties: I.List<T.Property> & { finder: Finder<T.Property> }

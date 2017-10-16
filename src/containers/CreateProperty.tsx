@@ -1,25 +1,27 @@
 import * as React from 'react'
-import { graphql } from 'react-apollo'
 
+import Form from '../components/Property/Form'
+
+import { updateView } from '../graph'
 import { createProperty } from '../graph/queries'
 
-const CreateProperty = ({ mutate }) => {
-    const save = () => {
-        mutate({
+const CreateProperty = ({ update, router }) => {
+    const create = (property) => {
+        update({
             variables: {
                 input: {
-                    name: 'New Property',
-                    description: 'New property description',
+                    name: property.name,
+                    description: property.description
                 }
             }
+        }).then(view => {
+            // TODO: handle validation / server errors
+            const prop = view.properties[0]
+            router.push(`/properties/${prop.uid}`)
         })
     }
 
-    return (
-        <div>
-            <button className="btn btn-default" onClick={save}>Save</button>
-        </div>
-    )
+    return <Form save={create} />
 }
 
-export default graphql(createProperty)(CreateProperty)
+export default updateView(createProperty)(CreateProperty)

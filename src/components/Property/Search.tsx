@@ -3,9 +3,9 @@ import { Link } from 'react-router'
 
 import * as I from 'immutable'
 
-import List    from '../List'
+import List from '../List'
 import Preview from '../Preview'
-import Tex     from '../Tex'
+import Tex from '../Tex'
 
 interface Item {
   uid: string
@@ -17,7 +17,7 @@ interface Props {
   object: Item
 }
 
-class Property extends React.Component<Props, {expanded: boolean}> {
+class Property extends React.Component<Props, { expanded: boolean }> {
   constructor(props: Props) {
     super(props)
     this.state = { expanded: false }
@@ -40,7 +40,7 @@ class Property extends React.Component<Props, {expanded: boolean}> {
           </h4>
         </div>
         <div className="col-md-10">
-          <Preview text={property.description}/>
+          <Preview text={property.description} />
         </div>
       </Tex>
     )
@@ -49,10 +49,14 @@ class Property extends React.Component<Props, {expanded: boolean}> {
 
 export default function Search(props: { properties: I.List<Item> }) {
   return (
-    <List
-      name="properties"
-      objects={props.properties}
-      component={Property}
-    />
+    <div>
+      <Link to="properties/new">New</Link>
+
+      <List
+        name="properties"
+        objects={props.properties}
+        component={Property}
+      />
+    </div>
   )
 }

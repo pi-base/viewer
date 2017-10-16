@@ -6,38 +6,25 @@ import { Link } from 'react-router'
 import { client } from '../../graph'
 import * as T from '../../types'
 
-interface GraphProps {
-  me: {
-    name: string
-  }
-}
-
 interface Props {
-  data?: GraphProps
+  user: T.UserState
 }
 
-function UserTab(user?: T.User) {
+function UserTab({ user }: Props) {
   return (
     <ul className="nav navbar-nav pull-right">
-      { user
-      ? (
-        <li>
-          <Link to="/user">{user.name}</Link>
-        </li>
-      )
-      : (
-        <li>
-          <a href={client.loginUrl({redirectTo: window.location})}>
+      <li>
+        {user.name
+          ? <Link to="/user">{user.name}</Link>
+          : <a href={client.loginUrl({ redirectTo: window.location })}>
             Login with Github
           </a>
-        </li>
-      ) }
+        }
+      </li>
     </ul>
   )
 }
 
 export default connect(
-  (state) => ({
-    user: state.user
-  })
+  (state) => ({ user: state.user })
 )(UserTab)

@@ -8,7 +8,7 @@ import * as T from '../../types'
 
 import Examples from './Examples'
 import Formula from '../Formula'
-import Implication from '../Implication'
+import Implication from '../../containers/Implication'
 import TraitTable from '../Trait/Table'
 
 interface Props {
