@@ -15,7 +15,7 @@ interface Props {
 @observer
 class UserTab extends React.Component {
   render() {
-    const user = store.currentUser()
+    const user = store.user.current
     return (
       <ul className="nav navbar-nav pull-right">
         <li>

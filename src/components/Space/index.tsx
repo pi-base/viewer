@@ -28,7 +28,7 @@ class Space extends React.Component<Props, {}> {
     const space = store.spaces.find(this.props.params.spaceId)
     if (!space) { return <NotFound {...this.props} /> }
 
-    const traits = store.traitsBySpace(space.uid)
+    const traits = store.traits.forSpace(space.uid)
 
     return (
       <div>

@@ -16,6 +16,14 @@ class Traits {
         this.map = new Map()
     }
 
+    @action add(trait: { space: T.Id, property: T.Id, value: boolean }) {
+        const { space, property, value } = trait
+        if (!this.map.has(space)) {
+            this.map.set(space, new Map())
+        }
+        this.map.get(space)!.set(property, value)
+    }
+
     @computed get values(): I.Map<T.Id, I.Map<T.Id, boolean>> {
         return I.fromJS(this.map)
     }
@@ -26,12 +34,10 @@ class Traits {
         return traits.get(property)
     }
 
-    @action add(trait: { space: T.Id, property: T.Id, value: boolean }) {
-        const { space, property, value } = trait
-        if (!this.map.has(space)) {
-            this.map.set(space, new Map())
-        }
-        this.map.get(space)!.set(property, value)
+    forSpace(space: T.Id): I.List<T.Trait> {
+        const traits = this.map.get(space) || new Map()
+        // return traits
+        return I.List()
     }
 }
 

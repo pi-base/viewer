@@ -51,7 +51,7 @@ class TraitPager extends React.Component<Props, State> {
   }
 
   all() {
-    return store.traitsBySpace(this.props.space.uid)
+    return store.traits.forSpace(this.props.space.uid)
   }
 
   display(traits: I.List<T.Trait>) {
@@ -85,9 +85,9 @@ class TraitPager extends React.Component<Props, State> {
     if (asserted && deduced) {
       return seq
     } else if (asserted) {
-      return seq.filter((t: T.Trait) => !store.hasProof(t))
+      return seq.filter((t: T.Trait) => !store.proofs.for(t))
     } else if (deduced) {
-      return seq.filter((t: T.Trait) => store.hasProof(t))
+      return seq.filter((t: T.Trait) => !!store.proofs.for(t))
     } else {
       return seq
     }

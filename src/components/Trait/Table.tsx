@@ -37,7 +37,11 @@ function TraitTable({ spaces, properties }: Props) {
     <table className="table table-condensed table-striped table-hover">
       <thead>
         <tr>
-          <th>Space</th>
+          <th>
+            Space
+            {' '}
+            <Link to="/spaces/new" className="btn btn-default btn-xs">New</Link>
+          </th>
           {properties.map((p: T.Property) => (
             <th key={p.uid}>
               <Link to={`/properties/${p.uid}`}>

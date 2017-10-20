@@ -17,7 +17,9 @@ class Layout extends React.Component<any> {
   }
 
   loadViewer() {
-    store.loadView(Q.viewer)
+    store.loadView(Q.viewer).then(() => {
+      store.runProver()
+    })
   }
 
   loaded() {

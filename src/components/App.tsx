@@ -2,7 +2,7 @@ import * as React from 'react'
 import { ApolloProvider } from 'react-apollo'
 import { Router, browserHistory } from 'react-router'
 
-import debug from '../debug'
+import Debug from '../debug'
 import { Client, client } from '../graph'
 import routes from '../routes'
 import store from '../store'
@@ -13,14 +13,15 @@ export const wrap = (component, graph?: Client) => {
     store.apollo = graph.apollo
   }
 
-  debug(store)
-
   return () => (
-    <ApolloProvider client={store.apollo}>
-      <Router history={browserHistory}>
-        {component}
-      </Router>
-    </ApolloProvider>
+    <div>
+      <ApolloProvider client={store.apollo}>
+        <Router history={browserHistory}>
+          {component}
+        </Router>
+      </ApolloProvider>
+      <Debug store={store} />
+    </div>
   )
 }
 

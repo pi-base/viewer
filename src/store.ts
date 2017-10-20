@@ -6,7 +6,9 @@ import { action, computed, observable } from 'mobx'
 import { Finder } from './models/PropertyFinder'
 
 import Collection from './store/Collection'
+import Proofs from './store/Proofs'
 import Traits from './store/Traits'
+import User from './store/User'
 
 import * as I from 'immutable'
 import * as T from './types'
@@ -14,13 +16,17 @@ import * as F from './models/Formula'
 import * as Q from './queries'
 
 export class Store {
-  @observable spaces: Collection<T.Id, T.Space>
-  @observable properties: Collection<T.Id, T.Property>
-  @observable theorems: Collection<T.Id, T.Theorem>
-  @observable traits: Traits
   @observable version: string
 
+  spaces: Collection<T.Id, T.Space>
+  properties: Collection<T.Id, T.Property>
+  theorems: Collection<T.Id, T.Theorem>
+  traits: Traits
+
   apollo: ApolloClient
+  user: User
+
+  proofs: Proofs
 
   constructor(client?: ApolloClient) {
     this.spaces = new Collection()
@@ -29,6 +35,8 @@ export class Store {
     this.traits = new Traits(this.spaces, this.properties)
 
     this.apollo = client || (new Client()).apollo
+
+    this.user = new User(this.apollo)
   }
 
   @computed get propertyFinder(): Finder<T.Property> {
@@ -48,20 +56,8 @@ export class Store {
     )
   }
 
-  traitsBySpace(spaceId: T.Id): I.List<T.Trait> {
-    return I.List()
-  }
-
-  hasProof(trait: T.Trait) {
-    return false
-  }
-
-  currentUser(): { name: string } | undefined {
-    return undefined
-  }
-
   loadView(query: any) {
-    this.apollo.query({ query }).then(response => {
+    return this.apollo.query({ query }).then(response => {
       this.addView((response.data as any).viewer)
     })
   }
@@ -102,6 +98,10 @@ export class Store {
     })
 
     this.version = viewer.version
+  }
+
+  @action runProver() {
+    return
   }
 }
 
