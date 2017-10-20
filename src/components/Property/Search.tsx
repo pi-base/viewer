@@ -2,6 +2,9 @@ import * as React from 'react'
 import { Link } from 'react-router'
 
 import * as I from 'immutable'
+import { observer } from 'mobx-react'
+
+import { mobxStore } from '../../store'
 
 import List from '../List'
 import Preview from '../Preview'
@@ -47,16 +50,23 @@ class Property extends React.Component<Props, { expanded: boolean }> {
   }
 }
 
-export default function Search(props: { properties: I.List<Item> }) {
-  return (
-    <div>
-      <Link to="properties/new">New</Link>
+@observer
+class Search extends React.Component {
+  render() {
+    const properties = mobxStore.properties.all
 
-      <List
-        name="properties"
-        objects={props.properties}
-        component={Property}
-      />
-    </div>
-  )
+    return (
+      <div>
+        <Link to="properties/new">New</Link>
+
+        <List
+          name="properties"
+          objects={properties}
+          component={Property}
+        />
+      </div>
+    )
+  }
 }
+
+export default Search

@@ -13,7 +13,7 @@ import TraitTable from '../Trait/Table'
 
 interface Props {
   theorems: I.List<T.Theorem>
-  traits: T.TraitTable
+  traits: T.TraitMap
   properties: T.Finder<T.Property>
   text?: string
   formula?: F.Formula<T.Property>
@@ -77,7 +77,7 @@ function Results({ text, formula, results, onSelect, traits, theorems, propertie
     : I.List<T.Property>()
 
   return (
-    <TraitTable spaces={results} properties={columns} traits={traits} />
+    <TraitTable spaces={results} properties={columns} />
   )
 }
 

@@ -55,6 +55,7 @@ export interface Proof {
   readonly theorems: I.List<Theorem>
 }
 
+export type TraitMap = I.Map<Id, I.Map<Id, boolean>> // spaceId, propertyId => trait
 export type TraitTable = I.Map<Id, I.Map<Id, Trait>> // spaceId, propertyId => trait
 
 export type Index<P> = I.Map<Id, P>

@@ -76,7 +76,7 @@ export function filterByText(
 }
 
 export function filterByFormula(
-  traits: T.TraitTable,
+  traits: T.TraitMap,
   spaces: I.List<T.Space>,
   formula: F.Formula<T.Id>
 ): I.List<T.Space> {
@@ -89,7 +89,7 @@ export function filterByFormula(
 
 export function filter(
   finder: Finder<T.Space>,
-  traits: T.TraitTable,
+  traits: T.TraitMap,
   spaces: I.List<T.Space>,
   { text, formula }: { text?: string, formula?: F.Formula<T.Id> }
 ): I.List<T.Space> {
@@ -161,7 +161,7 @@ export function hasProof(state: T.StoreState, trait: T.Trait) {
 
 export function counterexamples(
   spaces: I.List<T.Space>,
-  traits: T.TraitTable,
+  traits: T.TraitMap,
   theorem: T.Theorem
 ): I.List<T.Space> {
   const formula = F.and(F.negate(theorem.if), theorem.then)

@@ -4,6 +4,8 @@ import * as A from '../actions'
 import * as F from '../models/Formula'
 import * as T from '../types'
 
+import { mobxStore } from '../store'
+
 type Formula = F.Formula<T.Id>
 type Space = { uid: T.Id, name: string }
 type Property = { uid: T.Id, name: string }

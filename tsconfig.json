@@ -15,7 +15,8 @@
     "noImplicitAny": false, // FIXME
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "experimentalDecorators": true
   },
   "exclude": [
     "node_modules",

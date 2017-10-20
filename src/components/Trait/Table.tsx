@@ -2,19 +2,20 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import * as I from 'immutable'
 
+import { mobxStore } from '../../store'
 import * as T from '../../types'
 
 import Icon from '../Icon'
-import Tex  from '../Tex'
+import Tex from '../Tex'
 
 export interface Props {
   spaces: I.List<T.Space>
   properties: I.List<T.Property>
-  traits: T.TraitTable
+  // traits: T.TraitTable
 }
 
-function check(traits: T.TraitTable, space: T.Space, property: T.Property) {
-  const val = traits.getIn([space.uid, property.uid]).value
+function check(space: T.Space, property: T.Property) {
+  const val = mobxStore.traits.check(space.uid, property.uid)
   let type
   if (val === true) {
     type = 'ok'
@@ -26,12 +27,12 @@ function check(traits: T.TraitTable, space: T.Space, property: T.Property) {
 
   return (
     <Link to={`/spaces/${space.uid}/properties/${property.uid}`}>
-      <Icon type={type}/>
+      <Icon type={type} />
     </Link>
   )
 }
 
-function TraitTable({ spaces, properties, traits }: Props) {
+function TraitTable({ spaces, properties }: Props) {
   return (
     <table className="table table-condensed table-striped table-hover">
       <thead>
@@ -55,7 +56,7 @@ function TraitTable({ spaces, properties, traits }: Props) {
               </Link>
             </td>
             {properties.map((p: T.Property) => (
-              <td key={p.uid}>{check(traits!, s, p)}</td>
+              <td key={p.uid}>{check(s, p)}</td>
             ))}
           </tr>
         ))}

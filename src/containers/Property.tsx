@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import * as I from 'immutable'
 
+import { mobxStore } from '../store'
 import { view } from '../graph'
 import * as Q from '../queries'
 
@@ -12,9 +12,7 @@ import RelatedTheorems from '../components/Property/RelatedTheorems'
 import Tex from '../components/Tex'
 
 const Property = props => {
-    const property = props.viewer.properties.find(p =>
-        p.uid === props.params.id
-    )
+    const property = mobxStore.properties.find(props.params.id)
     if (!property) { return <NotFound {...props} /> }
 
     return (
@@ -30,25 +28,18 @@ const Property = props => {
 
             <RelatedTheorems
                 property={property}
-                properties={props.properties}
-                theorems={props.theorems}
+                properties={mobxStore.propertyFinder}
+                theorems={mobxStore.theorems.all}
             />
         </div>
     )
 }
 
 // FIXME: this forces a load of the descriptions for all properties
-const withData = view(`
+export default view(`
   properties {
       uid
       name
       description
   }
 `)(Property)
-
-export default connect(
-    (state) => ({
-        properties: Q.allProperties(state.viewer),
-        theorems: Q.allTheorems(state.viewer)
-    })
-)(withData)

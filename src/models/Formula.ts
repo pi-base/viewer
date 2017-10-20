@@ -79,15 +79,15 @@ export function properties<P>(f: Formula<P>): I.OrderedSet<P> {
   }
 }
 
-type TraitMap = I.Map<string, { value: boolean, deduced: boolean }>
-
-export function evaluate(f: Formula<T.Id>, traits: TraitMap): boolean | undefined {
+export function evaluate(f: Formula<T.Id>, traits: I.Map<T.Id, boolean>): boolean | undefined {
   let result: boolean | undefined
 
   switch (f.kind) {
     case 'atom':
-      const trait = traits.get(f.property)
-      return trait ? trait.value === f.value : undefined
+      if (traits.has(f.property)) {
+        return traits.get(f.property) === f.value
+      }
+      return undefined
     case 'and':
       result = true // by default
       f.subs.forEach(sub => {

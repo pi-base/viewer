@@ -3,6 +3,8 @@ import { compose, withApollo } from 'react-apollo'
 import { connect } from 'react-redux'
 import * as I from 'immutable'
 
+import { mobxStore } from '../store'
+
 import Navbar from './Navbar'
 
 import * as A from '../actions'
@@ -29,6 +31,7 @@ class Layout extends React.Component<any> {
     const { client, loadedView } = this.props
     client.query({ query: Q.viewer }).then(response => {
       loadedView(response.data.viewer)
+      mobxStore.loadView(response.data.viewer)
     })
   }
 

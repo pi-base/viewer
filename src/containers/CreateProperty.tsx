@@ -1,27 +1,31 @@
 import * as React from 'react'
 
+import uuid from 'uuid/v4'
+import { mobxStore } from '../store'
+
 import Form from '../components/Property/Form'
 
-import { updateView } from '../graph'
-import { createProperty } from '../graph/queries'
+class CreateProperty extends React.Component<any, {}> {
+    save: () => void
 
-const CreateProperty = ({ update, router }) => {
-    const create = (property) => {
-        update({
-            variables: {
-                input: {
-                    name: property.name,
-                    description: property.description
-                }
-            }
-        }).then(view => {
-            // TODO: handle validation / server errors
-            const prop = view.properties[0]
-            router.push(`/properties/${prop.uid}`)
-        })
+    constructor(props: any) {
+        super(props);
+        this.save = this._save.bind(this)
     }
 
-    return <Form save={create} />
+    _save(p: any) {
+        const q = {
+            uid: uuid(),
+            name: p.name,
+            description: p.description
+        }
+        mobxStore.properties.add(q)
+        this.props.router.push(`/properties/${q.uid}`)
+    }
+
+    render() {
+        return <Form save={this.save} />
+    }
 }
 
-export default updateView(createProperty)(CreateProperty)
+export default CreateProperty

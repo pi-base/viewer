@@ -1,22 +1,17 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import * as I from 'immutable'
+import { observer } from 'mobx-react'
 
-import * as Q from '../../queries'
-import * as T from '../../types'
+import { mobxStore } from '../store'
+import * as Q from '../queries'
+import * as T from '../types'
 
-import FormulaInput from '../Formula/Input'
-import Results from './Results'
+import FormulaInput from '../components/Formula/Input'
+import Results from '../components/Search/Results'
 
-import * as F from '../../models/Formula'
-import { Finder } from '../../models/PropertyFinder'
-
-interface Props {
-  spaces: I.List<T.Space> & { finder: Finder<T.Space> }
-  properties: I.List<T.Property> & { finder: Finder<T.Property> }
-  traits: T.TraitTable
-  theorems: I.List<T.Theorem>
-}
+import * as F from '../models/Formula'
+import { Finder } from '../models/PropertyFinder'
 
 type Formula = F.Formula<T.Property>
 
@@ -26,8 +21,9 @@ export interface State {
   text: string
 }
 
-class Search extends React.Component<Props & T.RouterProps, State> {
-  constructor(props: Props & T.RouterProps) {
+@observer
+class Search extends React.Component<T.RouterProps, State> {
+  constructor(props: T.RouterProps) {
     super(props)
     this.state = {
       q: '',
@@ -91,26 +87,21 @@ class Search extends React.Component<Props & T.RouterProps, State> {
       ? F.mapProperty(p => p.uid, this.state.formula)
       : undefined
 
-    return Q.filter(
-      this.props.spaces.finder,
-      this.props.traits,
-      this.props.spaces,
-      { text: this.state.text, formula: f }
-    )
+    return mobxStore.search({ text: this.state.text, formula: f })
   }
 
   parseFormula(q: string) {
-    return Q.parseFormula(this.props.properties.finder, q)
+    return Q.parseFormula(mobxStore.propertyFinder, q)
   }
 
   render() {
     const results = this.results()
-    const { theorems, traits } = this.props
 
     // TODO: add widget to allow displaying extra traits inline
     return (
       <div className="search row">
         <div className="col-md-4">
+          <Link to="/spaces/new" className="btn btn-default btn-sm">New</Link>
           <div className="form-group">
             <label htmlFor="textFilter">Filter by Text</label>
             <input
@@ -125,7 +116,7 @@ class Search extends React.Component<Props & T.RouterProps, State> {
           <div className="form-group">
             <label htmlFor="formulaFilter">Filter by Formula</label>
             <FormulaInput
-              finder={this.props.properties.finder}
+              finder={mobxStore.propertyFinder}
               q={this.state.q}
               placeholder="e.g. compact + ~metrizable"
               onChange={(q, formula) => this.setFormulaFilter({ q, formula })}
@@ -135,9 +126,9 @@ class Search extends React.Component<Props & T.RouterProps, State> {
 
         <div className="col-md-8">
           <Results
-            theorems={theorems}
-            traits={traits}
-            properties={this.props.properties.finder}
+            theorems={mobxStore.theorems.all}
+            traits={mobxStore.traits.values}
+            properties={mobxStore.propertyFinder}
             text={this.state.text}
             formula={this.state.formula}
             results={results}

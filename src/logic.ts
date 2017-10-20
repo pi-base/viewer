@@ -17,6 +17,11 @@ type EvidenceMap = I.Map<T.Id, Evidence> // propertyId => ...
 
 type Formula = F.Formula<T.Id>
 
+function evaluate(f: Formula, traitMap: I.Map<string, { value: boolean }>) {
+  const boolMap = traitMap.map(trait => trait!.value).toMap()
+  return F.evaluate(f, boolMap)
+}
+
 function buildContradiction(theorem: T.Theorem | 'given', evidence: EvidenceMap): Disproof {
   if (theorem === 'given') {
     throw new Error('Contradiction from `given`')
@@ -66,7 +71,7 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
           return null
         }
 
-        const value = F.evaluate(sf, traits)
+        const value = evaluate(sf, traits)
         if (value === true) {
           return null // Can't force anything
         } else if (value === false) {
@@ -113,8 +118,8 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
   const apply = (theorem: T.Theorem) => {
     const a = theorem.if
     const c = theorem.then
-    const av = F.evaluate(a, traits)
-    const cv = F.evaluate(c, traits)
+    const av = evaluate(a, traits)
+    const cv = evaluate(c, traits)
 
     if (av === true && cv === false) {
       contradiction = buildContradiction(theorem, evidence)

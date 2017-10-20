@@ -4,29 +4,23 @@ import * as I from 'immutable'
 
 import { view, updateView, createProperty } from '../graph'
 
-const query = gql`
-  query Properties {
-    viewer {
-      properties {
-        uid
-        name
-        description
-      }
-    }
-  }
-`
-class Container extends React.Component<any, {}> {
-  render() {
-    if (this.props.data && this.props.data.viewer) {
-      const properties = I.List(this.props.data.viewer.properties)
-      return (
-        <div>
-          {React.cloneElement(this.props.children, { properties: properties })}
-        </div>
-      )
-    }
-    return null
-  }
+import { mobxStore } from '../store'
 
+const Container = ({ children, viewer }) => {
+  viewer.properties.forEach(p => {
+    mobxStore.properties.add({
+      uid: p.uid,
+      name: p.name,
+      description: p.description
+    })
+  })
+  return children
 }
-export default graphql(query)(Container)
+
+export default view(`
+  properties {
+    uid
+    name
+    description
+  }
+`)(Container)

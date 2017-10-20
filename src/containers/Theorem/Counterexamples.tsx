@@ -14,7 +14,7 @@ import { Finder } from '../../models/PropertyFinder'
 
 export interface Props {
   spaces: I.List<T.Space>
-  traits: T.TraitTable
+  traits: T.TraitMap
   theorems: I.List<T.Theorem>
   properties: T.Finder<T.Property>
   theorem: T.Theorem
@@ -45,7 +45,6 @@ function Counterexamples({ spaces, traits, theorems, properties, theorem }: Prop
         <TraitTable
           spaces={counterexamples}
           properties={theoremProperties}
-          traits={traits}
         />
       </aside>
     )
