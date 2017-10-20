@@ -21,9 +21,9 @@ if (window) {
   }
 }
 
-const App = makeApp({ state: undefined, client })
+const App = makeApp(client)
 
 ReactDOM.render(
-  <App/>,
+  <App />,
   document.getElementById('root')
 )

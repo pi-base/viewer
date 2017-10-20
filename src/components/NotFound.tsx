@@ -1,37 +1,28 @@
 import * as React from 'react'
-import { connect, Dispatch } from 'react-redux'
 
-import * as A from '../actions'
+import { observer } from 'mobx-react'
+import store from '../store'
+
 import * as F from '../models/Formula'
 import * as Q from '../queries'
 import * as T from '../types'
 
 import Id from '../models/Id'
 
-const tryConvertFormula = (state: T.StoreState, q: string) => {
+const tryConvertFormula = (q: string) => {
   if (!q) { return }
 
   try {
     const f = F.fromJSON(JSON.parse(q))
-    return F.mapProperty(id => state.properties.get(Id('P', id)), f)
+    return F.mapProperty(id => store.properties.find(Id('P', id))!, f)
   } catch (e) {
     return
   }
 }
 
-interface StateProps {
-  tryConvertFormula: (q: string) => (F.Formula<T.Property> | undefined)
-  findSpace: (id: string) => (T.Space | undefined)
-  findTrait: (id: string) => (T.Trait | undefined)
-}
+export type Props = T.RouterProps
 
-interface DispatchProps {
-  report: (path: string) => void
-}
-
-export type Props = StateProps & DispatchProps & T.RouterProps
-
-class NotFound extends React.Component<Props, undefined> {
+class NotFound extends React.Component<Props, {}> {
   componentWillMount() {
     const path = this.props.router.location.pathname
 
@@ -40,7 +31,7 @@ class NotFound extends React.Component<Props, undefined> {
       const q = this.props.router.location.query.q
       let newPath = '/spaces'
       if (q) {
-        const f = this.props.tryConvertFormula(q)
+        const f = tryConvertFormula(q)
         if (f) {
           newPath += `?q=${encodeURIComponent(F.toString(f))}`
         }
@@ -50,22 +41,24 @@ class NotFound extends React.Component<Props, undefined> {
 
     let m = path.match(/spaces\/(\d+)/)
     if (m) {
-      const space = this.props.findSpace(Id('S', m[1]))
+      const space = store.spaces.find(Id('S', m[1]))
       if (space) {
         return this.props.router.push(`/spaces/${space.uid}`)
       }
     }
 
+    // FIXME
     // Redirect traits by id to their canonical URL
-    m = path.match(/traits\/(\d+)/)
-    if (m) {
-      const trait = this.props.findTrait(Id('T', m[1]))
-      if (trait) {
-        return this.props.router.push(`/spaces/${trait.space.uid}/properties/${trait.property.uid}`)
-      }
-    }
+    // m = path.match(/traits\/(\d+)/)
+    // if (m) {
+    //   const trait = this.props.findTrait(Id('T', m[1]))
+    //   if (trait) {
+    //     return this.props.router.push(`/spaces/${trait.space.uid}/properties/${trait.property.uid}`)
+    //   }
+    // }
 
-    this.props.report(path)
+    // FIXME: report to Rollbar
+    // this.props.report(path)
   }
 
   render() {
@@ -87,18 +80,4 @@ class NotFound extends React.Component<Props, undefined> {
   }
 }
 
-function mapStateToProps(state: T.StoreState): StateProps {
-  return {
-    findSpace: (id: string) => Q.findSpace(state, id),
-    findTrait: (id: string) => Q.findTraitById(state, id),
-    tryConvertFormula: (f: string) => tryConvertFormula(state, f)
-  }
-}
-
-function mapDispatchToProps(dispatch: Dispatch<A.PageNotFound>) {
-  return {
-    report: (path: string) => dispatch(A.pageNotFound(path))
-  }
-}
-
-export default connect<StateProps, DispatchProps, {}>(mapStateToProps, mapDispatchToProps)(NotFound)
+export default NotFound

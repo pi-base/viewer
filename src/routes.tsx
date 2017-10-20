@@ -42,9 +42,9 @@ const routes = (
     <Route path="theorems/:id" component={Theorem} />
 
     <Route path="properties/new" component={PropertyCreate} />
-    <Route path="properties/:id" component={Property} />
     <Route path="properties" component={Properties}>
       <IndexRoute component={PropertySearch} />
+      <Route path=":id" component={Property} />
     </Route>
 
     <Route path="*" component={NotFound} />

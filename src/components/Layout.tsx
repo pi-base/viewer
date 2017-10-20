@@ -1,49 +1,36 @@
 import * as React from 'react'
-import { compose, withApollo } from 'react-apollo'
-import { connect } from 'react-redux'
-import * as I from 'immutable'
+import { observer } from 'mobx-react'
 
-import { mobxStore } from '../store'
+import * as Q from '../graph/queries'
+import store from '../store'
 
 import Navbar from './Navbar'
 
-import * as A from '../actions'
-import * as F from '../models/Formula'
-import * as Q from '../graph/queries'
-import * as T from '../types'
-
-import { Finder } from '../models/PropertyFinder'
-
+@observer
 class Layout extends React.Component<any> {
   componentWillMount() {
-    if (!this.props.version) {
-      this.fetchViewer()
-    }
+    if (!this.props.version) { this.loadViewer() }
   }
 
   componentWillReceiveProps(newProps: any) {
-    if (!newProps.version) {
-      this.fetchViewer()
-    }
+    if (!newProps.version) { this.loadViewer() }
   }
 
-  fetchViewer() {
-    const { client, loadedView } = this.props
-    client.query({ query: Q.viewer }).then(response => {
-      loadedView(response.data.viewer)
-      mobxStore.loadView(response.data.viewer)
-    })
+  loadViewer() {
+    store.loadView(Q.viewer)
+  }
+
+  loaded() {
+    return this.props.location.pathname === '/' || store.version
   }
 
   render() {
-    const loaded = this.props.location.pathname === '/' || this.props.version
-
     return (
       <div>
         <Navbar />
 
         <div className="container">
-          {loaded
+          {this.loaded()
             ? this.props.children
             : 'Loading...'}
         </div>
@@ -52,11 +39,4 @@ class Layout extends React.Component<any> {
   }
 }
 
-export default connect(
-  (state) => ({
-    version: state.viewer.version
-  }),
-  (dispatch) => ({
-    loadedView: (v) => dispatch(A.loadedView(v))
-  })
-)(withApollo(Layout))
+export default Layout

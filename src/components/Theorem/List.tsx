@@ -1,7 +1,9 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import * as I from 'immutable'
+
+import { observer } from 'mobx-react'
+import store from '../../store'
 
 import * as Q from '../../queries'
 import * as T from '../../types'
@@ -21,7 +23,9 @@ interface State {
   theorems: I.List<T.Theorem>
 }
 
+@observer
 class Theorems extends React.Component<Props, State> {
+  // TODO: can clean up filtering with computed props
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -31,7 +35,7 @@ class Theorems extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    this.doFilter(this.props.theorems)
+    this.doFilter(store.theorems.all)
   }
 
   more() {
@@ -80,8 +84,4 @@ class Theorems extends React.Component<Props, State> {
   }
 }
 
-export default connect(
-  (state) => ({
-    theorems: Q.allTheorems(state).toList()
-  })
-)(Theorems)
+export default Theorems

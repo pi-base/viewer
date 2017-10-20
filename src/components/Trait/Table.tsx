@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link } from 'react-router'
 import * as I from 'immutable'
 
-import { mobxStore } from '../../store'
+import store from '../../store'
 import * as T from '../../types'
 
 import Icon from '../Icon'
@@ -15,7 +15,7 @@ export interface Props {
 }
 
 function check(space: T.Space, property: T.Property) {
-  const val = mobxStore.traits.check(space.uid, property.uid)
+  const val = store.traits.check(space.uid, property.uid)
   let type
   if (val === true) {
     type = 'ok'

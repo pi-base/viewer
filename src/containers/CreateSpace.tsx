@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { graphql } from 'react-apollo'
 import { Field, reduxForm } from 'redux-form'
 
-import * as A from '../actions'
 import { createSpace } from '../graph/queries'
 
 interface Props {
@@ -55,9 +54,6 @@ class SpaceForm extends React.Component<Props, State> {
 const updateViewer = (query) => (component) => {
     return graphql(query)(connect(
         () => ({}),
-        (dispatch) => ({
-            updateVersion: (commit) => dispatch(A.updateVersion(commit))
-        })
     )(component))
 }
 

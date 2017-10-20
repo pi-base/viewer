@@ -2,8 +2,6 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { graphql, gql, compose } from 'react-apollo'
 
-import * as A from '../actions'
-
 const User = props => {
   if (props.data.loading || !props.user) { return null }
 
@@ -25,14 +23,6 @@ const User = props => {
 }
 
 export default compose(
-  connect(
-    (state) => ({
-      user: state.user
-    }),
-    (dispatch) => ({
-      changeBranch: (name) => dispatch(A.changeBranch(name))
-    })
-  ),
   graphql(gql`{
     me {
       name

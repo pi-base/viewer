@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
+
+import store from '../../store'
 
 import * as Q from '../../queries'
 import * as T from '../../types'
@@ -11,11 +12,13 @@ import Tex from '../Tex'
 export interface Props {
   space: T.Space
   trait: T.Trait
-  properties: T.Finder<T.Property>
+  // properties: T.Finder<T.Property>
   proof?: T.Proof
 }
 
-function Proof({ space, trait, properties, proof }: Props) {
+function Proof({ space, trait, proof }: Props) {
+  const properties = store.propertyFinder
+
   if (proof) {
     return <ProofExplorer space={space} proof={proof} properties={properties} />
   } else if (trait.description) {
@@ -29,10 +32,4 @@ function Proof({ space, trait, properties, proof }: Props) {
   }
 }
 
-function mapStateToProps(state: T.StoreState, props: Props) {
-  return {
-    proof: Q.getProof(state, props.trait)
-  }
-}
-
-export default connect(mapStateToProps)(Proof)
+export default Proof

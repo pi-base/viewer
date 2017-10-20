@@ -17,22 +17,28 @@ export interface Props {
   }
 }
 
-export default function Show({ properties, theorems, params: { propertyId } }: Props) {
-  const property = properties.records.get(propertyId)
-  if (!property) { return <NotFound /> }
+class Show extends React.Component<Props, {}> {
+  render() {
+    const property = this.props.properties.records.get(this.props.params.propertyId)
+    if (!property) { return <NotFound {...this.props} /> }
 
-  return (
-    <div>
-      <h1>
-        <Tex>
-          {property.name}
-          {property.aliases ? <Aliases aliases={property.aliases} /> : ''}
-        </Tex>
-      </h1>
-      <Tex><Markdown text={property.description} /></Tex>
-      <hr />
+    return (
+      <div>
+        <h1>
+          <Tex>
+            {property.name}
+            {property.aliases ? <Aliases aliases={property.aliases} /> : ''}
+          </Tex>
+        </h1>
+        <Tex><Markdown text={property.description} /></Tex>
+        <hr />
 
-      <RelatedTheorems property={property} theorems={theorems} properties={properties} />
-    </div>
-  )
+        <RelatedTheorems
+          property={property}
+          theorems={this.props.theorems}
+          properties={this.props.properties}
+        />
+      </div>
+    )
+  }
 }

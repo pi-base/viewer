@@ -1,12 +1,11 @@
-import { connect } from 'react-redux'
 import { graphql, gql, withApollo, compose } from 'react-apollo'
 
 import { Client } from './graph/client'
-import * as A from './actions'
-import * as Q from './graph/queries'
 
 export * from './graph/client'
 export * from './graph/queries'
+
+import store from './store'
 
 if (process.env.NODE_ENV === 'test') {
   // tslint:disable-next-line no-any
@@ -28,18 +27,13 @@ export const view = (fragment) => {
   const withViewer = component => props => {
     const data = props.data as any
     if (data && data.viewer) {
-      return component({ ...props, viewer: data.viewer })
+      return new component({ ...props, viewer: data.viewer })
     } else {
       return null
     }
   }
 
   return compose(
-    connect(
-      (state) => ({
-        version: state.viewer.version
-      })
-    ),
     graphql(query, {
       options: (props: any) => ({
         variables: {
@@ -66,17 +60,11 @@ export const updateView = (mutation) => {
         return viewer
       })
     }
-    return component({ ...props, update })
+    return new component({ ...props, update })
   }
 
   return compose(
     withApollo,
-    connect(
-      () => ({}),
-      (dispatch) => ({
-        loadedView: (v) => dispatch(A.loadedView(v))
-      })
-    ),
     withUpdate
   )
 }

@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import uuid from 'uuid/v4'
-import { mobxStore } from '../store'
+import store from '../store'
 
 import Form from '../components/Property/Form'
 
@@ -19,7 +19,7 @@ class CreateProperty extends React.Component<any, {}> {
             name: p.name,
             description: p.description
         }
-        mobxStore.properties.add(q)
+        store.properties.add(q)
         this.props.router.push(`/properties/${q.uid}`)
     }
 

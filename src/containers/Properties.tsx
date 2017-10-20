@@ -4,11 +4,11 @@ import * as I from 'immutable'
 
 import { view, updateView, createProperty } from '../graph'
 
-import { mobxStore } from '../store'
+import store from '../store'
 
 const Container = ({ children, viewer }) => {
   viewer.properties.forEach(p => {
-    mobxStore.properties.add({
+    store.properties.add({
       uid: p.uid,
       name: p.name,
       description: p.description

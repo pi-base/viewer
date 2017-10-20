@@ -5,9 +5,7 @@ export default function (store: Store) {
         error() {
             return ('' as any).floop('')
         },
-        state() {
-            return store.getState()
-        }
+        store: store
     }
 
     if (process.env.NODE_ENV === 'development') {

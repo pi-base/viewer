@@ -2,7 +2,6 @@ import * as React from 'react'
 import { gql } from 'react-apollo'
 import { Dispatch, connect } from 'react-redux'
 
-import * as A from '../actions'
 import * as Client from '../graph/client'
 import * as T from '../types'
 
@@ -29,7 +28,4 @@ class Login extends React.Component<Props & T.RouterProps, {}> {
 
 export default connect(
     () => ({}),
-    (dispatch) => ({
-        login: (token) => dispatch(A.login(token))
-    })
 )(Login)

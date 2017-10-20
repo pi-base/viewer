@@ -1,6 +1,5 @@
 import * as I from 'immutable'
 
-import { State as ViewerState } from '../reducers/viewer'
 import * as F from '../models/Formula'
 
 import { Finder } from '../models/PropertyFinder'
@@ -64,18 +63,6 @@ export interface UserState {
   name: string | null
   token: Token | null
   branch: Branch
-}
-
-export interface StoreState {
-  spaces: Index<Space>
-  properties: Index<Property>
-  theorems: Index<Theorem>
-  traits: TraitTable
-  'spaces.finder': Finder<Space>
-  'properties.finder': Finder<Property>
-  proofs: Index<ProofIds> // trait id => proof
-  user: UserState
-  viewer: ViewerState
 }
 
 // There's probably a cleaner way to handle this, but this gives us an escape

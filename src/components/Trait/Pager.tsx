@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-
 import * as I from 'immutable'
+import { observer } from 'mobx-react'
 
 import * as Q from '../../queries'
 import * as T from '../../types'
+import store from '../../store'
 
 import Icon from '../Icon'
 import Filter from '../Filter'
@@ -14,11 +14,6 @@ import TraitItem from './Item'
 
 export interface Props {
   space: T.Space
-}
-
-interface StoreProps {
-  allTraits: I.List<T.Trait>
-  hasProof: (a: T.Trait) => boolean
 }
 
 interface Tab {
@@ -37,8 +32,9 @@ export interface State {
   filtered: I.List<T.Trait>
 }
 
-class TraitPager extends React.Component<Props & StoreProps, State> {
-  constructor(props: Props & StoreProps) {
+@observer
+class TraitPager extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props)
     this.state = {
       limit: 10,
@@ -55,7 +51,7 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
   }
 
   all() {
-    return this.props.allTraits
+    return store.traitsBySpace(this.props.space.uid)
   }
 
   display(traits: I.List<T.Trait>) {
@@ -89,17 +85,15 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
     if (asserted && deduced) {
       return seq
     } else if (asserted) {
-      return seq.filter((t: T.Trait) => !this.props.hasProof(t))
+      return seq.filter((t: T.Trait) => !store.hasProof(t))
     } else if (deduced) {
-      return seq.filter((t: T.Trait) => this.props.hasProof(t))
+      return seq.filter((t: T.Trait) => store.hasProof(t))
     } else {
       return seq
     }
   }
 
   render() {
-    const { allTraits } = this.props
-
     const tabbed = this.tabbed(this.state.filtered)
     const limited = this.limited(tabbed)
 
@@ -126,7 +120,7 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
         </div>
 
         <Filter
-          collection={allTraits}
+          collection={this.all()}
           weights={['property.name']}
           onChange={(ts) => this.display(I.List<T.Trait>(ts))}
         />
@@ -151,11 +145,4 @@ class TraitPager extends React.Component<Props & StoreProps, State> {
   }
 }
 
-function mapStateToProps(state: T.StoreState, { space }: Props): StoreProps {
-  return {
-    allTraits: Q.spaceTraits(state, space).toList(),
-    hasProof: (t: T.Trait) => Q.hasProof(state, t)
-  }
-}
-
-export default connect(mapStateToProps)(TraitPager)
+export default TraitPager

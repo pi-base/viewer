@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import * as I from 'immutable'
 import { observer } from 'mobx-react'
 
-import { mobxStore } from '../store'
+import store from '../store'
 import * as Q from '../queries'
 import * as T from '../types'
 
@@ -87,11 +87,11 @@ class Search extends React.Component<T.RouterProps, State> {
       ? F.mapProperty(p => p.uid, this.state.formula)
       : undefined
 
-    return mobxStore.search({ text: this.state.text, formula: f })
+    return store.search({ text: this.state.text, formula: f })
   }
 
   parseFormula(q: string) {
-    return Q.parseFormula(mobxStore.propertyFinder, q)
+    return Q.parseFormula(store.propertyFinder, q)
   }
 
   render() {
@@ -116,7 +116,7 @@ class Search extends React.Component<T.RouterProps, State> {
           <div className="form-group">
             <label htmlFor="formulaFilter">Filter by Formula</label>
             <FormulaInput
-              finder={mobxStore.propertyFinder}
+              finder={store.propertyFinder}
               q={this.state.q}
               placeholder="e.g. compact + ~metrizable"
               onChange={(q, formula) => this.setFormulaFilter({ q, formula })}
@@ -126,9 +126,9 @@ class Search extends React.Component<T.RouterProps, State> {
 
         <div className="col-md-8">
           <Results
-            theorems={mobxStore.theorems.all}
-            traits={mobxStore.traits.values}
-            properties={mobxStore.propertyFinder}
+            theorems={store.theorems.all}
+            traits={store.traits.values}
+            properties={store.propertyFinder}
             text={this.state.text}
             formula={this.state.formula}
             results={results}

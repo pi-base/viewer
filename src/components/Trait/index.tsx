@@ -1,13 +1,12 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 
 import * as Q from '../../queries'
 import * as T from '../../types'
 
-import Icon     from '../Icon'
+import Icon from '../Icon'
 import Markdown from '../Markdown'
-import Proof    from '../Proof'
-import Tex      from '../Tex'
+import Proof from '../Proof'
+import Tex from '../Tex'
 
 interface Props {
   trait: T.Trait
@@ -46,27 +45,25 @@ class Trait extends React.Component<Props, State> {
             className="btn btn-default btn-xs"
             onClick={() => this.toggleShowProperty()}
           >
-            <Icon type="question-sign"/>
+            <Icon type="question-sign" />
           </button>
         </h3>
 
-        { this.state.showProperty
-        ? (
+        {this.state.showProperty
+          ? (
             <Tex className="well">
-              <Markdown text={trait.property.description}/>
+              <Markdown text={trait.property.description} />
             </Tex>
-        ) : ''}
+          ) : ''}
 
-        <Proof space={trait.space} trait={trait}/>
+        <Proof
+          space={trait.space}
+          trait={trait}
+          proof={undefined}
+        />
       </div>
     )
   }
 }
 
-function mapStateToProps(state: T.StoreState, { params }: Props) {
-  return {
-    trait: Q.findTrait(state, params.spaceId, params.propertyId)
-  }
-}
-
-export default connect(mapStateToProps)(Trait)
+export default Trait

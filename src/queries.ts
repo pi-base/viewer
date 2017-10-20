@@ -28,42 +28,6 @@ export const replaceFragment = (q: string, expanded: string) => {
   return q.replace(rexp, expanded)
 }
 
-// Generic finders
-
-function all<X>(coll: string, key: string = 'name') {
-  return (state: T.StoreState) => {
-    const objs = state[coll] || I.List()
-    return objs.sortBy((obj: I.Map<string, X>) =>
-      obj[key]
-    ).valueSeq()
-  }
-}
-
-export const allSpaces = all<T.Space>('spaces')
-export const allProperties = all<T.Property>('properties')
-export const allTheorems = all<T.Theorem>('theorems')
-
-export const findSpace = (state: T.StoreState, uid: T.Id) =>
-  state.spaces.get(uid)
-export const findProperty = (state: T.StoreState, uid: T.Id) =>
-  state.properties.get(uid)
-
-export const findTraitById = (state: T.StoreState, uid: T.Id) => {
-  throw new Error('FIXME: findTrait (by id)')
-}
-
-const fetchTheorem = (state: T.StoreState) => {
-  return (id: T.Id) => {
-    return state.theorems.get(id)
-  }
-}
-
-export const findTheorem = (state: T.StoreState, id: T.Id) =>
-  fetchTheorem(state)(id)
-
-export const fetchTrait = (state: T.StoreState) =>
-  (id: T.Id) => state.traits.get(id)
-
 // Filtration
 
 export function filterByText(
@@ -132,32 +96,28 @@ export function suggestionsFor(finder: Finder<T.Property>, query: string, limit:
   return finder.search(getFragment(query), limit).toList()
 }
 
-export function spaceTraits(
-  state: T.StoreState,
-  space: T.Space
-): I.Iterable<number, T.Trait> {
-  const traits = state.traits.get(space.uid) || I.Map()
-  return traits.valueSeq().sortBy((t: T.Trait) => t.property.name)
-}
-
-export function findTrait(state: T.StoreState, spaceId: string, propertyId: string) {
-  return state.traits.getIn([spaceId, propertyId])
-}
-
-export function getProof(state: T.StoreState, trait: T.Trait): T.Proof | undefined {
-  const proof = state.proofs.get(trait.uid)
-
-  if (!proof) { return }
-
-  return {
-    theorems: proof.theorems.map(id => findTheorem(state, id!)).toList(),
-    traits: proof.traits.map(id => findTraitById(state, id!)).toList()
-  }
-}
-
-export function hasProof(state: T.StoreState, trait: T.Trait) {
-  return state.proofs.has(trait.uid)
-}
+// export function spaceTraits(
+//   state: T.StoreState,
+//   space: T.Space
+// ): I.Iterable<number, T.Trait> {
+//   const traits = state.traits.get(space.uid) || I.Map()
+//   return traits.valueSeq().sortBy((t: T.Trait) => t.property.name)
+// }
+// 
+// export function findTrait(state: T.StoreState, spaceId: string, propertyId: string) {
+//   return state.traits.getIn([spaceId, propertyId])
+// }
+// 
+// export function getProof(state: T.StoreState, trait: T.Trait): T.Proof | undefined {
+//   const proof = state.proofs.get(trait.uid)
+// 
+//   if (!proof) { return }
+// 
+//   return {
+//     theorems: proof.theorems.map(id => findTheorem(state, id!)).toList(),
+//     traits: proof.traits.map(id => findTraitById(state, id!)).toList()
+//   }
+// }
 
 export function counterexamples(
   spaces: I.List<T.Space>,

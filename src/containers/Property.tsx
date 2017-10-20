@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as I from 'immutable'
 
-import { mobxStore } from '../store'
+import store from '../store'
 import { view } from '../graph'
 import * as Q from '../queries'
 
@@ -12,7 +12,7 @@ import RelatedTheorems from '../components/Property/RelatedTheorems'
 import Tex from '../components/Tex'
 
 const Property = props => {
-    const property = mobxStore.properties.find(props.params.id)
+    const property = store.properties.find(props.params.id)
     if (!property) { return <NotFound {...props} /> }
 
     return (
@@ -28,8 +28,8 @@ const Property = props => {
 
             <RelatedTheorems
                 property={property}
-                properties={mobxStore.propertyFinder}
-                theorems={mobxStore.theorems.all}
+                properties={store.propertyFinder}
+                theorems={store.theorems.all}
             />
         </div>
     )

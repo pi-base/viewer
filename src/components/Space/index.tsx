@@ -1,6 +1,10 @@
 import * as React from 'react'
 import { graphql, gql } from 'react-apollo'
 
+import { observer } from 'mobx-react'
+import store from '../../store'
+
+import { view } from '../../graph'
 import * as T from '../../types'
 import * as Q from '../../queries'
 
@@ -12,58 +16,51 @@ import Tex from '../Tex'
 
 export interface Props {
   space: T.Space
-  children: {}
+  children: React.ReactElement<any>
   params: { spaceId: string }
   router: T.RouterProps
   data: any
 }
 
-function Space(props: Props) {
-  const { router, children, params, data } = props
-  let space
-  if (data.viewer) {
-    space = data.viewer.spaces.find(s => s.uid === params.spaceId)
-    if (!space) { return <NotFound router={router} /> }
-  } else {
-    return <p>Loading ...</p>
-  }
+@observer
+class Space extends React.Component<Props, {}> {
+  render() {
+    const space = store.spaces.find(this.props.params.spaceId)
+    if (!space) { return <NotFound {...this.props} /> }
 
-  return (
-    <div>
-      <h1>
-        <Tex>
-          {space.name}
-          {space.aliases ? <Aliases aliases={space.aliases} /> : ''}
-        </Tex>
-      </h1>
-      <Tex><Markdown text={space.description} /></Tex>
+    const traits = store.traitsBySpace(space.uid)
 
-      <hr />
+    return (
+      <div>
+        <h1>
+          <Tex>
+            {space.name}
+            {space.aliases ? <Aliases aliases={space.aliases} /> : ''}
+          </Tex>
+        </h1>
+        <Tex><Markdown text={space.description} /></Tex>
 
-      <div className="row">
-        <div className="col-md-4">
-          <h3>Properties</h3>
-          <TraitPager space={space} />
-        </div>
-        <div className="col-md-8">
-          {children}
+        <hr />
+
+        <div className="row">
+          <div className="col-md-4">
+            <h3>Properties</h3>
+            <TraitPager space={space} />
+          </div>
+          <div className="col-md-8">
+            {React.cloneElement(this.props.children, { space, traits })}
+          </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
-const query = gql`
-  query Space($uid: string) {
-    viewer {
-      spaces(uid: $uid) {
-        uid
-        name
-        # aliases
-        description
-      }
-    }
+export default view(`
+  spaces {
+    uid
+    name
+    # aliases
+    description
   }
-`
-
-export default graphql(query)(Space)
+`)(Space)

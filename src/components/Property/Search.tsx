@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import * as I from 'immutable'
 import { observer } from 'mobx-react'
 
-import { mobxStore } from '../../store'
+import store from '../../store'
 
 import List from '../List'
 import Preview from '../Preview'
@@ -53,7 +53,7 @@ class Property extends React.Component<Props, { expanded: boolean }> {
 @observer
 class Search extends React.Component {
   render() {
-    const properties = mobxStore.properties.all
+    const properties = store.properties.all
 
     return (
       <div>
