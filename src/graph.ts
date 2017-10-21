@@ -20,29 +20,27 @@ export const view = (fragment) => {
     query View($version: string) {
       viewer(version: $version) {
         ${fragment}
+        version
       }
     }
   `
 
-  const withViewer = component => props => {
-    const data = props.data as any
-    if (data && data.viewer) {
-      return new component({ ...props, viewer: data.viewer })
-    } else {
-      return null
-    }
-  }
-
-  return compose(
-    graphql(query, {
-      options: (props: any) => ({
-        variables: {
-          version: props.version
-        }
-      })
+  return graphql(query, {
+    options: (props: any) => ({
+      variables: {
+        version: store.version
+      }
     }),
-    withViewer
-  )
+    props: (props: any) => {
+      if (props.data && props.data.viewer) {
+        setTimeout(
+          () => store.addView(props.data.viewer),
+          0
+        )
+      }
+      return props
+    }
+  })
 }
 
 // Wraps a component that executes a mutation which returns

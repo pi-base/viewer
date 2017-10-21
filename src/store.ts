@@ -84,7 +84,9 @@ export class Store {
         name: s.name,
         description: s.description
       })
-      s.traits.forEach(t => {
+
+      const traits = s.traits || []
+      traits.forEach(t => {
         this.traits.add({
           space: s.uid,
           property: t.property.uid,

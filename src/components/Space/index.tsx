@@ -15,11 +15,9 @@ import TraitPager from '../Trait/Pager'
 import Tex from '../Tex'
 
 export interface Props {
-  space: T.Space
   children: React.ReactElement<any>
   params: { spaceId: string }
   router: T.RouterProps
-  data: any
 }
 
 @observer
