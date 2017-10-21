@@ -81,6 +81,10 @@ class Search extends React.Component<T.RouterProps, {}> {
     this.formula = formula
   }
 
+  handleFormulaChange(formula: Formula) {
+    this.formula = formula
+  }
+
   render() {
     // TODO: add widget to allow displaying extra traits inline
     return (
@@ -100,10 +104,10 @@ class Search extends React.Component<T.RouterProps, {}> {
           <div className="form-group">
             <label htmlFor="formulaFilter">Filter by Formula</label>
             <FormulaInput
-              finder={store.propertyFinder}
               q={this.q}
               placeholder="e.g. compact + ~metrizable"
-              onChange={(q, formula) => this.setFormulaFilter({ q, formula })}
+              onQueryChange={(q) => this.q = q}
+              onFormulaChange={(f) => this.handleFormulaChange(f)}
             />
           </div>
         </div>

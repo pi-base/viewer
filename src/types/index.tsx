@@ -59,12 +59,6 @@ export type TraitTable = I.Map<Id, I.Map<Id, Trait>> // spaceId, propertyId => t
 
 export type Index<P> = I.Map<Id, P>
 
-export interface UserState {
-  name: string | null
-  token: Token | null
-  branch: Branch
-}
-
 // There's probably a cleaner way to handle this, but this gives us an escape
 // hatch for props added by the router
 export interface RouterProps {

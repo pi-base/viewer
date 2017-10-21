@@ -22,7 +22,10 @@ const Theorem = props => {
   const parsed = {
     uid: theorem.uid,
     if: F.fromJSON(JSON.parse(theorem.if)),
-    then: F.fromJSON(JSON.parse(theorem.then))
+    then: F.fromJSON(JSON.parse(theorem.then)),
+    // FIXME:
+    converse: undefined,
+    description: ''
   }
 
   return (

@@ -34,7 +34,7 @@ const Disproven = ({ formula, disproof, properties }) => (
       {disproof.map(t => (
         <li key={t.uid}>
           <Link to={`/theorems/${t.uid}`}>
-            <Implication theorem={t} properties={properties} link={false} />
+            <Implication theorem={t} link={false} />
           </Link>
         </li>
       ))}

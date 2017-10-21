@@ -15,7 +15,6 @@ import Tex from '../Tex'
 
 interface Props {
   theorems: I.List<T.Theorem>
-  properties: T.Finder<T.Property>
 }
 
 interface State {
@@ -51,6 +50,7 @@ class Theorems extends React.Component<Props, State> {
 
   render() {
     const theorems = this.state.theorems.slice(0, this.state.limit)
+    const properties = store.propertyFinder
 
     return (
       <section className="theorems">
@@ -69,7 +69,7 @@ class Theorems extends React.Component<Props, State> {
           <Tex key={t.uid}>
             <h3>
               <Link to={`/theorems/${t.uid}`}>
-                <Implication theorem={t} link={false} properties={this.props.properties} />
+                <Implication theorem={t} link={false} />
               </Link>
             </h3>
             <Preview text={t.description} />

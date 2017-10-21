@@ -35,8 +35,9 @@ export class Store {
     this.traits = new Traits(this.spaces, this.properties)
 
     this.apollo = client || (new Client()).apollo
-
     this.user = new User(this.apollo)
+
+    this.proofs = new Proofs()
   }
 
   @computed get propertyFinder(): Finder<T.Property> {
@@ -101,6 +102,9 @@ export class Store {
   }
 
   @action runProver() {
+    const space = this.spaces.all.get(0)
+    const theorems = this.theorems.all
+    const traits = this.traits.forSpace(space.uid)
     return
   }
 }

@@ -36,6 +36,7 @@ export class Finder<T extends Record> {
 
   search(str: string, limit?: number): I.Iterable<number, T> {
     str = str || ''
+    if (str !== '' + str) { return I.List() }
     let ids: string[] = this.fuse.search<string>(str)
 
     if (limit) {

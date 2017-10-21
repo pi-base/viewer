@@ -5,12 +5,13 @@ import * as T from '../../types'
 
 export interface Props {
   suggestions: I.List<T.Property>
+  limit: number
   selected: number
   visible: boolean
   onSelect: (selected: number) => void
 }
 
-function Suggestions({ suggestions, selected, visible, onSelect }: Props) {
+function Suggestions({ suggestions, selected, visible, limit, onSelect }: Props) {
   const divStyle = {
     display: (visible ? 'block' : 'none'),
     marginTop: '5px'
@@ -18,7 +19,7 @@ function Suggestions({ suggestions, selected, visible, onSelect }: Props) {
 
   return (
     <div className="list-group" style={divStyle}>
-      {suggestions.map((p, i) => (
+      {suggestions.take(limit).map((p, i) => (
         <a
           className={'list-group-item ' + (selected === i ? 'active' : '')}
           key={p!.uid}

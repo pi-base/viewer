@@ -74,7 +74,7 @@ export function parseFormula(
 ): F.Formula<T.Property> | undefined {
   if (!finder) { return }
 
-  const parsed = F.parse(q)
+  const parsed = F.parse('' + q)
   if (!parsed) { return }
 
   try {
@@ -88,36 +88,13 @@ export function parseFormula(
     return F.mapProperty(f, parsed)
   } catch (e) {
     // TODO: show error if properties not found
-    return
+    return undefined
   }
 }
 
 export function suggestionsFor(finder: Finder<T.Property>, query: string, limit: number): I.List<T.Property> {
   return finder.search(getFragment(query), limit).toList()
 }
-
-// export function spaceTraits(
-//   state: T.StoreState,
-//   space: T.Space
-// ): I.Iterable<number, T.Trait> {
-//   const traits = state.traits.get(space.uid) || I.Map()
-//   return traits.valueSeq().sortBy((t: T.Trait) => t.property.name)
-// }
-// 
-// export function findTrait(state: T.StoreState, spaceId: string, propertyId: string) {
-//   return state.traits.getIn([spaceId, propertyId])
-// }
-// 
-// export function getProof(state: T.StoreState, trait: T.Trait): T.Proof | undefined {
-//   const proof = state.proofs.get(trait.uid)
-// 
-//   if (!proof) { return }
-// 
-//   return {
-//     theorems: proof.theorems.map(id => findTheorem(state, id!)).toList(),
-//     traits: proof.traits.map(id => findTraitById(state, id!)).toList()
-//   }
-// }
 
 export function counterexamples(
   spaces: I.List<T.Space>,

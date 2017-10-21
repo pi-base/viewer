@@ -22,7 +22,7 @@ function RelatedTheorems({ property, theorems, properties }: Props) {
       {related.map((t: T.Theorem) => (
         <div key={t.uid}>
           <Link to={`/theorems/${t.uid}`}>
-            <Implication theorem={t} link={false} properties={properties} />
+            <Implication theorem={t} link={false} />
           </Link>
         </div>
       ))}

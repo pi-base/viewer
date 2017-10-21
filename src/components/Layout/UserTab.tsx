@@ -8,10 +8,6 @@ import store from '../../store'
 import { client } from '../../graph'
 import * as T from '../../types'
 
-interface Props {
-  user: T.UserState
-}
-
 @observer
 class UserTab extends React.Component {
   render() {

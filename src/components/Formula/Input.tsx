@@ -1,6 +1,10 @@
 import * as React from 'react'
 import * as I from 'immutable'
 
+import { observer } from 'mobx-react'
+import { action, computed, observable, reaction } from 'mobx'
+import store from '../../store'
+
 import { Finder } from '../../models/PropertyFinder'
 import * as F from '../../models/Formula'
 import * as Q from '../../queries'
@@ -10,18 +14,14 @@ import Suggestions from './Suggestions'
 
 const TAB = 9, ENTER = 13, UP = 38, DOWN = 40 // RIGHT = 39
 
-export interface Props {
-  finder: Finder<T.Property>
-  q: string
-  suggestionLimit?: number
-  placeholder: string
-  onChange: (q: string, formula: (F.Formula<T.Property> | undefined)) => void
-}
+type Formula = F.Formula<T.Property>
 
-export interface State {
-  selected: number
-  suggestions: I.List<T.Property>
-  dropdownVisible: boolean
+export interface Props {
+  q: string
+  placeholder: string
+  suggestionLimit?: number
+  onQueryChange?: (q: string) => void
+  onFormulaChange?: (f: Formula) => void
 }
 
 interface Event {
@@ -29,48 +29,55 @@ interface Event {
   preventDefault: () => void
 }
 
-class FormulaInput extends React.Component<Props, State> {
+@observer
+class FormulaInput extends React.Component<Props, {}> {
+  @observable selected: number
+  @observable dropdownVisible: boolean
+
+  @observable q: string
+
   constructor(props: Props) {
     super(props)
-    this.state = {
-      selected: 0,
-      suggestions: I.List([]),
-      dropdownVisible: false
+
+    this.selected = 0
+    this.dropdownVisible = false
+
+    this.q = this.props.q
+
+    const { onFormulaChange, onQueryChange } = this.props
+
+    if (onQueryChange) {
+      reaction(
+        () => this.q,
+        (q) => {
+          onQueryChange(q)
+          if (onFormulaChange) {
+            const f = Q.parseFormula(store.propertyFinder, q)
+            if (f) { onFormulaChange(f) }
+          }
+        }
+      )
     }
   }
 
-  parseFormula(str: string) {
-    return Q.parseFormula(this.props.finder, str)
+  @computed get suggestions() {
+    return Q.suggestionsFor(store.propertyFinder, this.q, 10)
   }
 
-  getSuggestions(str: string) {
-    return Q.suggestionsFor(this.props.finder, str, 10)
+  @action changeSelection(delta: number) {
+    this.selected += delta
   }
 
-  changeSelection(delta: number) {
-    this.setSelection(this.state.selected + delta)
-  }
+  @action expandFragment(index?: number) {
+    index = index || this.selected
 
-  setSelection(to: number) {
-    const limit = Math.min(
-      this.props.suggestionLimit || 10,
-      this.state.suggestions.size
-    )
-    if (limit === 0) { return }
-
-    const next = ((to % limit) + limit) % limit || 0
-    this.setState({ selected: next })
-  }
-
-  expandFragment(index?: number) {
-    index = index || this.state.selected
-
-    const selected = this.state.suggestions.get(index)
+    const selected = this.suggestions.get(index)
     const updated = Q.replaceFragment(this.props.q, selected.name)
 
-    this.props.onChange(updated, this.parseFormula(updated))
+    this.q = updated
 
-    this.setState({ selected: 0, dropdownVisible: false })
+    this.selected = 0
+    this.dropdownVisible = false
   }
 
   handleKeyDown(e: Event) {
@@ -91,26 +98,13 @@ class FormulaInput extends React.Component<Props, State> {
     }
   }
 
-  handleChange(q: string) {
-    const formula = this.parseFormula(q)
-
-    // Updates for parent component
-    this.props.onChange(q, formula)
-
-    // Updates for local state
-    const dropdownVisible = !!q && q[0] !== ':'
-    this.setState((state: State, props: Props) => {
-      if (formula) {
-        const suggestions = this.getSuggestions(q)
-        return { q, dropdownVisible, formula, suggestions }
-      } else {
-        return { q, dropdownVisible }
-      }
-    })
+  @action handleChange(q: string) {
+    this.q = q
+    this.dropdownVisible = !!q && q[0] !== ':'
   }
 
-  handleBlur() {
-    this.setState({ dropdownVisible: false })
+  @action handleBlur() {
+    this.dropdownVisible = false
   }
 
   render() {
@@ -120,17 +114,18 @@ class FormulaInput extends React.Component<Props, State> {
           type="text"
           autoComplete="off"
           className="form-control"
-          value={this.props.q}
+          value={this.q}
           placeholder={this.props.placeholder}
           onKeyDown={(e) => this.handleKeyDown(e)}
           onChange={(e) => this.handleChange(e.target.value)}
-          onBlur={() => this.handleBlur()}
+          onBlur={() => this.dropdownVisible = false}
         />
 
         <Suggestions
-          visible={this.state.dropdownVisible}
-          suggestions={this.state.suggestions}
-          selected={this.state.selected}
+          suggestions={this.suggestions}
+          selected={this.selected}
+          visible={this.dropdownVisible}
+          limit={this.props.suggestionLimit || 10}
           onSelect={(i) => this.expandFragment(i)}
         />
       </div>

@@ -59,7 +59,7 @@ function Counterexamples({ spaces, traits, theorems, properties, theorem }: Prop
         <table className="table table-condensed">
           <thead>
             <tr>
-              <th><Implication theorem={converse(theorem)} properties={properties} link={false} /></th>
+              <th><Implication theorem={converse(theorem)} link={false} /></th>
               <th>By</th>
             </tr>
           </thead>
@@ -67,7 +67,7 @@ function Counterexamples({ spaces, traits, theorems, properties, theorem }: Prop
             {proofOfConverse.map((thrm: T.Theorem) => (
               <tr key={thrm.uid}>
                 <td>
-                  <Implication theorem={thrm} properties={properties} link={false} />
+                  <Implication theorem={thrm} link={false} />
                 </td>
                 <td>
                   <Link to={`/theorems/${thrm.uid}`}>{thrm.uid}</Link>
