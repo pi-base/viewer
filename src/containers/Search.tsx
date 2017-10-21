@@ -71,17 +71,13 @@ class Search extends React.Component<T.RouterProps, {}> {
     return store.search({ text: this.text, formula: f })
   }
 
-  parseFormula(q: string) {
-    return Q.parseFormula(store.propertyFinder, q)
-  }
-
   @action setFormulaFilter(opts: { q: string, formula?: Formula }) {
     const { q, formula } = opts
     this.q = q
     this.formula = formula
   }
 
-  handleFormulaChange(formula: Formula) {
+  handleFormulaChange(formula: Formula | undefined) {
     this.formula = formula
   }
 
@@ -120,7 +116,7 @@ class Search extends React.Component<T.RouterProps, {}> {
             text={this.text}
             formula={this.formula}
             results={this.results}
-            onSelect={(q) => this.setFormulaFilter({ q, formula: undefined })}
+            onSelect={q => this.setFormulaFilter({ q, formula: undefined })}
           />
         </div>
       </div>

@@ -21,7 +21,7 @@ export interface Props {
   placeholder: string
   suggestionLimit?: number
   onQueryChange?: (q: string) => void
-  onFormulaChange?: (f: Formula) => void
+  onFormulaChange?: (f?: Formula) => void
 }
 
 interface Event {
@@ -53,11 +53,15 @@ class FormulaInput extends React.Component<Props, {}> {
           onQueryChange(q)
           if (onFormulaChange) {
             const f = Q.parseFormula(store.propertyFinder, q)
-            if (f) { onFormulaChange(f) }
+            if (f || !q) { onFormulaChange(f) }
           }
         }
       )
     }
+  }
+
+  componentWillReceiveProps(newProps: Props) {
+    this.q = newProps.q
   }
 
   @computed get suggestions() {
@@ -81,7 +85,7 @@ class FormulaInput extends React.Component<Props, {}> {
   }
 
   handleKeyDown(e: Event) {
-    if (e.which === ENTER || e.which === UP || e.which === DOWN) {
+    if (e.which === ENTER || e.which === UP || e.which === DOWN || e.which === TAB) {
       e.preventDefault()
     }
 

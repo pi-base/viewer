@@ -1,13 +1,11 @@
 import * as React from 'react'
 
-import { Store } from 'react-redux'
-
-export default function Debug(store: Store) {
+export default function Debug(props: any) {
     const pibase = {
         error() {
             return ('' as any).floop('')
         },
-        store: store
+        store: props.store
     }
 
     if (process.env.NODE_ENV === 'development') {

@@ -9,16 +9,12 @@ import Navbar from './Navbar'
 @observer
 class Layout extends React.Component<any> {
   componentWillMount() {
-    if (!this.props.version) { this.loadViewer() }
-  }
-
-  componentWillReceiveProps(newProps: any) {
-    if (!newProps.version) { this.loadViewer() }
+    if (!store.version) { this.loadViewer() }
   }
 
   loadViewer() {
     store.loadView(Q.viewer).then(() => {
-      store.runProver()
+      setTimeout(() => store.checkAll(), 0)
     })
   }
 

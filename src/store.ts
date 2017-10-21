@@ -2,7 +2,7 @@ import { ApolloClient } from 'apollo-client'
 
 import { Client } from './graph/client'
 
-import { action, computed, observable } from 'mobx'
+import { action, computed, observable, reaction } from 'mobx'
 import { Finder } from './models/PropertyFinder'
 
 import Collection from './store/Collection'
@@ -12,6 +12,7 @@ import User from './store/User'
 
 import * as I from 'immutable'
 import * as T from './types'
+import * as L from './logic'
 import * as F from './models/Formula'
 import * as Q from './queries'
 
@@ -38,6 +39,11 @@ export class Store {
     this.user = new User(this.apollo)
 
     this.proofs = new Proofs()
+
+    reaction(
+      () => this.traits.values,
+      () => this.checkAll()
+    )
   }
 
   @computed get propertyFinder(): Finder<T.Property> {
@@ -101,11 +107,24 @@ export class Store {
     this.version = viewer.version
   }
 
-  @action runProver() {
-    const space = this.spaces.all.get(0)
-    const theorems = this.theorems.all
-    const traits = this.traits.forSpace(space.uid)
-    return
+  @action checkAll() {
+    this.spaces.all.forEach(space => {
+      setTimeout(
+        () => {
+          const traits = this.traits.map.get(space!.uid)
+          if (!traits) { return }
+
+          const recordProof = (propertyId, proof) => this.proofs.record(
+            space!.uid, propertyId, proof
+          )
+
+          this.theorems.all.forEach(theorem => {
+            L.apply({ theorem: theorem!, traits, recordProof })
+          })
+        },
+        0
+      )
+    })
   }
 }
 

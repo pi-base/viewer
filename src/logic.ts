@@ -124,6 +124,39 @@ function force(opts: ForceOptions) {
   }
 }
 
+interface ApplyOptions {
+  theorem: T.Theorem
+  traits: Map<T.Id, boolean>
+  recordProof: (property: T.Id, proof: Proof) => any
+}
+export function apply(opts: ApplyOptions) {
+  const { theorem, traits, recordProof } = opts
+  const a = theorem.if
+  const c = theorem.then
+  const av = F.evaluate(a, I.Map(traits))
+  const cv = F.evaluate(c, I.Map(traits))
+
+  if (av === true && cv === false) {
+    throw { theorem, properties: F.properties(a).union(F.properties(c)) }
+  } else if (av === true) {
+    force({
+      formula: c,
+      support: F.properties(a),
+      theorem,
+      traits,
+      recordProof
+    })
+  } else if (cv === false) {
+    force({
+      formula: F.negate(a),
+      support: F.properties(c),
+      theorem,
+      traits,
+      recordProof
+    })
+  }
+}
+
 export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Disproof | undefined) {
   let traits = new Map<string, boolean>()
   let contradiction: Disproof | undefined = undefined
@@ -147,34 +180,6 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
     }
   }
 
-  function apply(theorem: T.Theorem) {
-    const a = theorem.if
-    const c = theorem.then
-    const ts = I.Map<string, boolean>(traits)
-    const av = F.evaluate(a, ts)
-    const cv = F.evaluate(c, ts)
-
-    if (av === true && cv === false) {
-      throw { theorem, properties: F.properties(a).union(F.properties(c)) }
-    } else if (av === true) {
-      force({
-        formula: c,
-        support: F.properties(a),
-        theorem,
-        traits,
-        recordProof
-      })
-    } else if (cv === false) {
-      force({
-        formula: F.negate(a),
-        support: F.properties(c),
-        theorem,
-        traits,
-        recordProof
-      })
-    }
-  }
-
   try {
     force({
       support: I.Set(),
@@ -185,9 +190,9 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
     })
 
     while (checkQ.length > 0) {
-      const theorem = checkQ.shift()
+      const theorem = checkQ.shift()!
       const before = I.Map(traits)
-      apply(theorem!)
+      apply({ theorem, traits, recordProof })
       if (I.Map(traits) !== before) {
         // If our initial formula to force is (a | b) => c
         //   and we have just proved ~b, we need to re-force
