@@ -17,10 +17,10 @@ export interface Props {
   }
 }
 
-class Show extends React.Component<Props, {}> {
+class Show extends React.Component<Props & T.RouterProps, {}> {
   render() {
     const property = this.props.properties.records.get(this.props.params.propertyId)
-    if (!property) { return <NotFound {...this.props} /> }
+    // if (!property) { return <NotFound {...this.props} /> }
 
     return (
       <div>
@@ -42,3 +42,5 @@ class Show extends React.Component<Props, {}> {
     )
   }
 }
+
+export default Show

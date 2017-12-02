@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
 import { graphql } from 'react-apollo'
 import { Field, reduxForm } from 'redux-form'
 
@@ -52,9 +51,7 @@ class SpaceForm extends React.Component<Props, State> {
 }
 
 const updateViewer = (query) => (component) => {
-    return graphql(query)(connect(
-        () => ({}),
-    )(component))
+    return graphql(query)(component)
 }
 
 const CreateSpace = ({ mutate, updateVersion, router }) => {

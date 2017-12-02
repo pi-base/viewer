@@ -2,13 +2,13 @@ import * as React from 'react'
 
 import * as I from 'immutable'
 
-import { Finder, Record, Weights } from '../models/PropertyFinder'
+import { Finder, Record, Weights } from '../models/Finder'
 
 export interface Props {
-  collection:   I.List<Record>
-  weights?:     Weights
-  onChange:     (results: I.Iterable<number, Record>) => void
-  name?:        string
+  collection: I.List<Record>
+  weights?: Weights
+  onChange: (results: I.Iterable<number, Record>) => void
+  name?: string
   placeholder?: string
 }
 

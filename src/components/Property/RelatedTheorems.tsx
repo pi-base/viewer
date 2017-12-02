@@ -26,6 +26,7 @@ function RelatedTheorems({ property, theorems, properties }: Props) {
           </Link>
         </div>
       ))}
+      <Link to="/theorems/new" className="btn btn-default btn-xs">Add</Link>
     </div>
   )
 }

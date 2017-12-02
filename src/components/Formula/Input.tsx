@@ -3,9 +3,9 @@ import * as I from 'immutable'
 
 import { observer } from 'mobx-react'
 import { action, computed, observable, reaction } from 'mobx'
-import store from '../../store'
+import store, { ParseError } from '../../store'
 
-import { Finder } from '../../models/PropertyFinder'
+import { Finder } from '../../models/Finder'
 import * as F from '../../models/Formula'
 import * as Q from '../../queries'
 import * as T from '../../types'
@@ -17,8 +17,8 @@ const TAB = 9, ENTER = 13, UP = 38, DOWN = 40 // RIGHT = 39
 type Formula = F.Formula<T.Property>
 
 export interface Props {
-  q: string
-  placeholder: string
+  q?: string
+  placeholder?: string
   suggestionLimit?: number
   onQueryChange?: (q: string) => void
   onFormulaChange?: (f?: Formula) => void
@@ -35,6 +35,7 @@ class FormulaInput extends React.Component<Props, {}> {
   @observable dropdownVisible: boolean
 
   @observable q: string
+  @observable formula: Formula | undefined
 
   constructor(props: Props) {
     super(props)
@@ -42,26 +43,31 @@ class FormulaInput extends React.Component<Props, {}> {
     this.selected = 0
     this.dropdownVisible = false
 
-    this.q = this.props.q
+    this.q = this.props.q || ''
 
     const { onFormulaChange, onQueryChange } = this.props
 
-    if (onQueryChange) {
-      reaction(
-        () => this.q,
-        (q) => {
-          onQueryChange(q)
-          if (onFormulaChange) {
-            const f = Q.parseFormula(store.propertyFinder, q)
-            if (f || !q) { onFormulaChange(f) }
-          }
+    reaction(
+      () => this.q,
+      (q) => {
+        if (onQueryChange) { onQueryChange(q) }
+        const f = store.parseFormula(q)
+        switch (f.kind) {
+          case 'parseError':
+            return
+          default:
+            this.formula = f
         }
-      )
+      }
+    )
+
+    if (onFormulaChange) {
+      reaction(() => this.formula, onFormulaChange)
     }
   }
 
   componentWillReceiveProps(newProps: Props) {
-    this.q = newProps.q
+    if (newProps.q) { this.q = newProps.q }
   }
 
   @computed get suggestions() {
@@ -73,13 +79,9 @@ class FormulaInput extends React.Component<Props, {}> {
   }
 
   @action expandFragment(index?: number) {
-    index = index || this.selected
+    const selected = this.suggestions.get(index || this.selected)
 
-    const selected = this.suggestions.get(index)
-    const updated = Q.replaceFragment(this.props.q, selected.name)
-
-    this.q = updated
-
+    this.q = Q.replaceFragment(this.q, selected.name)
     this.selected = 0
     this.dropdownVisible = false
   }

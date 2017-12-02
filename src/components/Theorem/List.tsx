@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import * as I from 'immutable'
 
 import { observer } from 'mobx-react'
+import { action, computed, observable } from 'mobx'
 import store from '../../store'
 
 import * as Q from '../../queries'
@@ -13,50 +14,35 @@ import Implication from '../../containers/Implication'
 import Preview from '../Preview'
 import Tex from '../Tex'
 
-interface Props {
-  theorems: I.List<T.Theorem>
-}
-
-interface State {
-  limit: number
-  theorems: I.List<T.Theorem>
-}
-
 @observer
-class Theorems extends React.Component<Props, State> {
-  // TODO: can clean up filtering with computed props
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      limit: 10,
-      theorems: I.List<T.Theorem>()
-    }
+class Theorems extends React.Component<{}, {}> {
+  @observable theorems: I.List<T.Theorem>
+  @observable limit: number
+
+  showMore: () => void
+
+  constructor() {
+    super()
+    this.limit = 10
+    this.theorems = store.theorems.all
+
+    this.showMore = this._showMore.bind(this)
   }
 
-  componentWillMount() {
-    this.doFilter(store.theorems.all)
+  @computed get visibleTheorems() {
+    return this.theorems.take(this.limit)
   }
 
-  more() {
-    this.setState({ limit: this.state.limit + 10 })
-  }
-
-  doFilter(theorems: I.List<T.Theorem>) {
-    this.setState({
-      limit: 300,
-      theorems: theorems.size ? theorems : this.props.theorems
-    })
+  @action _showMore() {
+    this.limit += 10
   }
 
   render() {
-    const theorems = this.state.theorems.slice(0, this.state.limit)
-    const properties = store.propertyFinder
-
     return (
       <section className="theorems">
         <Filter
-          collection={this.props.theorems}
-          onChange={(ts) => this.doFilter(I.List<T.Theorem>(ts))}
+          collection={store.theorems.all}
+          onChange={theorems => this.theorems = I.List<T.Theorem>(theorems)}
           weights={[
             { name: 'if', weight: 0.7 },
             { name: 'then', weight: 0.7 },
@@ -65,7 +51,7 @@ class Theorems extends React.Component<Props, State> {
           placeholder="Filter theorems"
         />
 
-        {theorems.map((t: T.Theorem) => (
+        {this.visibleTheorems.map((t: T.Theorem) => (
           <Tex key={t.uid}>
             <h3>
               <Link to={`/theorems/${t.uid}`}>
@@ -76,8 +62,8 @@ class Theorems extends React.Component<Props, State> {
           </Tex>
         ))}
 
-        {this.props.theorems.size > this.state.limit
-          ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
+        {this.theorems.size > this.visibleTheorems.size
+          ? <button className="btn btn-default" onClick={this.showMore}>Show More</button>
           : ''}
       </section>
     )

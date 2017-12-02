@@ -3,11 +3,14 @@ import { observer } from 'mobx-react'
 
 import * as Q from '../graph/queries'
 import store from '../store'
+import * as T from '../types'
 
 import Navbar from './Navbar'
 
+type Props = T.RouterProps
+
 @observer
-class Layout extends React.Component<any> {
+class Layout extends React.Component<Props, {}> {
   componentWillMount() {
     if (!store.version) { this.loadViewer() }
   }

@@ -6,9 +6,9 @@ Running locally requires a copy of the [pi-base server](https://github.com/pi-ba
 
 ### Running the server
 
-* Install [docker and docker-compose](https://docs.docker.com/engine/installation/)
-* Copy `.env.server.example` to `.env.server` and change the values as needed
-* Run `docker-compose up server` to start the server
+* Install [docker](https://docs.docker.com/engine/installation/) and [docker-compose](https://docs.docker.com/compose/install/)
+* Copy/rename `example.env.server` to `.env.server` and change the values as needed
+* Run `docker-compose up server` (may require `sudo`) to start the server
 
 Once everything has finished building (which may take a while on first load), you should be able to access the viewer at `localhost:3141`.
 
@@ -24,10 +24,12 @@ See the `docker-compose.yml` file for the specifics of what is running and optio
 * You can control the server log settings by adjusting the various `LOG_` variables.
 * Suggested directory structure is
 
+```
     pi-base
     ├── data
     ├── server # if desired
     └── viewer
+```
 
 * By default, we mount the `../data` directory inside the server container and store the data repository there. You can adjust where that data is located by mounting a different directory in the container at `/data` (or remove the mount).
 

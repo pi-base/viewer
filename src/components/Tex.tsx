@@ -15,7 +15,7 @@ class Tex extends React.Component<Props, {}> {
 
   queue() {
     const node = ReactDOM.findDOMNode(this)
-    if (typeof(MathJax) !== `undefined`) {
+    if (typeof (MathJax) !== `undefined`) {
       MathJax.Hub.Queue([`Typeset`, MathJax.Hub, node])
     }
   }

@@ -3,7 +3,7 @@ import { ApolloClient } from 'apollo-client'
 import { Client } from './graph/client'
 
 import { action, computed, observable, reaction } from 'mobx'
-import { Finder } from './models/PropertyFinder'
+import { Finder } from './models/Finder'
 
 import Collection from './store/Collection'
 import Proofs from './store/Proofs'
@@ -16,34 +16,45 @@ import * as L from './logic'
 import * as F from './models/Formula'
 import * as Q from './queries'
 
+export interface ParseError {
+  kind: 'parseError'
+  message: T.PropertyId[]
+}
+
 export class Store {
-  @observable version: string
+  @observable branch: T.Branch
+  @observable version?: string
 
   spaces: Collection<T.Id, T.Space>
   properties: Collection<T.Id, T.Property>
   theorems: Collection<T.Id, T.Theorem>
   traits: Traits
 
-  apollo: ApolloClient
+  client: Client
   user: User
 
   proofs: Proofs
 
-  constructor(client?: ApolloClient) {
+  constructor(client?: Client) {
+    this.branch = 'audited'
+
+    this.reset()
+
+    this.client = client || new Client()
+    this.user = new User(this.client.apollo)
+  }
+
+  login(token: T.Token) {
+    return this.client.login(token)
+  }
+
+  reset() {
     this.spaces = new Collection()
     this.properties = new Collection()
     this.theorems = new Collection()
     this.traits = new Traits(this.spaces, this.properties)
 
-    this.apollo = client || (new Client()).apollo
-    this.user = new User(this.apollo)
-
     this.proofs = new Proofs()
-
-    reaction(
-      () => this.traits.values,
-      () => this.checkAll()
-    )
   }
 
   @computed get propertyFinder(): Finder<T.Property> {
@@ -54,17 +65,60 @@ export class Store {
     return new Finder(this.spaces.all)
   }
 
-  search(opts: { text?: string, formula?: any }) {
-    return Q.filter(
-      this.spaceFinder,
-      this.traits.values,
-      this.spaces.all,
-      opts
+  parseFormula(text: string): F.Formula<T.Property> | ParseError {
+    const parsed = F.parse(text)
+    if (!parsed) { return { kind: 'parseError', message: [] } }
+
+    let errors: T.PropertyId[] = []
+
+    const result = F.mapProperty(
+      id => {
+        const property = this.propertyFinder.find(id)
+        if (!property) { errors.push(id) }
+        return property as T.Property
+      },
+      parsed
     )
+
+    if (errors.length > 0) {
+      return { kind: 'parseError', message: errors }
+    } else {
+      return result
+    }
+  }
+
+  search({ text, formula }: { text?: string, formula?: F.Formula<T.PropertyId> }) {
+    let spaces = this.spaces.all
+    if (formula) {
+      spaces = spaces.filter((s: T.Space) => {
+        const ts = this.traits.map.get(s.uid)
+        if (!ts) { return false }
+        return F.evaluate(formula, I.Map(ts)) === true
+      }).toList()
+    }
+    if (text) {
+      spaces = I.List(this.spaceFinder.search(text)) // FIXME: might have results not in `spaces`
+    }
+    return spaces
+  }
+
+  counterexamples(theorem: T.Theorem) {
+    const formula = F.and(F.negate(theorem.if), theorem.then)
+    return this.search({ formula })
+  }
+
+  theoremProperties(t: T.Theorem): I.List<T.Property> {
+    const ids = F.properties(t.if).union(F.properties(t.then))
+    const props: T.Property[] = []
+    ids.forEach(uid => {
+      const prop = this.properties.find(uid!)
+      if (prop) { props.push(prop) } // FIXME: else?
+    })
+    return I.List(props)
   }
 
   loadView(query: any) {
-    return this.apollo.query({ query }).then(response => {
+    return this.client.query({ query }).then(response => {
       this.addView((response.data as any).viewer)
     })
   }
@@ -127,6 +181,12 @@ export class Store {
         0
       )
     })
+  }
+
+  @action changeBranch(branch: T.Branch) {
+    this.branch = branch
+    this.version = undefined
+    this.reset()
   }
 }
 

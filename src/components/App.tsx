@@ -9,13 +9,11 @@ import store from '../store'
 import * as T from '../types'
 
 export const wrap = (component, graph?: Client) => {
-  if (graph) {
-    store.apollo = graph.apollo
-  }
+  if (graph) { store.client = graph }
 
   return () => (
     <div>
-      <ApolloProvider client={store.apollo}>
+      <ApolloProvider client={store.client.apollo}>
         <Router history={browserHistory}>
           {component}
         </Router>

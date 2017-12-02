@@ -2,12 +2,14 @@ import * as I from 'immutable'
 
 import * as F from '../models/Formula'
 
-import { Finder } from '../models/PropertyFinder'
-export { Finder } from '../models/PropertyFinder'
+import { Finder } from '../models/Finder'
+export { Finder } from '../models/Finder'
 
-export type Branch = string
+export type Branch = 'audited' | 'user'
 export type Id = string
 export type Token = string
+
+export type PropertyId = Id
 
 export interface User {
   readonly name: string
@@ -40,7 +42,7 @@ export interface Theorem {
   readonly uid: Id
   readonly if: F.Formula<Id>
   readonly then: F.Formula<Id>
-  readonly converse: any // FIXME
+  readonly converse?: any // FIXME
   readonly description: string
 }
 
@@ -65,5 +67,8 @@ export interface RouterProps {
   // tslint:disable no-any
   router?: any
   params?: any
-  // tslint:enable no-any
+  location: {
+    pathname: string
+  }
+  // tslint:enable o-any
 }

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as I from 'immutable'
 import { observer } from 'mobx-react'
+import { computed, observable } from 'mobx'
 
 import * as Q from '../../queries'
 import * as T from '../../types'
@@ -26,79 +27,66 @@ const Tabs: Tab[] = [
   { name: 'Deduced', icon: 'search' }
 ]
 
-export interface State {
-  limit: number | undefined
-  tabs: I.Map<string, boolean>
-  filtered: I.List<T.Trait>
-}
-
 @observer
-class TraitPager extends React.Component<Props, State> {
+class TraitPager extends React.Component<Props, {}> {
+  @observable all: I.List<T.Trait>
+  @observable filtered: I.List<T.Trait>
+
+  @observable limit: number | undefined
+  @observable tabs: Map<string, boolean>
+
   constructor(props: Props) {
     super(props)
-    this.state = {
-      limit: 10,
-      tabs: I.Map({
-        Asserted: false,
-        Deduced: false
-      }),
-      filtered: I.List<T.Trait>()
+    this.limit = 10
+    this.tabs = new Map([
+      ['Asserted', false],
+      ['Deduced', false]
+    ])
+    this.filtered = this.all = store.traits.forSpace(this.props.space.uid)
+  }
+
+  componentWillReceiveProps(newProps: Props) {
+    if (this.props.space.uid !== newProps.space.uid) {
+      this.filtered = this.all = store.traits.forSpace(this.props.space.uid)
     }
   }
 
-  componentWillMount() {
-    this.display(this.all())
+  @computed get tabbed() {
+    const asserted = this.tabs.get('Asserted')
+    const deduced = this.tabs.get('Deduced')
+
+    if (asserted && deduced) {
+      return this.filtered
+    } else if (asserted) {
+      return this.filtered.filter(t => !store.proofs.for(t!))
+    } else if (deduced) {
+      return this.filtered.filter(t => !!store.proofs.for(t!))
+    } else {
+      return this.filtered
+    }
   }
 
-  all() {
-    return store.traits.forSpace(this.props.space.uid)
-  }
-
-  display(traits: I.List<T.Trait>) {
-    this.setState({ filtered: traits })
+  @computed get limited() {
+    if (this.limit) {
+      return this.tabbed.take(this.limit)
+    } else {
+      return this.tabbed
+    }
   }
 
   toggleTab(name: string) {
-    this.setState((state: State) => ({
-      ...state,
-      tabs: state.tabs.set(name, !state.tabs.get(name))
-    }))
+    this.tabs.set(
+      name, !this.tabs.get(name)
+    )
   }
 
   toggleShowAll() {
-    const limit = this.state.limit ? undefined : 10
-    this.setState({ limit: limit })
-  }
-
-  limited(seq: I.Iterable<number, T.Trait>) {
-    if (this.state.limit) {
-      return seq.take(this.state.limit)
-    } else {
-      return seq
-    }
-  }
-
-  tabbed(seq: I.Iterable<number, T.Trait>) {
-    const asserted = this.state.tabs.get('Asserted')
-    const deduced = this.state.tabs.get('Deduced')
-
-    if (asserted && deduced) {
-      return seq
-    } else if (asserted) {
-      return seq.filter((t: T.Trait) => !store.proofs.for(t))
-    } else if (deduced) {
-      return seq.filter((t: T.Trait) => !!store.proofs.for(t))
-    } else {
-      return seq
-    }
+    this.limit = this.limit ? undefined : 10
   }
 
   render() {
-    const tabbed = this.tabbed(this.state.filtered)
-    const limited = this.limited(tabbed)
-
     const tab = ({ icon, name }: Tab) => {
-      const active = this.state.tabs.get(name) ? 'active' : ''
+      const active = this.tabs.get(name) ? 'active' : ''
 
       return (
         <button
@@ -120,24 +108,24 @@ class TraitPager extends React.Component<Props, State> {
         </div>
 
         <Filter
-          collection={this.all()}
+          collection={this.all}
           weights={['property.name']}
-          onChange={(ts) => this.display(I.List<T.Trait>(ts))}
+          onChange={(ts) => this.filtered = I.List<T.Trait>(ts)}
         />
 
         <table className="table table-condensed">
           <thead />
           <tbody>
-            {limited.map((trait: T.Trait) =>
+            {this.limited.map((trait: T.Trait) =>
               <TraitItem key={trait.property.uid} trait={trait} />
             )}
           </tbody>
         </table>
 
         <Limiter
-          limit={this.state.limit || 10}
-          found={limited.size}
-          total={tabbed.size}
+          limit={this.limit || 10}
+          found={this.limited.size}
+          total={this.tabbed.size}
           onClick={() => this.toggleShowAll()}
         />
       </Tex>

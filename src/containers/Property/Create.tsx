@@ -1,15 +1,15 @@
 import * as React from 'react'
 
 import uuid from 'uuid/v4'
-import store from '../store'
+import store from '../../store'
 
-import Form from '../components/Property/Form'
+import Form from '../../components/Property/Form'
 
 class CreateProperty extends React.Component<any, {}> {
     save: () => void
 
     constructor(props: any) {
-        super(props);
+        super(props)
         this.save = this._save.bind(this)
     }
 

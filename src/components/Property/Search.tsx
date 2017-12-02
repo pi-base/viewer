@@ -20,6 +20,7 @@ interface Props {
   object: Item
 }
 
+@observer
 class Property extends React.Component<Props, { expanded: boolean }> {
   constructor(props: Props) {
     super(props)

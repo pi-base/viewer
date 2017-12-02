@@ -8,7 +8,7 @@ import Formula from '../components/Formula'
 import Tex from '../components/Tex'
 
 import * as F from '../models/Formula'
-import { Finder } from '../models/PropertyFinder'
+import { Finder } from '../models/Finder'
 
 export interface Props {
   theorem: T.Theorem

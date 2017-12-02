@@ -15,13 +15,12 @@ import TraitPager from '../Trait/Pager'
 import Tex from '../Tex'
 
 export interface Props {
-  children: React.ReactElement<any>
+  children: React.ReactElement<any>,
   params: { spaceId: string }
-  router: T.RouterProps
 }
 
 @observer
-class Space extends React.Component<Props, {}> {
+class Space extends React.Component<Props & T.RouterProps, {}> {
   render() {
     const space = store.spaces.find(this.props.params.spaceId)
     if (!space) { return <NotFound {...this.props} /> }
@@ -58,7 +57,7 @@ export default view(`
   spaces {
     uid
     name
-    # aliases
+    # FIXME: aliases
     description
   }
 `)(Space)

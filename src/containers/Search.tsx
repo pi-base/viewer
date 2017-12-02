@@ -12,7 +12,7 @@ import FormulaInput from '../components/Formula/Input'
 import Results from '../components/Search/Results'
 
 import * as F from '../models/Formula'
-import { Finder } from '../models/PropertyFinder'
+import { Finder } from '../models/Finder'
 
 type Formula = F.Formula<T.Property>
 
