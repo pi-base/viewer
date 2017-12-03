@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import * as I from 'immutable'
 
 import * as Q from '../../queries'
@@ -7,11 +8,14 @@ import * as T from '../../types'
 
 import Implication from '../../containers/Implication'
 
-export interface Props {
+interface OwnProps {
   property: T.Property
+}
+interface StateProps {
   theorems: I.List<T.Theorem>
   properties: T.Finder<T.Property>
 }
+type Props = OwnProps & StateProps
 
 function RelatedTheorems({ property, theorems, properties }: Props) {
   const related = Q.relatedTheorems(theorems, property)
@@ -31,4 +35,9 @@ function RelatedTheorems({ property, theorems, properties }: Props) {
   )
 }
 
-export default RelatedTheorems
+export default connect<OwnProps, StateProps, {}>(
+  (state) => ({
+    properties: I.List(state.properties.values()),
+    theorems: I.List(state.theorems.values())
+  })
+)(RelatedTheorems)

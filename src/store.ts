@@ -41,7 +41,7 @@ export class Store {
     this.reset()
 
     this.client = client || new Client()
-    this.user = new User(this.client.apollo)
+    this.user = new User()
   }
 
   login(token: T.Token) {

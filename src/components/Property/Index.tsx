@@ -1,10 +1,12 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import * as I from 'immutable'
-import { observer } from 'mobx-react'
 
-import store from '../../store'
+import { State } from '../../reducers'
+import * as S from '../../selectors'
+import * as T from '../../types'
 
 import List from '../List'
 import Preview from '../Preview'
@@ -20,7 +22,6 @@ interface Props {
   object: Item
 }
 
-@observer
 class Property extends React.Component<Props, { expanded: boolean }> {
   constructor(props: Props) {
     super(props)
@@ -51,23 +52,30 @@ class Property extends React.Component<Props, { expanded: boolean }> {
   }
 }
 
-@observer
-class Search extends React.Component {
-  render() {
-    const properties = store.properties.all
+interface StateProps {
+  properties: T.Property[]
+  editing: boolean
+}
+const Index = ({ properties, editing }: StateProps) => {
+  return (
+    <div>
+      {editing
+        ? <Link to="/properties/new" className="btn btn-default">New</Link>
+        : ''
+      }
 
-    return (
-      <div>
-        <Link to="properties/new">New</Link>
-
-        <List
-          name="properties"
-          objects={properties}
-          component={Property}
-        />
-      </div>
-    )
-  }
+      <List
+        name="properties"
+        objects={I.List(properties)}
+        component={Property}
+      />
+    </div>
+  )
 }
 
-export default Search
+export default connect(
+  (state: State) => ({
+    properties: Array.from(state.properties.values()),
+    editing: S.editing(state)
+  })
+)(Index)

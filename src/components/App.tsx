@@ -1,28 +1,29 @@
 import * as React from 'react'
 import { ApolloProvider } from 'react-apollo'
-import { Router, browserHistory } from 'react-router'
+import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
 
-import Debug from '../debug'
-import { Client, client } from '../graph'
+import { ApolloClient } from 'apollo-client'
+import { Store } from 'redux'
+
+import Layout from './Layout'
 import routes from '../routes'
-import store from '../store'
-import * as T from '../types'
+import { State } from '../reducers'
 
-export const wrap = (component, graph?: Client) => {
-  if (graph) { store.client = graph }
-
-  return () => (
-    <div>
-      <ApolloProvider client={store.client.apollo}>
-        <Router history={browserHistory}>
-          {component}
-        </Router>
-      </ApolloProvider>
-      <Debug store={store} />
-    </div>
-  )
+type AppConfig = {
+  apollo: ApolloClient<any>
+  store: Store<State>
 }
-
-const makeApp = (c) => wrap(routes, c)
+const makeApp = ({ apollo, store }: AppConfig) => () => (
+  <ApolloProvider client={apollo}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Layout>
+          {routes}
+        </Layout>
+      </BrowserRouter>
+    </Provider>
+  </ApolloProvider>
+)
 
 export default makeApp

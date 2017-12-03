@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import { Link, NavLink } from 'react-router-dom'
 
 import UserTab from './Layout/UserTab'
 
@@ -8,11 +8,11 @@ const Navbar = () => (
     <div className="container">
       <Link to="/" className="navbar-brand">π-Base</Link>
       <ul className="nav navbar-nav">
-        <li><Link activeClassName="active" to="/spaces">Spaces</Link></li>
-        <li><Link activeClassName="active" to="/properties">Properties</Link></li>
+        <li><NavLink activeClassName="active" to="/spaces">Spaces</NavLink></li>
+        <li><NavLink activeClassName="active" to="/properties">Properties</NavLink></li>
       </ul>
 
-      <UserTab/>
+      <UserTab />
     </div>
   </nav>
 )

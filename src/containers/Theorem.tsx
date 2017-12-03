@@ -1,27 +1,23 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router'
 
-import * as I from 'immutable'
-import * as F from '../models/Formula'
-import * as Q from '../queries'
-import store from '../store'
+import { State } from '../reducers'
 import * as T from '../types'
-
-import { view } from '../graph'
 
 import Counterexamples from '../containers/Theorem/Counterexamples'
 import Detail from '../components/Theorem/Detail'
 import NotFound from '../components/NotFound'
 import Tex from '../components/Tex'
 
-interface Props {
-  params: {
-    id: string
-  }
+type StateProps = {
+  theorem: T.Theorem
 }
+type RouteProps = RouteComponentProps<{ id: string }>
+type Props = StateProps & RouteProps
 
-const Theorem = (props: Props & T.RouterProps) => {
-  const theorem = store.theorems.find(props.params.id)
-  if (!theorem) { return <NotFound {...props} /> }
+const Theorem = ({ theorem }: Props) => {
+  if (!theorem) { return <NotFound /> }
 
   return (
     <div>
@@ -38,4 +34,8 @@ const Theorem = (props: Props & T.RouterProps) => {
   )
 }
 
-export default Theorem
+export default connect(
+  (state: State, ownProps: Props) => ({
+    theorem: state.theorems.get(ownProps.match.params.id)
+  })
+)(Theorem)

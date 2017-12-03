@@ -1,63 +1,57 @@
 import * as React from 'react'
-import { graphql, gql } from 'react-apollo'
+import { connect } from 'react-redux'
 
-import { observer } from 'mobx-react'
-import store from '../../store'
-
-import { view } from '../../graph'
 import * as T from '../../types'
 import * as Q from '../../queries'
 
+import { State } from '../../reducers'
 import Aliases from '../Aliases'
 import NotFound from '../NotFound'
 import Markdown from '../Markdown'
 import TraitPager from '../Trait/Pager'
 import Tex from '../Tex'
 
-export interface Props {
-  children: React.ReactElement<any>,
+interface OwnProps {
   params: { spaceId: string }
+  children: JSX.Element
 }
+type StateProps = {
+  space: T.Space | undefined
+}
+type Props = OwnProps & StateProps
 
-@observer
-class Space extends React.Component<Props & T.RouterProps, {}> {
-  render() {
-    const space = store.spaces.find(this.props.params.spaceId)
-    if (!space) { return <NotFound {...this.props} /> }
+const Space = (props: Props) => {
+  const { space } = props
 
-    const traits = store.traits.forSpace(space.uid)
+  if (!space) { return <NotFound /> }
 
-    return (
-      <div>
-        <h1>
-          <Tex>
-            {space.name}
-            {space.aliases ? <Aliases aliases={space.aliases} /> : ''}
-          </Tex>
-        </h1>
-        <Tex><Markdown text={space.description} /></Tex>
+  return (
+    <div>
+      <h1>
+        <Tex>
+          {space.name}
+          {space.aliases ? <Aliases aliases={space.aliases} /> : ''}
+        </Tex>
+      </h1>
+      <Tex><Markdown text={space.description} /></Tex>
 
-        <hr />
+      <hr />
 
-        <div className="row">
-          <div className="col-md-4">
-            <h3>Properties</h3>
-            <TraitPager space={space} />
-          </div>
-          <div className="col-md-8">
-            {React.cloneElement(this.props.children, { space, traits })}
-          </div>
+      <div className="row">
+        <div className="col-md-4">
+          <h3>Properties</h3>
+          <TraitPager space={space} />
+        </div>
+        <div className="col-md-8">
+          {props.children}
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
-export default view(`
-  spaces {
-    uid
-    name
-    # FIXME: aliases
-    description
-  }
-`)(Space)
+export default connect<Props, StateProps>(
+  (state: State, props: Props) => ({
+    space: state.spaces.get(props.params.spaceId)
+  })
+)(Space)

@@ -1,14 +1,13 @@
 import * as React from 'react'
-import * as I from 'immutable'
+import { connect } from 'react-redux'
 
-import { observer } from 'mobx-react'
-import { action, computed, observable, reaction } from 'mobx'
 import store, { ParseError } from '../../store'
 
 import { Finder } from '../../models/Finder'
 import * as F from '../../models/Formula'
 import * as Q from '../../queries'
 import * as T from '../../types'
+import * as S from '../../selectors'
 
 import Suggestions from './Suggestions'
 
@@ -16,101 +15,120 @@ const TAB = 9, ENTER = 13, UP = 38, DOWN = 40 // RIGHT = 39
 
 type Formula = F.Formula<T.Property>
 
-export interface Props {
-  q?: string
-  placeholder?: string
-  suggestionLimit?: number
-  onQueryChange?: (q: string) => void
-  onFormulaChange?: (f?: Formula) => void
-}
-
 interface Event {
   which: number
   preventDefault: () => void
 }
 
-@observer
-class FormulaInput extends React.Component<Props, {}> {
-  @observable selected: number
-  @observable dropdownVisible: boolean
+interface OwnProps {
+  name?: string
+  value?: string
+  placeholder?: string
+  suggestionLimit?: number
+  onChange?: (q: string) => void
+  onFormulaChange?: (f?: Formula) => void
+}
 
-  @observable q: string
-  @observable formula: Formula | undefined
+interface StateProps {
+  properties: Finder<T.Property>
+}
 
+type Props = OwnProps & StateProps
+
+interface State {
+  selected: number
+  dropdownVisible: boolean
+  formula: Formula | undefined
+}
+
+class FormulaInput extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
 
-    this.selected = 0
-    this.dropdownVisible = false
-
-    this.q = this.props.q || ''
-
-    const { onFormulaChange, onQueryChange } = this.props
-
-    reaction(
-      () => this.q,
-      (q) => {
-        if (onQueryChange) { onQueryChange(q) }
-        const f = store.parseFormula(q)
-        switch (f.kind) {
-          case 'parseError':
-            return
-          default:
-            this.formula = f
-        }
-      }
-    )
-
-    if (onFormulaChange) {
-      reaction(() => this.formula, onFormulaChange)
+    this.state = {
+      selected: 0,
+      dropdownVisible: false,
+      formula: undefined
     }
   }
 
-  componentWillReceiveProps(newProps: Props) {
-    if (newProps.q) { this.q = newProps.q }
+  changeSelection(delta: number) {
+    this.setState(({ selected }) => ({ selected: selected + delta }))
   }
 
-  @computed get suggestions() {
-    return Q.suggestionsFor(store.propertyFinder, this.q, 10)
+  suggestions() {
+    return Q.suggestionsFor(this.props.properties, this.props.value || '', 10)
   }
 
-  @action changeSelection(delta: number) {
-    this.selected += delta
-  }
+  expandFragment(index?: number) {
+    const selected = this.suggestions().get(index || this.state.selected)
+    const expanded = Q.replaceFragment(this.props.value || '', selected.name)
 
-  @action expandFragment(index?: number) {
-    const selected = this.suggestions.get(index || this.selected)
-
-    this.q = Q.replaceFragment(this.q, selected.name)
-    this.selected = 0
-    this.dropdownVisible = false
+    this.handleChange(expanded)
+    this.setState({
+      selected: 0,
+      dropdownVisible: false
+    })
   }
 
   handleKeyDown(e: Event) {
-    if (e.which === ENTER || e.which === UP || e.which === DOWN || e.which === TAB) {
-      e.preventDefault()
-    }
-
     switch (e.which) {
       case UP:
+        e.preventDefault()
         return this.changeSelection(-1)
       case DOWN:
+        e.preventDefault()
         return this.changeSelection(1)
       case ENTER:
       case TAB:
-        return this.expandFragment()
+        if (this.state.dropdownVisible) {
+          e.preventDefault()
+          this.expandFragment()
+        }
+        return
       default:
         return
     }
   }
 
-  @action handleChange(q: string) {
-    this.q = q
-    this.dropdownVisible = !!q && q[0] !== ':'
+  parseFormula(query: string): F.Formula<T.Property> | undefined {
+    const parsed = F.parse(query)
+    if (!parsed) { return }
+
+    let missing = false
+    const result = F.mapProperty(
+      id => {
+        const property = this.props.properties.find(id)
+        if (!property) { missing = true }
+        return property as T.Property
+      },
+      parsed
+    )
+
+    if (missing) { return }
+    return result
   }
 
-  @action handleBlur() {
-    this.dropdownVisible = false
+  handleChange(newValue: string) {
+    this.setState(({ formula }) => {
+      if (this.props.onChange) {
+        this.props.onChange(newValue)
+      }
+
+      const parsed = this.parseFormula(newValue) || formula
+      if (parsed !== formula && this.props.onFormulaChange) {
+        this.props.onFormulaChange(parsed)
+      }
+
+      return {
+        formula: parsed,
+        dropdownVisible: !!newValue && newValue[0] !== ':'
+      }
+    })
+  }
+
+  handleBlur() {
+    this.setState({ dropdownVisible: false })
   }
 
   render() {
@@ -120,17 +138,18 @@ class FormulaInput extends React.Component<Props, {}> {
           type="text"
           autoComplete="off"
           className="form-control"
-          value={this.q}
+          name={this.props.name}
+          value={this.props.value}
           placeholder={this.props.placeholder}
           onKeyDown={(e) => this.handleKeyDown(e)}
           onChange={(e) => this.handleChange(e.target.value)}
-          onBlur={() => this.dropdownVisible = false}
+          onBlur={() => this.handleBlur()}
         />
 
         <Suggestions
-          suggestions={this.suggestions}
-          selected={this.selected}
-          visible={this.dropdownVisible}
+          suggestions={this.suggestions()}
+          selected={this.state.selected}
+          visible={this.state.dropdownVisible}
           limit={this.props.suggestionLimit || 10}
           onSelect={(i) => this.expandFragment(i)}
         />
@@ -139,4 +158,8 @@ class FormulaInput extends React.Component<Props, {}> {
   }
 }
 
-export default FormulaInput
+export default connect(
+  (state) => ({
+    properties: S.propertyFinder(state)
+  })
+)(FormulaInput)

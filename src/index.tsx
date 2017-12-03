@@ -3,10 +3,12 @@ import 'babel-polyfill'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import { client } from './graph'
-import makeApp from './components/App'
-import './index.css'
+import { makeStore } from './restore'
+import { makeClient } from './regraph'
 
+import makeApp from './components/App'
+
+import './index.css'
 import './errors'
 
 if (window) {
@@ -21,7 +23,9 @@ if (window) {
   }
 }
 
-const App = makeApp(client)
+const store = makeStore()
+const apollo = makeClient()
+const App = makeApp({ apollo, store })
 
 ReactDOM.render(
   <App />,

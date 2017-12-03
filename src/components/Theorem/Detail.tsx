@@ -16,6 +16,8 @@ class Detail extends React.Component<Props, {}> {
   render() {
     const { theorem } = this.props
 
+    console.log('theorem', theorem)
+
     return (
       <div>
         <h1>

@@ -1,23 +1,22 @@
 import * as React from 'react'
-import * as I from 'immutable'
+import { connect } from 'react-redux'
 
 import * as T from '../types'
+import * as F from '../models/Formula'
 
-import store from '../store'
 import Formula from '../components/Formula'
 import Tex from '../components/Tex'
 
-import * as F from '../models/Formula'
-import { Finder } from '../models/Finder'
-
-export interface Props {
+interface OwnProps {
   theorem: T.Theorem
   link: boolean
 }
+interface StateProps {
+  properties: Map<T.Id, T.Property>
+}
+type Props = OwnProps & StateProps
 
-function Implication({ theorem, link }: Props) {
-  const properties = store.properties.index
-
+function Implication({ theorem, properties, link }: Props) {
   // TODO: what happens when lookup fails?
   const hydrate = (f) => F.mapProperty<string, T.Property>(
     uid => properties.get(uid)!,
@@ -33,4 +32,8 @@ function Implication({ theorem, link }: Props) {
   )
 }
 
-export default Implication
+export default connect<OwnProps, StateProps>(
+  (state) => ({
+    properties: state.properties
+  })
+)(Implication)

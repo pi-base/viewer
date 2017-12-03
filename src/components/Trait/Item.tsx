@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import * as T from '../../types'
 
@@ -13,7 +13,7 @@ function TraitItem({ trait }: Props) {
   return (
     <tr>
       <td>
-        <Icon type={trait.value ? 'ok' : 'remove'}/>
+        <Icon type={trait.value ? 'ok' : 'remove'} />
       </td>
       <td>
         <Link to={`/spaces/${trait.space.uid}/properties/${trait.property.uid}`}>

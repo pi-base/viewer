@@ -29,6 +29,7 @@ export interface Property {
   readonly description: string
 }
 
+export type TraitId = [Id, Id]
 export interface Trait {
   readonly uid: Id
   readonly space: Space

@@ -1,16 +1,15 @@
 import * as React from 'react'
 
-import { Route, IndexRoute } from 'react-router'
+import { Route, Switch } from 'react-router'
 
 import Home from './components/Home'
 import Layout from './components/Layout'
 import Login from './containers/Login'
 import NotFound from './components/NotFound'
 
-import PropertyCreate from './containers/Property/Create'
-import PropertySearch from './components/Property/Search'
+import PropertyCreate from './components/Property/Create'
+import Properties from './components/Property/Index'
 import Property from './containers/Property'
-import Properties from './containers/Properties'
 
 import Space from './components/Space'
 import SpaceCreate from './containers/CreateSpace'
@@ -28,35 +27,26 @@ import UserTab from './components/Layout/UserTab'
 
 // TODO: better loading indicator
 const routes = (
-  <Route
-    path="/"
-    component={Layout}
-  >
-    <IndexRoute component={Home} />
+  <Switch>
+    <Route path="/" exact={true} component={Home} />
 
-    <Route path="login/:token" component={Login} />
-    <Route path="user" component={User} />
+    <Route path="/login/:token" component={Login} />
+    <Route path="/user" component={User} />
 
-    <Route path="spaces" component={Search} />
-    <Route path="spaces/new" component={SpaceCreate} />
-    <Route path="spaces/:spaceId" component={Space}>
-      <IndexRoute component={TraitHelp} />
-      <Route path="properties/:propertyId" component={Trait} />
-    </Route>
+    <Route path="/spaces/new" component={SpaceCreate} />
+    <Route path="/spaces/:spaceId" component={Space} />
+    <Route path="/spaces" component={Search} />
 
-    <Route path="theorems/new" component={TheoremCreate} />
-    <Route path="theorems" component={Theorems}>
-      <Route path=":id" component={Theorem} />
-    </Route>
+    <Route path="/theorems/new" component={TheoremCreate} />
+    <Route path="/theorems/:id" component={Theorem} />
+    <Route path="/theorems" component={Theorems} />
 
-    <Route path="properties/new" component={PropertyCreate} />
-    <Route path="properties" component={Properties}>
-      <IndexRoute component={PropertySearch} />
-      <Route path=":id" component={Property} />
-    </Route>
+    <Route path="/properties/new" component={PropertyCreate} />
+    <Route path="/properties/:id" component={Property} />
+    <Route path="/properties" component={Properties} />
 
-    <Route path="*" component={NotFound} />
-  </Route>
+    <Route component={NotFound} />
+  </Switch>
 )
 
 export default routes

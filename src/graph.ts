@@ -1,4 +1,5 @@
-import { graphql, gql, withApollo, compose } from 'react-apollo'
+import { graphql, withApollo, compose } from 'react-apollo'
+import gql from 'graphql-tag'
 
 import { Client } from './graph/client'
 

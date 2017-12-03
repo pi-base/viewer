@@ -1,29 +1,25 @@
 import * as React from 'react'
-import { observer } from 'mobx-react'
+import { withApollo } from 'react-apollo'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
+import { Dispatch } from 'redux'
 
-import * as Q from '../graph/queries'
-import store from '../store'
-import * as T from '../types'
+import { Action, boot } from '../actions'
+import { State } from '../reducers'
 
+import BranchSelect from './Form/BranchSelect'
 import Navbar from './Navbar'
 
-type Props = T.RouterProps
+interface StateProps {
+  booted: boolean
+  location: { pathname: string }
+}
+interface DispatchProps {
+  boot: () => void
+}
 
-@observer
-class Layout extends React.Component<Props, {}> {
-  componentWillMount() {
-    if (!store.version) { this.loadViewer() }
-  }
-
-  loadViewer() {
-    store.loadView(Q.viewer).then(() => {
-      setTimeout(() => store.checkAll(), 0)
-    })
-  }
-
-  loaded() {
-    return this.props.location.pathname === '/' || store.version
-  }
+class Layout extends React.PureComponent<StateProps & DispatchProps> {
+  componentWillMount() { this.props.boot() }
 
   render() {
     return (
@@ -31,7 +27,8 @@ class Layout extends React.Component<Props, {}> {
         <Navbar />
 
         <div className="container">
-          {this.loaded()
+          <BranchSelect />
+          {this.props.booted || this.props.location.pathname === '/'
             ? this.props.children
             : 'Loading...'}
         </div>
@@ -40,4 +37,13 @@ class Layout extends React.Component<Props, {}> {
   }
 }
 
-export default Layout
+// `withRouter` is required so that location changes will trigger a re-render
+// see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
+export default withRouter(withApollo(connect<{}, StateProps, DispatchProps>(
+  (state: State) => ({
+    booted: state.spaces.size > 0
+  }),
+  (dispatch: Dispatch<Action>, ownProps) => ({
+    boot: () => boot(ownProps.client, dispatch)
+  })
+)(Layout)))

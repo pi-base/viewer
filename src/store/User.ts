@@ -1,18 +1,16 @@
 import { computed, observable } from 'mobx'
-import { ApolloClient } from 'apollo-client'
+
+import * as T from '../types'
 
 class User {
-    @observable name: string
+  @observable name: string
 
-    apollo: ApolloClient
-
-    constructor(apollo: ApolloClient) {
-        this.apollo = apollo
+  @computed get current(): T.User | undefined {
+    if (name) {
+      return { name: this.name }
     }
-
-    @computed get current() {
-        return { name: this.name }
-    }
+    return
+  }
 }
 
 export default User

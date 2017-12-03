@@ -6,21 +6,27 @@ import store from '../store'
 
 class User extends React.Component<{}, {}> {
   render() {
-    const branch = (name: T.Branch) => () => {
-      store.changeBranch(name)
+    const user = store.user.current
+
+    if (!user) {
+      return (<div />)
+    } else {
+      const branch = (name: T.Branch) => () => {
+        store.changeBranch(name)
+      }
+
+      return (
+        <div>
+          <h1>{user.name}</h1>
+
+          <h3>Branch</h3>
+          <p>{store.branch}</p>
+
+          <button onClick={branch('audited')}>Reviewed</button>
+          <button onClick={branch('user')}>User</button>
+        </div>
+      )
     }
-
-    return (
-      <div>
-        <h1>{store.user.current.name}</h1>
-
-        <h3>Branch</h3>
-        <p>{store.branch}</p>
-
-        <button onClick={branch('audited')}>Reviewed</button>
-        <button onClick={branch('user')}>User</button>
-      </div>
-    )
   }
 }
 

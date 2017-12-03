@@ -131,6 +131,7 @@ export const viewer = gql`
       spaces {
         uid
         name
+        description
         traits {
           property {
             uid
@@ -141,11 +142,13 @@ export const viewer = gql`
       properties {
         uid
         name
+        description
       }
       theorems {
         uid
         if
         then
+        description
       }
     }
   }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 import Tex from './Tex'
 
@@ -15,7 +15,7 @@ const Home = () => (
 
     <h2>Contributing and Collaborating</h2>
     <div className="alert alert-info">
-      <p><span className="glyphicon glyphicon-alert"/> There is a major
+      <p><span className="glyphicon glyphicon-alert" /> There is a major
         data cleanup and standardization effort underway
         <a href="https://github.com/jamesdabbs/pi-base-data">on Github</a>.
         Data will be in-flux while that effort is in progress.
@@ -58,7 +58,7 @@ const Home = () => (
       <li>
         Steen and Seebach for writing
         <a href="http://www.amazon.com/Counterexamples-Topology-Dover-Books-Mathematics/dp/048668735X">
-        Counterexamples in Topology</a> in the first place and inspiring this project</li>
+          Counterexamples in Topology</a> in the first place and inspiring this project</li>
     </ul>
   </div>
 )

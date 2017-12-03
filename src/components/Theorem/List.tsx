@@ -1,11 +1,9 @@
 import * as React from 'react'
-import { Link } from 'react-router'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import * as I from 'immutable'
 
-import { observer } from 'mobx-react'
-import { action, computed, observable } from 'mobx'
-import store from '../../store'
-
+import { State as S } from '../../reducers'
 import * as Q from '../../queries'
 import * as T from '../../types'
 
@@ -14,35 +12,37 @@ import Implication from '../../containers/Implication'
 import Preview from '../Preview'
 import Tex from '../Tex'
 
-@observer
-class Theorems extends React.Component<{}, {}> {
-  @observable theorems: I.List<T.Theorem>
-  @observable limit: number
+type StateProps = {
+  theorems: T.Theorem[]
+}
+type Props = StateProps
 
-  showMore: () => void
+type State = {
+  limit: number
+  theorems: T.Theorem[]
+}
 
-  constructor() {
-    super()
-    this.limit = 10
-    this.theorems = store.theorems.all
+class Theorems extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
 
-    this.showMore = this._showMore.bind(this)
+    this.state = {
+      limit: 10,
+      theorems: props.theorems || []
+    }
   }
 
-  @computed get visibleTheorems() {
-    return this.theorems.take(this.limit)
-  }
-
-  @action _showMore() {
-    this.limit += 10
+  showMore() {
+    this.setState(({ limit }) => ({ limit: limit + 10 }))
   }
 
   render() {
+    const visible = this.state.theorems.slice(0, this.state.limit)
     return (
       <section className="theorems">
         <Filter
-          collection={store.theorems.all}
-          onChange={theorems => this.theorems = I.List<T.Theorem>(theorems)}
+          collection={I.List<T.Theorem>(this.props.theorems)}
+          onChange={ts => this.setState({ theorems: (ts as I.List<T.Theorem>).toArray() })}
           weights={[
             { name: 'if', weight: 0.7 },
             { name: 'then', weight: 0.7 },
@@ -51,7 +51,7 @@ class Theorems extends React.Component<{}, {}> {
           placeholder="Filter theorems"
         />
 
-        {this.visibleTheorems.map((t: T.Theorem) => (
+        {visible.map((t: T.Theorem) => (
           <Tex key={t.uid}>
             <h3>
               <Link to={`/theorems/${t.uid}`}>
@@ -62,7 +62,7 @@ class Theorems extends React.Component<{}, {}> {
           </Tex>
         ))}
 
-        {this.theorems.size > this.visibleTheorems.size
+        {this.state.theorems.length > visible.length
           ? <button className="btn btn-default" onClick={this.showMore}>Show More</button>
           : ''}
       </section>
@@ -70,4 +70,8 @@ class Theorems extends React.Component<{}, {}> {
   }
 }
 
-export default Theorems
+export default connect(
+  (state: S) => ({
+    theorems: Array.from(state.theorems.values())
+  })
+)(Theorems)

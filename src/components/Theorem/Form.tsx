@@ -33,6 +33,8 @@ class Form extends React.Component<any, {}> {
   }
 
   @computed get theorem() {
+    if (!this.if || !this.then) { return }
+
     return {
       uid: this.uid,
       if: this.if,
@@ -42,12 +44,12 @@ class Form extends React.Component<any, {}> {
   }
 
   setIf(f?: Formula) {
-    console.log('if', f)
+    console.log('if', (f as any).property)
     this.if = f
   }
 
   setThen(f?: Formula) {
-    console.log('then', f)
+    console.log('then', (f as any).property)
     this.then = f
   }
 
@@ -84,7 +86,10 @@ class Form extends React.Component<any, {}> {
 
         <div className="col-md-6">
           {JSON.stringify(this.theorem)}
-          <Detail theorem={this.theorem as any} />
+          {this.theorem
+            ? <Detail theorem={this.theorem as any} />
+            : ''
+          }
         </div>
       </div>
     )
