@@ -10,9 +10,12 @@ const Navbar = () => (
       <ul className="nav navbar-nav">
         <li><NavLink activeClassName="active" to="/spaces">Spaces</NavLink></li>
         <li><NavLink activeClassName="active" to="/properties">Properties</NavLink></li>
+        <li><NavLink activeClassName="active" to="/theorems">Theorems</NavLink></li>
       </ul>
 
-      <UserTab />
+      <ul className="nav navbar-nav pull-right">
+        <UserTab />
+      </ul>
     </div>
   </nav>
 )

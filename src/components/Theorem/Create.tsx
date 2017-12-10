@@ -63,7 +63,7 @@ const validate = (values: Values, props: Props) => {
 }
 
 const Formula = props => <Labeled {...props} Component={FormulaInput} />
-const Text = props => <Labeled {...props} Component="input" />
+const Textarea = props => <Labeled {...props} Component="textarea" />
 
 const CreateTheorem = props => {
   const { handleSubmit, pristine, reset, submitting } = props
@@ -74,17 +74,19 @@ const CreateTheorem = props => {
           <Field
             name="if"
             label="If"
+            placeholder="compact + t_2"
             component={Formula}
           />
           <Field
             name="then"
             label="Then"
+            placeholder="t_4"
             component={Formula}
           />
           <Field
             name="description"
             label="Description"
-            component={Text}
+            component={Textarea}
           />
           <button className="btn btn-default" type="submit" disabled={submitting}>
             Save

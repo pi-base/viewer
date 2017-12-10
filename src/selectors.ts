@@ -54,7 +54,7 @@ export const getTrait = (state: State, space: Space, propertyId: Id): Trait | un
   const property = state.properties.get(propertyId)
   if (!property) { return undefined }
   const value = ts.get(propertyId)
-  if (!value) { return undefined }
+  if (value === undefined) { return undefined }
   return {
     space,
     property,

@@ -2,8 +2,8 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { State as S } from '../../reducers'
-import * as Q from '../../queries'
+import { State as StoreState } from '../../reducers'
+import * as S from '../../selectors'
 import { Theorem } from '../../types'
 
 import Filter from '../Filter'
@@ -13,6 +13,7 @@ import Tex from '../Tex'
 
 type StateProps = {
   theorems: Theorem[]
+  editing: boolean
 }
 type Props = StateProps
 
@@ -39,6 +40,11 @@ class Theorems extends React.Component<Props, State> {
     const visible = this.state.theorems.slice(0, this.state.limit)
     return (
       <section className="theorems">
+        {this.props.editing
+          ? <Link to="/theorems/new" className="btn btn-default">New</Link>
+          : ''
+        }
+
         <Filter
           collection={this.props.theorems}
           onChange={(theorems: Theorem[]) => this.setState({ theorems })}
@@ -69,8 +75,9 @@ class Theorems extends React.Component<Props, State> {
   }
 }
 
-export default connect(
-  (state: S) => ({
-    theorems: Array.from(state.theorems.values())
+export default connect<StateProps, {}, {}>(
+  (state: StoreState): StateProps => ({
+    theorems: Array.from(state.theorems.values()),
+    editing: S.editing(state)
   })
 )(Theorems)
