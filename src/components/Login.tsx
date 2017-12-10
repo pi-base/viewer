@@ -24,8 +24,6 @@ class Login extends React.PureComponent<Props> {
 export default withApollo(connect(
   () => ({}),
   (dispatch, ownProps) => ({
-    login: (token) => login(ownProps.client, dispatch, token).then(() => {
-      console.log()
-    })
+    login: (token) => login(ownProps.client, dispatch, token)
   })
 )(Login))

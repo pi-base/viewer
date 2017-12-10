@@ -24,6 +24,11 @@ export const prover = createSelector(
   (traits, theorems) => new Prover(traits, Array.from(theorems.values()))
 )
 
+export const asserted = (state: State, sid: Id, pid: Id): boolean => {
+  const traits = state.proofs.get(sid)
+  return traits ? traits.get(pid) === 0 : false
+}
+
 export const spaceTraits = (state: State, space: Space): Trait[] => {
   const values = state.traits.get(space.uid)
   if (!values) { return [] }

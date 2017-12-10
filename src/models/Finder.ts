@@ -6,7 +6,6 @@ export interface Record {
 
 export type Weights = string[] | { name: string, weight: number }[]
 
-// TODO: unify w/ fuse usage in Filter.jsx
 export class Finder<T extends Record> {
   records: Map<string, T>
   fuse: Fuse

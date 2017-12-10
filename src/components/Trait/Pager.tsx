@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import { spaceTraits } from '../../selectors'
+import { asserted, spaceTraits } from '../../selectors'
 import { Space, Trait, State as RootState } from '../../types'
 
 import Icon from '../Icon'
@@ -30,7 +30,7 @@ type State = {
 
 const TabButton = ({ icon, name, active, onClick }) => (
   <button
-    className={`btn btn-default ${active}`}
+    className={`btn btn-default ${active ? 'active' : ''}`}
     onClick={onClick}
   >
     <Icon type={icon} />
@@ -46,23 +46,26 @@ class TraitPager extends React.Component<Props, State> {
     this.state = {
       filtered: this.props.traits,
       tabs: {
-        asserted: false,
+        asserted: true,
         deduced: false
       },
       limit: 10
     }
   }
 
-  results(): Trait[] {
-    const asserted = this.state.tabs.asserted
-    const deduced = this.state.tabs.deduced
+  componentWillReceiveProps(props: Props) {
+    this.setState({ filtered: props.traits })
+  }
 
-    if (asserted && deduced) {
+  results(): Trait[] {
+    const t = this.state.tabs
+
+    if (t.asserted && t.deduced) {
       return this.state.filtered
-    } else if (asserted) {
-      return this.state.filtered.filter(t => !this.props.isDeduced(t))
-    } else if (deduced) {
-      return this.state.filtered.filter(t => this.props.isDeduced(t))
+    } else if (t.asserted) {
+      return this.state.filtered.filter(p => !this.props.isDeduced(p))
+    } else if (t.deduced) {
+      return this.state.filtered.filter(p => this.props.isDeduced(p))
     } else {
       return this.state.filtered
     }
@@ -136,8 +139,10 @@ class TraitPager extends React.Component<Props, State> {
 }
 
 export default connect(
-  (state: RootState, ownProps: OwnProps) => ({
-    traits: spaceTraits(state, ownProps.space),
-    isDeduced: t => state.proofs.has(t.space.uid)
+  (state: RootState, ownProps: OwnProps): StateProps => ({
+    traits: spaceTraits(state, ownProps.space).sort(
+      (a, b) => a.property.name >= b.property.name ? 1 : -1
+    ),
+    isDeduced: t => !asserted(state, t.space.uid, t.property.uid) // .proofs.has(t.space.uid)
   })
 )(TraitPager)
