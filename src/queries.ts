@@ -27,25 +27,6 @@ export const replaceFragment = (q: string, expanded: string) => {
 
 // Other exports
 
-export const parseFormula = (
-  finder: Finder<Property>,
-  text: string
-): F.Formula<Id> | undefined => {
-  const parsed = F.parse(text)
-  if (!parsed) { return }
-
-  let errors = false
-  const result = F.mapProperty(
-    id => {
-      const property = finder.find(id)
-      if (!property) { errors = true }
-      return property as Property
-    },
-    parsed
-  )
-  return errors ? undefined : F.mapProperty(p => p.uid, result)
-}
-
 export function suggestionsFor(finder: Finder<Property>, query: string, limit: number): Property[] {
   return finder.search(getFragment(query), limit)
 }

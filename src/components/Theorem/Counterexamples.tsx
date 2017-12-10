@@ -69,9 +69,10 @@ const Counterexamples = ({ theorem, properties, counterexamples, prover }: Props
   return <aside>No examples found disproving the converse.</aside>
 }
 
-export default connect<OwnProps, StateProps>(
-  (state: State, ownProps: OwnProps) => ({
+export default connect(
+  (state: State, ownProps: OwnProps): StateProps => ({
     counterexamples: S.counterexamples(state, ownProps.theorem),
-    properties: S.theoremProperties(state, ownProps.theorem)
+    properties: S.theoremProperties(state, ownProps.theorem),
+    prover: S.prover(state)
   })
 )(Counterexamples)

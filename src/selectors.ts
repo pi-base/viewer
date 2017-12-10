@@ -86,6 +86,26 @@ export const searchFormula = createSelector(
   }
 )
 
+export const parseFormula = (
+  state: State,
+  text: string
+): F.Formula<Id> | undefined => {
+  const parsed = F.parse(text)
+  if (!parsed) { return }
+
+  const finder = propertyFinder(state)
+  let errors = false
+  const result = F.mapProperty(
+    id => {
+      const property = finder.find(id)
+      if (!property) { errors = true }
+      return property as Property
+    },
+    parsed
+  )
+  return errors ? undefined : F.mapProperty(p => p.uid, result)
+}
+
 export const searchResults = (state: State): Space[] =>
   search(state, state.search.formula, state.search.text)
 

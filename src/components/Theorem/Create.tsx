@@ -1,13 +1,49 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router'
 import { Field, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
+import { addTheorem } from '../../actions'
+import { parseFormula } from '../../selectors'
+import { Dispatch, State, Theorem } from '../../types'
+
+import * as F from '../../models/Formula'
 import Labeled from '../Form/Labeled'
 import FormulaInput from '../Formula/Input'
-import { addTheorem } from '../../actions'
 
-const validate = values => {
+type Values = {
+  uid: string
+  if?: string
+  then?: string
+  description?: string
+}
+
+type StateProps = {
+  initialValues: Values
+  build: (values: Values) => Theorem | undefined
+}
+type DispatchProps = {
+  save: (theorem: Theorem) => void
+}
+type Props = StateProps & DispatchProps & RouteComponentProps<{}>
+
+const build = (state: State, values: Values): Theorem | undefined => {
+  if (!values.if || !values.then) { return undefined }
+  const antecedent = parseFormula(state, values.if)
+  if (!antecedent) { return undefined }
+  const consequent = parseFormula(state, values.then)
+  if (!consequent) { return undefined }
+
+  return {
+    uid: values.uid,
+    if: antecedent!,
+    then: consequent!,
+    description: values.description || ''
+  }
+}
+
+const validate = (values: Values, props: Props) => {
   const errors = {} as any
   if (!values.if) {
     errors.if = 'Required'
@@ -15,25 +51,15 @@ const validate = values => {
   if (!values.then) {
     errors.then = 'Required'
   }
-  console.log('create theorem', values, errors)
+
+  const theorem = props.build(values)
+  console.log('create theorem', theorem, values, errors)
   // TODO: check for counterexamples
   return errors
 }
 
-const renderField = ({
-  input,
-  label,
-  type,
-  meta: { touched, error, warning }
-}) => (
-    <div className="form-group">
-      <label htmlFor={input.name}>{label}</label>
-      <div>
-        <input className="form-control" {...input} placeholder={label} type={type} />
-        {touched && (error && <span>{error}</span>)}
-      </div>
-    </div>
-  )
+const Formula = props => <Labeled {...props} Component={FormulaInput} />
+const Text = props => <Labeled {...props} Component="input" />
 
 const CreateTheorem = props => {
   const { handleSubmit, pristine, reset, submitting } = props
@@ -44,17 +70,17 @@ const CreateTheorem = props => {
           <Field
             name="if"
             label="If"
-            component={ps => <Labeled {...ps} Component={FormulaInput} />}
+            component={Formula}
           />
           <Field
             name="then"
             label="Then"
-            component={ps => <Labeled {...ps} Component={FormulaInput} />}
+            component={Formula}
           />
           <Field
             name="description"
             label="Description"
-            component={renderField}
+            component={Text}
           />
           <button className="btn btn-default" type="submit" disabled={submitting}>
             Save
@@ -66,18 +92,27 @@ const CreateTheorem = props => {
 }
 
 export default connect(
-  () => ({
-    initialValues: { uid: uuid() }
+  (state: State): StateProps => ({
+    initialValues: { uid: uuid() },
+    build: (values) => build(state, values)
   }),
-  (dispatch, ownProps) => ({
-    onSubmit: (theorem) => {
+  (dispatch: Dispatch, ownProps: Props): DispatchProps => ({
+    save: theorem => {
       dispatch(addTheorem(theorem))
+      dispatch({ type: 'CHECK_PROOFS' })
       ownProps.history.push(`/theorems/${theorem.uid}`)
     }
   })
 )(
   reduxForm({
     form: 'createTheorem',
-    validate
+    validate,
+    onSubmit: (values: Values, dispatch: Dispatch, props: Props) => {
+      console.log('props', props)
+      const theorem = props.build(values)
+      if (theorem) { // TODO: this should always happen, if validation passed
+        props.save(theorem)
+      }
+    }
   })
     (CreateTheorem))

@@ -14,6 +14,8 @@ const validate = values => {
   return errors
 }
 
+const Text = props => <Labeled {...props} Component="input" />
+
 const Create = props => {
   const { handleSubmit, pristine, reset, submitting } = props
 
@@ -25,13 +27,13 @@ const Create = props => {
             name="name"
             type="text"
             label="Name"
-            component={ps => <Labeled {...ps} Component="input" />}
+            component={Text}
           />
           <Field
             name="description"
             type="textarea"
             label="Description"
-            component={ps => <Labeled {...ps} Component="input" />}
+            component={Text}
           />
           <button className="btn btn-default" type="submit" disabled={submitting}>
             Save

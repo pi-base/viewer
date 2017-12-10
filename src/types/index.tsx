@@ -1,3 +1,5 @@
+import { Dispatch as _Dispatch } from 'react-redux'
+import { Action } from '../actions'
 import { Formula } from '../models/Formula'
 
 export { Action } from '../actions'
@@ -10,6 +12,8 @@ export { State } from '../reducers'
 export type Branch = 'audited' | 'user'
 export type Id = string
 export type Token = string
+
+export type Dispatch = _Dispatch<Action>
 
 export type PropertyId = Id
 

@@ -59,15 +59,7 @@ export function query<Response>({ client, dispatch, q, context }: QueryParams): 
 }
 
 const load = (client, dispatch): Promise<GQ.ViewerResponse> => {
-  const cached = localStorage.getItem('pi-base.viewer')
-  if (cached) {
-    return Promise.resolve(JSON.parse(cached))
-  } else {
-    return query<GQ.ViewerResponse>({ client, dispatch, q: GQ.viewer }).then(data => {
-      localStorage.setItem('pi-base.viewer', JSON.stringify(data))
-      return data
-    })
-  }
+  return query<GQ.ViewerResponse>({ client, dispatch, q: GQ.viewer })
 }
 export const boot = (client, dispatch) => {
   load(client, dispatch).then(data => {

@@ -1,7 +1,6 @@
 import { Action } from '../actions'
-import { parseFormula } from '../queries'
 import { State as RootState } from '../reducers'
-import { propertyFinder } from '../selectors'
+import { parseFormula } from '../selectors'
 import { Formula, Id } from '../types'
 
 export type State = {
@@ -19,8 +18,7 @@ export const reducer = (
     case 'SEARCH':
       const next = Object.assign({}, state.search)
       if (action.formula) {
-        const finder = propertyFinder(state)
-        const formula = parseFormula(finder, action.formula)
+        const formula = parseFormula(state, action.formula)
         if (formula) { next.formula = formula }
       }
       if (action.text) { next.text = action.text }
