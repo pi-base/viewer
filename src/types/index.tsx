@@ -1,9 +1,11 @@
-import * as I from 'immutable'
+import { Formula } from '../models/Formula'
 
-import * as F from '../models/Formula'
-
-import { Finder } from '../models/Finder'
+export { Action } from '../actions'
 export { Finder } from '../models/Finder'
+export { Formula } from '../models/Formula'
+export { Prover } from '../models/Prover'
+export { Table } from '../models/Table'
+export { State } from '../reducers'
 
 export type Branch = 'audited' | 'user'
 export type Id = string
@@ -11,21 +13,21 @@ export type Token = string
 
 export type PropertyId = Id
 
-export interface User {
+export type User = {
   readonly name: string
 }
 
-export interface Space {
+export type Space = {
   readonly uid: Id
   readonly name: string
-  readonly aliases?: I.List<string>
+  readonly aliases?: string[]
   readonly description: string
 }
 
-export interface Property {
+export type Property = {
   readonly uid: Id
   readonly name: string
-  readonly aliases?: I.List<string>
+  readonly aliases?: string[]
   readonly description: string
 }
 
@@ -34,42 +36,27 @@ export interface Trait {
   readonly uid: Id
   readonly space: Space
   readonly property: Property
-  readonly description: string
   readonly value: boolean
   readonly deduced: boolean
+  readonly description?: string
 }
 
-export interface Theorem {
+export type Theorem = {
   readonly uid: Id
-  readonly if: F.Formula<Id>
-  readonly then: F.Formula<Id>
-  readonly converse?: any // FIXME
+  readonly if: Formula<Id>
+  readonly then: Formula<Id>
+  readonly converse?: Id[] // ids of theorems proving converse
   readonly description: string
 }
 
-export interface ProofIds {
-  readonly traits: I.List<Id>
-  readonly theorems: I.List<Id>
+export type ProofIds = {
+  readonly traits: Id[]
+  readonly theorems: Id[]
 }
 
-export interface Proof {
-  readonly traits: I.List<Trait>
-  readonly theorems: I.List<Theorem>
+export type Proof = {
+  readonly traits: Trait[]
+  readonly theorems: Theorem[]
 }
 
-export type TraitMap = I.Map<Id, I.Map<Id, boolean>> // spaceId, propertyId => trait
-export type TraitTable = I.Map<Id, I.Map<Id, Trait>> // spaceId, propertyId => trait
-
-export type Index<P> = I.Map<Id, P>
-
-// There's probably a cleaner way to handle this, but this gives us an escape
-// hatch for props added by the router
-export interface RouterProps {
-  // tslint:disable no-any
-  router?: any
-  params?: any
-  location: {
-    pathname: string
-  }
-  // tslint:enable o-any
-}
+export type TraitTable = Map<Id, Map<Id, Trait>> // spaceId, propertyId => trait

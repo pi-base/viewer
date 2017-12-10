@@ -1,21 +1,24 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import * as I from 'immutable'
 
-import store from '../../store'
-import * as T from '../../types'
+import * as Table from '../../models/Table'
+import { Id, Space, Property, State } from '../../types'
 
 import Icon from '../Icon'
 import Tex from '../Tex'
 
-export interface Props {
-  spaces: I.List<T.Space>
-  properties: I.List<T.Property>
-  // traits: T.TraitTable
+type OwnProps = {
+  spaces: Space[]
+  properties: Property[]
 }
+type StateProps = {
+  traits: Table.Table<Id, Id, boolean>
+}
+type Props = OwnProps & StateProps
 
-function check(space: T.Space, property: T.Property) {
-  const val = store.traits.check(space.uid, property.uid)
+function check(space: Space, property: Property, traits: Table.Table<Id, Id, boolean>) {
+  const val = Table.get(traits, space.uid, property.uid)
   let type
   if (val === true) {
     type = 'ok'
@@ -32,7 +35,7 @@ function check(space: T.Space, property: T.Property) {
   )
 }
 
-function TraitTable({ spaces, properties }: Props) {
+function TraitTable({ spaces, properties, traits }: Props) {
   return (
     <table className="table table-condensed table-striped table-hover">
       <thead>
@@ -42,7 +45,7 @@ function TraitTable({ spaces, properties }: Props) {
             {' '}
             <Link to="/spaces/new" className="btn btn-default btn-xs">New</Link>
           </th>
-          {properties.map((p: T.Property) => (
+          {properties.map(p => (
             <th key={p.uid}>
               <Link to={`/properties/${p.uid}`}>
                 <Tex>{p.name}</Tex>
@@ -52,15 +55,15 @@ function TraitTable({ spaces, properties }: Props) {
         </tr>
       </thead>
       <tbody>
-        {spaces.map((s: T.Space) => (
+        {spaces.map(s => (
           <tr key={s.uid}>
             <td>
               <Link to={`/spaces/${s.uid}`}>
                 <Tex>{s.name}</Tex>
               </Link>
             </td>
-            {properties.map((p: T.Property) => (
-              <td key={p.uid}>{check(s, p)}</td>
+            {properties.map(p => (
+              <td key={p.uid}>{check(s, p, traits)}</td>
             ))}
           </tr>
         ))}
@@ -69,4 +72,8 @@ function TraitTable({ spaces, properties }: Props) {
   )
 }
 
-export default TraitTable
+export default connect<OwnProps, StateProps>(
+  (state: State) => ({
+    traits: state.traits
+  })
+)(TraitTable)

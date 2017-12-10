@@ -1,25 +1,25 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import * as I from 'immutable'
 
+import { State } from '../../reducers'
 import * as F from '../../models/Formula'
 import * as L from '../../logic'
+import * as S from '../../selectors'
 import * as T from '../../types'
 
 import Examples from './Examples'
 import Formula from '../Formula'
-import Implication from '../../containers/Implication'
+import Implication from '../Implication'
 import TraitTable from '../Trait/Table'
 
-interface Props {
-  theorems: I.List<T.Theorem>
-  traits: T.TraitMap
-  properties: T.Finder<T.Property>
-  text?: string
-  formula?: F.Formula<T.Property>
-  results: I.List<T.Space>
-  onSelect: (q: string) => void
+type StateProps = {
+  text: string | undefined
+  formula: T.Formula<T.Property> | undefined
+  results: T.Space[]
+  prover: T.Prover
 }
+type Props = StateProps
 
 const Tautology = ({ formula }) => (
   <div>
@@ -27,7 +27,7 @@ const Tautology = ({ formula }) => (
   </div>
 )
 
-const Disproven = ({ formula, disproof, properties }) => (
+const Disproven = ({ formula, disproof }) => (
   <div>
     <p>No spaces exist satisfying <Formula formula={formula} link={true} /> due to the following theorems:</p>
     <ul>
@@ -55,30 +55,37 @@ const NoneFound = ({ formula }) => (
   </div>
 )
 
-function Results({ text, formula, results, onSelect, traits, theorems, properties }: Props) {
+function Results({ text, formula, results, prover }: Props) {
   if (!text && !formula) {
-    return <Examples className="search-examples" viewExample={onSelect} />
+    return <Examples className="search-examples" />
   }
 
-  if (formula && results.size === 0) {
-    const f = F.mapProperty(p => p.uid, formula)
-    const disproof = L.disprove(theorems, f)
+  if (formula && results.length === 0) {
+    const disproof = prover.disprove(
+      F.mapProperty(p => p.uid, formula)
+    )
     if (disproof === 'tautology') {
       return <Tautology formula={formula} />
     } else if (disproof) {
-      return <Disproven formula={formula} disproof={disproof} properties={properties} />
+      return <Disproven formula={formula} disproof={disproof} />
     } else {
       return <NoneFound formula={formula} />
     }
   }
 
-  const columns: I.List<T.Property> = formula
-    ? F.properties(formula).toList()
-    : I.List<T.Property>()
-
+  const columns = formula ? F.properties(formula) : []
   return (
     <TraitTable spaces={results} properties={columns} />
   )
 }
 
-export default Results
+const mapStateToProps = (state: State): StateProps => ({
+  text: state.search.text,
+  formula: S.searchFormula(state),
+  results: S.searchResults(state),
+  prover: S.prover(state)
+})
+
+export default connect<{}, StateProps>(
+  mapStateToProps
+)(Results)

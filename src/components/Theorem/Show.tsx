@@ -2,13 +2,13 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 
-import { State } from '../reducers'
-import * as T from '../types'
+import { State } from '../../reducers'
+import * as T from '../../types'
 
-import Counterexamples from '../containers/Theorem/Counterexamples'
-import Detail from '../components/Theorem/Detail'
-import NotFound from '../components/NotFound'
-import Tex from '../components/Tex'
+import Counterexamples from './Counterexamples'
+import Detail from './Detail'
+import NotFound from '../NotFound'
+import Tex from '../Tex'
 
 type StateProps = {
   theorem: T.Theorem

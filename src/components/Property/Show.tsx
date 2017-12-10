@@ -1,6 +1,8 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router'
 
-import * as I from 'immutable'
+import { State } from '../../reducers'
 import * as T from '../../types'
 
 import Aliases from '../Aliases'
@@ -9,38 +11,33 @@ import NotFound from '../NotFound'
 import RelatedTheorems from './RelatedTheorems'
 import Tex from '../Tex'
 
-export interface Props {
-  properties: T.Finder<T.Property>
-  theorems: I.List<T.Theorem>
-  params: {
-    propertyId: string
-  }
+type StateProps = {
+  property: T.Property
+}
+type RouteProps = RouteComponentProps<{ id: string }>
+type Props = StateProps & RouteProps
+
+const Property = ({ property }: Props) => {
+  if (!property) { return <NotFound /> }
+
+  return (
+    <div>
+      <h1>
+        <Tex>
+          {property.name}
+          {property.aliases ? <Aliases aliases={property.aliases} /> : ''}
+        </Tex>
+      </h1>
+      <Tex><Markdown text={property.description} /></Tex>
+      <hr />
+
+      <RelatedTheorems property={property} />
+    </div>
+  )
 }
 
-class Show extends React.Component<Props & T.RouterProps, {}> {
-  render() {
-    const property = this.props.properties.records.get(this.props.params.propertyId)
-    // if (!property) { return <NotFound {...this.props} /> }
-
-    return (
-      <div>
-        <h1>
-          <Tex>
-            {property.name}
-            {property.aliases ? <Aliases aliases={property.aliases} /> : ''}
-          </Tex>
-        </h1>
-        <Tex><Markdown text={property.description} /></Tex>
-        <hr />
-
-        <RelatedTheorems
-          property={property}
-          theorems={this.props.theorems}
-          properties={this.props.properties}
-        />
-      </div>
-    )
-  }
-}
-
-export default Show
+export default connect(
+  (state: State, ownProps: Props) => ({
+    property: state.properties.get(ownProps.match.params.id)
+  })
+)(Property)

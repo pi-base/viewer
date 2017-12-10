@@ -4,35 +4,44 @@ import * as form from 'redux-form'
 import * as T from './types'
 import * as A from './actions'
 
-import properties from './reducers/properties'
+import * as properties from './reducers/properties'
 import prover, { ProofState } from './reducers/prover'
+import * as search from './reducers/search'
 import spaces from './reducers/spaces'
 import theorems from './reducers/theorems'
 import traits, { State as TraitState } from './reducers/traits'
+import * as user from './reducers/user'
 import * as version from './reducers/version'
 
 export type State = {
+  proofs: ProofState
+  properties: properties.State
+  search: search.State
   spaces: Map<T.Id, T.Space>
-  properties: Map<T.Id, T.Property>
   theorems: Map<T.Id, T.Theorem>
   traits: TraitState
-  proofs: ProofState
+  user: user.State
   version: version.State
 }
 
 const combined = combineReducers<State>({
+  proofs: (s) => s || new Map(),
+  properties: properties.reducer,
+  search: (s) => s || search.initial,
   spaces,
-  properties,
   traits,
   theorems,
-  proofs: (state) => (state || new Map()),
+  user: user.reducer,
   version: version.reducer,
   form: form.reducer
 })
 
 const reducer = (state: State, action: A.Action): State => {
-  const next = combined(state, action)
-  return prover(next, action)
+  let next = combined(state, action)
+  next = prover(next, action)
+  return {
+    ...next, search: search.reducer(next, action)
+  }
 }
 
 export default reducer

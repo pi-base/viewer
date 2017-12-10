@@ -4,26 +4,25 @@ import { Route, Switch } from 'react-router'
 
 import Home from './components/Home'
 import Layout from './components/Layout'
-import Login from './containers/Login'
+import Login from './components/Login'
 import NotFound from './components/NotFound'
 
 import PropertyCreate from './components/Property/Create'
 import Properties from './components/Property/Index'
-import Property from './containers/Property'
+import Property from './components/Property/Show'
 
+import SpaceCreate from './components/Space/Create'
 import Space from './components/Space'
-import SpaceCreate from './containers/CreateSpace'
 
-import TheoremCreate from './containers/Theorem/Create'
-import Theorem from './containers/Theorem'
-import Theorems from './components/Theorem/List'
+import TheoremCreate from './components/Theorem/Create'
+import Theorems from './components/Theorem/Index'
+import Theorem from './components/Theorem/Show'
 
 import Trait from './components/Trait'
 import TraitHelp from './components/Trait/Help'
 
-import Search from './containers/Search'
-import User from './containers/User'
-import UserTab from './components/Layout/UserTab'
+import Search from './components/Search'
+import User from './components/User'
 
 // TODO: better loading indicator
 const routes = (

@@ -1,54 +1,52 @@
 import * as React from 'react'
+import { Dispatch, connect } from 'react-redux'
 
-export interface Props extends React.HTMLProps<HTMLDivElement> {
-  viewExample: (q: string) => void
+import { search } from '../../actions'
+import { Action, Formula, Id } from '../../types'
+
+type Example = { name: string, query: string }
+
+type DispatchProps = {
+  search: (formula: string) => void
+}
+type Props = DispatchProps & React.HTMLProps<HTMLDivElement>
+
+const examples: Example[] = [
+  {
+    name: 'All Non-Metric Continua',
+    query: 'compact + connected + t_2 + ~metrizable'
+  },
+  {
+    name: 'A Common Non-Theorem',
+    query: 'first countable + separable + ~second countable'
+  }
+]
+
+const Example = (props: Example & DispatchProps) => (
+  <article key={props.query}>
+    <h5>{props.name}</h5>
+    <a onClick={() => props.search(props.query)}>
+      <pre>{props.query}</pre>
+    </a>
+  </article>
+)
+
+const Examples = (props: Props) => {
+  return (
+    <div className={props.className}>
+      <p>Not sure where to start? Try one of the following searches</p>
+      {examples.map(example =>
+        <Example key={example.name} {...example} search={props.search} />
+      )}
+    </div>
+  )
 }
 
-class Examples extends React.Component<Props, {}> {
-  examples() {
-    return [
-      {
-        name: 'All Non-Metric Continua',
-        q: 'compact + connected + t_2 + ~metrizable'
-      },
-      {
-        name: 'A Common Non-Theorem',
-        q: 'first countable + separable + ~second countable'
-      }
-      // {
-      //   name: 'A Class of Examples by Name',
-      //   q: ':plank'
-      // },
-      // {
-      //   name: 'New Things to Prove',
-      //   q: '?metacompact'
-      // }
-    ]
-  }
+const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
+  search: (formula) => dispatch(search({ text: '', formula }))
+})
 
-  example({ name, q }: { name: string, q: string }) {
-    const { viewExample } = this.props
-
-    return (
-      <article key={q}>
-        <h5>{name}</h5>
-        <a onClick={() => viewExample(q)}>
-          <pre>{q}</pre>
-        </a>
-      </article>
-    )
-  }
-
-  render() {
-    return (
-      <div className={this.props.className}>
-        <p>Not sure where to start? Try one of the following searches</p>
-        {this.examples().map(ex =>
-          this.example(ex)
-        )}
-      </div>
-    )
-  }
-}
-
-export default Examples
+export default connect<{}, DispatchProps>(
+  () => ({}),
+  mapDispatchToProps
+)(Examples)

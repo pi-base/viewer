@@ -3,8 +3,8 @@ import 'babel-polyfill'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import { makeStore } from './restore'
-import { makeClient } from './regraph'
+import { makeClient } from './graph'
+import { makeStore } from './store'
 
 import makeApp from './components/App'
 

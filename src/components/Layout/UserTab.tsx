@@ -1,31 +1,30 @@
 import * as React from 'react'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { observer } from 'mobx-react'
-import store from '../../store'
+import { loginUrl } from '../../graph'
+import { State } from '../../types'
 
-import { client } from '../../graph'
-import * as T from '../../types'
-
-@observer
-class UserTab extends React.Component {
-  render() {
-    const user = store.user.current
-    return (
-      <ul className="nav navbar-nav pull-right">
-        <li>
-          {user
-            ? <Link to="/user">{user.name}</Link>
-            : <a href={client.loginUrl({ redirectTo: window.location })}>
-              Login with Github
-          </a>
-          }
-        </li>
-      </ul>
-    )
-  }
+type StoreProps = {
+  username: string | undefined
 }
+type Props = StoreProps
 
-export default UserTab
+const UserTab = ({ username }: Props) => (
+  <ul className="nav navbar-nav pull-right">
+    <li>
+      {username
+        ? <Link to="/user">{username}</Link>
+        : <a href={loginUrl({ redirectTo: window.location })}>
+          Login with Github
+          </a>
+      }
+    </li>
+  </ul>
+)
+
+export default connect(
+  (state: State): StoreProps => ({
+    username: state.user === 'unauthenticated' ? undefined : state.user.name
+  })
+)(UserTab)

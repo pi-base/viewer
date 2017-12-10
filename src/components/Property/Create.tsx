@@ -16,6 +16,7 @@ const validate = values => {
 
 const Create = props => {
   const { handleSubmit, pristine, reset, submitting } = props
+
   return (
     <div className="row">
       <div className="col-sm-6">

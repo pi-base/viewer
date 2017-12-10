@@ -1,13 +1,11 @@
 import * as React from 'react'
 
-import * as I from 'immutable'
-
 import { Finder, Record, Weights } from '../models/Finder'
 
 export interface Props {
-  collection: I.List<Record>
+  collection: Record[]
   weights?: Weights
-  onChange: (results: I.Iterable<number, Record>) => void
+  onChange: (results: Record[]) => void
   name?: string
   placeholder?: string
 }
@@ -35,7 +33,7 @@ class Filter extends React.Component<Props, State> {
 
   onChange(q: string) {
     this.setState({ q })
-    if (!q) { return this.props.onChange(I.List<Record>()) }
+    if (!q) { return this.props.onChange([]) }
 
     this.props.onChange(this.finder.search(q))
   }
@@ -51,7 +49,7 @@ class Filter extends React.Component<Props, State> {
         name={name}
         placeholder={placeholder}
         value={this.state.q}
-        onChange={(e) => this.onChange(e.target.value)}
+        onChange={e => this.onChange(e.target.value)}
       />
     )
   }

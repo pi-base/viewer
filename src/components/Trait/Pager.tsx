@@ -1,11 +1,8 @@
 import * as React from 'react'
-import * as I from 'immutable'
-import { observer } from 'mobx-react'
-import { computed, observable } from 'mobx'
+import { connect } from 'react-redux'
 
-import * as Q from '../../queries'
-import * as T from '../../types'
-import store from '../../store'
+import { spaceTraits } from '../../selectors'
+import { Space, Trait, State as RootState } from '../../types'
 
 import Icon from '../Icon'
 import Filter from '../Filter'
@@ -13,119 +10,124 @@ import Limiter from '../Limiter'
 import Tex from '../Tex'
 import TraitItem from './Item'
 
-export interface Props {
-  space: T.Space
+type OwnProps = {
+  space: Space
+}
+type StateProps = {
+  traits: Trait[]
+  isDeduced: (trait: Trait) => boolean
+}
+type Props = OwnProps & StateProps
+
+type State = {
+  filtered: Trait[]
+  limit: number
+  tabs: {
+    asserted: boolean
+    deduced: boolean
+  }
 }
 
-interface Tab {
-  name: string
-  icon: string
-}
+const TabButton = ({ icon, name, active, onClick }) => (
+  <button
+    className={`btn btn-default ${active}`}
+    onClick={onClick}
+  >
+    <Icon type={icon} />
+    {' '}
+    {name}
+  </button >
+)
 
-const Tabs: Tab[] = [
-  { name: 'Asserted', icon: 'pencil' },
-  { name: 'Deduced', icon: 'search' }
-]
-
-@observer
-class TraitPager extends React.Component<Props, {}> {
-  @observable all: I.List<T.Trait>
-  @observable filtered: I.List<T.Trait>
-
-  @observable limit: number | undefined
-  @observable tabs: Map<string, boolean>
-
+class TraitPager extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.limit = 10
-    this.tabs = new Map([
-      ['Asserted', false],
-      ['Deduced', false]
-    ])
-    this.filtered = this.all = store.traits.forSpace(this.props.space.uid)
-  }
 
-  componentWillReceiveProps(newProps: Props) {
-    if (this.props.space.uid !== newProps.space.uid) {
-      this.filtered = this.all = store.traits.forSpace(this.props.space.uid)
+    this.state = {
+      filtered: this.props.traits,
+      tabs: {
+        asserted: false,
+        deduced: false
+      },
+      limit: 10
     }
   }
 
-  @computed get tabbed() {
-    const asserted = this.tabs.get('Asserted')
-    const deduced = this.tabs.get('Deduced')
+  results(): Trait[] {
+    const asserted = this.state.tabs.asserted
+    const deduced = this.state.tabs.deduced
 
     if (asserted && deduced) {
-      return this.filtered
+      return this.state.filtered
     } else if (asserted) {
-      return this.filtered.filter(t => !store.proofs.for(t!))
+      return this.state.filtered.filter(t => !this.props.isDeduced(t))
     } else if (deduced) {
-      return this.filtered.filter(t => !!store.proofs.for(t!))
+      return this.state.filtered.filter(t => this.props.isDeduced(t))
     } else {
-      return this.filtered
+      return this.state.filtered
     }
   }
 
-  @computed get limited() {
-    if (this.limit) {
-      return this.tabbed.take(this.limit)
+  visible(results: Trait[]): Trait[] {
+    if (this.state.limit) {
+      return results.slice(0, this.state.limit)
     } else {
-      return this.tabbed
+      return results
     }
   }
 
   toggleTab(name: string) {
-    this.tabs.set(
-      name, !this.tabs.get(name)
-    )
+    this.setState(({ tabs }) => {
+      const next = { ...tabs }
+      next[name] = !next[name]
+      return { tabs: next }
+    })
   }
 
   toggleShowAll() {
-    this.limit = this.limit ? undefined : 10
+    this.setState(({ limit }) => ({ limit: limit ? undefined : 10 }))
   }
 
   render() {
-    const tab = ({ icon, name }: Tab) => {
-      const active = this.tabs.get(name) ? 'active' : ''
-
-      return (
-        <button
-          key={name}
-          className={`btn btn-default ${active}`}
-          onClick={() => this.toggleTab(name)}
-        >
-          <Icon type={icon} />
-          {' '}
-          {name}
-        </button>
-      )
-    }
+    const results = this.results()
+    const visible = this.visible(results)
 
     return (
       <Tex className="traitFilter">
         <div className="btn-group">
-          {Tabs.map(tab)}
+          <TabButton
+            icon="pencil"
+            name="Asserted"
+            active={this.state.tabs.asserted}
+            onClick={() => this.toggleTab('asserted')}
+          />
+          <TabButton
+            icon="search"
+            name="Deduced"
+            active={this.state.tabs.deduced}
+            onClick={() => this.toggleTab('deduced')}
+          />
         </div>
 
         <Filter
-          collection={this.all}
+          collection={this.props.traits}
           weights={['property.name']}
-          onChange={(ts) => this.filtered = I.List<T.Trait>(ts)}
+          onChange={(filtered: Trait[]) => this.setState({ filtered })}
         />
 
         <table className="table table-condensed">
           <thead />
           <tbody>
-            {this.limited.map((trait: T.Trait) =>
+            {visible.map(trait =>
               <TraitItem key={trait.property.uid} trait={trait} />
             )}
           </tbody>
         </table>
 
         <Limiter
-          limit={this.limit || 10}
-          found={this.limited.size}
-          total={this.tabbed.size}
+          limit={this.state.limit || 10}
+          found={visible.length}
+          total={results.length}
           onClick={() => this.toggleShowAll()}
         />
       </Tex>
@@ -133,4 +135,9 @@ class TraitPager extends React.Component<Props, {}> {
   }
 }
 
-export default TraitPager
+export default connect(
+  (state: RootState, ownProps: OwnProps) => ({
+    traits: spaceTraits(state, ownProps.space),
+    isDeduced: t => state.proofs.has(t.space.uid)
+  })
+)(TraitPager)

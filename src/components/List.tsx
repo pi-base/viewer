@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as I from 'immutable'
 
 import Filter from './Filter'
 
@@ -7,14 +6,13 @@ interface Record { uid: string }
 
 export interface Props {
   name: string
-  objects: I.List<Record>
-  // tslint:disable-next-line no-any FIXME
+  objects: Record[]
   component: any
 }
 
 export interface State {
   limit: number
-  objects: I.List<Record>
+  objects: Record[]
 }
 
 class List extends React.Component<Props, State> {
@@ -22,12 +20,12 @@ class List extends React.Component<Props, State> {
     super(props)
     this.state = {
       limit: 25,
-      objects: I.List<{uid: string}>()
+      objects: []
     }
   }
 
   componentWillMount() {
-    this.doFilter(I.List([]))
+    this.doFilter([])
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -38,10 +36,10 @@ class List extends React.Component<Props, State> {
     this.setState({ limit: this.state.limit + 25 })
   }
 
-  doFilter(objects: I.List<Record>) {
+  doFilter(objects: Record[]) {
     this.setState({
       limit: 25,
-      objects: objects.size ? objects : this.props.objects
+      objects: objects.length ? objects : this.props.objects
     })
   }
 
@@ -55,15 +53,15 @@ class List extends React.Component<Props, State> {
       <section className={this.props.name}>
         <Filter
           collection={this.props.objects}
-          onChange={objs => this.doFilter(I.List<Record>(objs))}
+          onChange={objs => this.doFilter(objs)}
           placeholder={`Filter ${this.props.name} by text`}
         />
 
-        {objects.map((obj: Record) => <this.props.component key={obj.uid} object={obj}/>)}
+        {objects.map((obj: Record) => <this.props.component key={obj.uid} object={obj} />)}
 
-        { this.props.objects.size > this.state.limit
-        ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
-        : ''}
+        {this.props.objects.length > this.state.limit
+          ? <button className="btn btn-default" onClick={() => this.more()}>Show More</button>
+          : ''}
       </section>
     )
   }

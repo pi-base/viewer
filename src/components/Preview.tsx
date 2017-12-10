@@ -1,7 +1,5 @@
 import * as React from 'react'
-import { observer } from 'mobx-react'
 
-@observer
 class Preview extends React.Component<{ text: string }, {}> {
   render() {
     const { text } = this.props

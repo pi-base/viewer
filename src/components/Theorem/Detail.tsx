@@ -1,35 +1,25 @@
 import * as React from 'react'
-import { observer } from 'mobx-react'
 
-import * as T from '../../types'
+import { Theorem } from '../../types'
 
-import Implication from '../../containers/Implication'
-import Markdown from '../../components/Markdown'
-import Tex from '../../components/Tex'
+import Implication from '../Implication'
+import Markdown from '../Markdown'
+import Tex from '../Tex'
 
-interface Props {
-  theorem: T.Theorem
+type Props = {
+  theorem: Theorem
 }
 
-@observer
-class Detail extends React.Component<Props, {}> {
-  render() {
-    const { theorem } = this.props
-
-    console.log('theorem', theorem)
-
-    return (
-      <div>
-        <h1>
-          {theorem.if && theorem.then
-            ? <Implication theorem={theorem} link={true} />
-            : ' '
-          }
-        </h1>
-        <Tex><Markdown text={theorem.description} /></Tex>
-      </div>
-    )
-  }
-}
+const Detail = ({ theorem }: Props) => (
+  <div>
+    <h1>
+      {theorem.if && theorem.then
+        ? <Implication theorem={theorem} link={true} />
+        : ' '
+      }
+    </h1>
+    <Tex><Markdown text={theorem.description} /></Tex>
+  </div>
+)
 
 export default Detail

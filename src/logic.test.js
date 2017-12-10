@@ -1,4 +1,3 @@
-import * as I from 'immutable'
 import * as Q from './queries'
 import * as L from './logic'
 

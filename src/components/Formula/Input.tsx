@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 
-import store, { ParseError } from '../../store'
-
 import { Finder } from '../../models/Finder'
 import * as F from '../../models/Formula'
 import * as Q from '../../queries'
@@ -61,7 +59,7 @@ class FormulaInput extends React.Component<Props, State> {
   }
 
   expandFragment(index?: number) {
-    const selected = this.suggestions().get(index || this.state.selected)
+    const selected = this.suggestions()[index || this.state.selected]
     const expanded = Q.replaceFragment(this.props.value || '', selected.name)
 
     this.handleChange(expanded)
@@ -151,7 +149,7 @@ class FormulaInput extends React.Component<Props, State> {
           selected={this.state.selected}
           visible={this.state.dropdownVisible}
           limit={this.props.suggestionLimit || 10}
-          onSelect={(i) => this.expandFragment(i)}
+          onSelect={i => this.expandFragment(i)}
         />
       </div>
     )
@@ -159,7 +157,7 @@ class FormulaInput extends React.Component<Props, State> {
 }
 
 export default connect(
-  (state) => ({
+  (state: T.State): StateProps => ({
     properties: S.propertyFinder(state)
   })
 )(FormulaInput)

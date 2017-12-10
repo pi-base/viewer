@@ -1,8 +1,7 @@
 import * as React from 'react'
-import * as I from 'immutable'
 
 export interface Props {
-  aliases: I.List<string>
+  aliases: string[]
 }
 
 function Aliases({ aliases }: Props) {

@@ -4,38 +4,46 @@ import report from './errors'
 import * as F from './models/Formula'
 import * as Q from './queries'
 import * as T from './types'
+import { union } from './utils'
 
-export type Disproof = I.List<T.Theorem> | 'tautology'
+export type Proof = I.List<T.Theorem> | 'tautology'
 
-interface Proof {
+type Evidence = {
   theorem: T.Id,
   properties: T.Id[]
 }
 
 type Formula = F.Formula<T.Id>
 
-function evaluate(f: Formula, traitMap: I.Map<string, { value: boolean }>) {
-  const boolMap = traitMap.map(trait => trait!.value).toMap()
+export const converse = (theorem: T.Theorem): T.Theorem => ({
+  ...theorem,
+  if: theorem.then,
+  then: theorem.if
+})
+
+function evaluate(f: Formula, traitMap: Map<string, { value: boolean }>) {
+  let boolMap = new Map()
+  traitMap.forEach((t, id) => boolMap.set(id, t.value))
   return F.evaluate(f, boolMap)
 }
 
 function buildContradiction(
   theoremsById: I.Map<T.Id, T.Theorem>,
   theorem: T.Theorem,
-  proofs: Map<T.Id, Proof>
-): Disproof {
+  proofs: Map<T.Id, Evidence>
+): Proof {
   if (theorem.uid === 'given') { return 'tautology' }
 
   let theoremUsedByProp = new Map<T.Id, T.Id>() // propertyId => theoremId that proved it
-  let properties = Q.theoremProperties(theorem).toJS()
+  let properties = Array.from(Q.theoremProperties(theorem))
 
   while (properties.length > 0) {
     const pid = properties.shift()
-    if (!theoremUsedByProp.get(pid)) {
-      const ev = proofs.get(pid)
+    if (!theoremUsedByProp.get(pid!)) {
+      const ev = proofs.get(pid!)
       if (ev) { // TODO: understand when this happens
         if (ev.theorem !== 'given') {
-          theoremUsedByProp = theoremUsedByProp.set(pid, ev.theorem)
+          theoremUsedByProp = theoremUsedByProp.set(pid!, ev.theorem)
         }
         properties = properties.concat(ev.properties)
       }
@@ -49,9 +57,9 @@ function buildContradiction(
 interface ForceOptions {
   formula: Formula,
   theorem: T.Theorem
-  support: I.Set<T.Id> // list of property ids
+  support: Set<T.Id> // list of property ids
   traits: Map<T.Id, boolean> // propertyId => value
-  recordProof: (property: T.Id, proof: Proof) => any
+  recordProof: (property: T.Id, proof: Evidence) => any
 }
 function force(opts: ForceOptions) {
   const { formula, theorem, support, traits, recordProof } = opts
@@ -69,7 +77,7 @@ function force(opts: ForceOptions) {
     const reducer = (meta: OrMeta | undefined, sf: Formula) => {
       if (!meta) { return undefined }
 
-      const value = F.evaluate(sf, I.Map(traits)) // FIXME: should we need this conversion?
+      const value = F.evaluate(sf, traits) // FIXME: should we need this conversion?
       if (value === true) {
         return undefined // Can't force anything
       } else if (value === false) {
@@ -88,20 +96,15 @@ function force(opts: ForceOptions) {
     })
 
     if (result) {
-      const falseProps = result.falses.reduce(
-        (acc, f) => {
-          return acc.union(F.properties(f))
-        },
-        I.Set<T.Id>()
-      )
+      const falseProps = union(...result.falses.map(F.properties))
 
-      if (result.falses.length === formula.subs.size) {
+      if (result.falses.length === formula.subs.length) {
         throw { theorem, properties: falseProps }
       } else if (result.unknown) {
         force({
           ...opts,
           formula: result.unknown,
-          support: support.union(falseProps)
+          support: union(support, falseProps)
         })
       }
     }
@@ -118,7 +121,7 @@ function force(opts: ForceOptions) {
       traits.set(property, formula.value)
       recordProof(property, {
         theorem: theorem.uid,
-        properties: support.toArray()
+        properties: Array.from(support)
       })
     }
   }
@@ -127,17 +130,17 @@ function force(opts: ForceOptions) {
 interface ApplyOptions {
   theorem: T.Theorem
   traits: Map<T.Id, boolean>
-  recordProof: (property: T.Id, proof: Proof) => any
+  recordProof: (property: T.Id, proof: Evidence) => any
 }
 export function apply(opts: ApplyOptions) {
   const { theorem, traits, recordProof } = opts
   const a = theorem.if
   const c = theorem.then
-  const av = F.evaluate(a, I.Map(traits))
-  const cv = F.evaluate(c, I.Map(traits))
+  const av = F.evaluate(a, traits)
+  const cv = F.evaluate(c, traits)
 
   if (av === true && cv === false) {
-    throw { theorem, properties: F.properties(a).union(F.properties(c)) }
+    throw { theorem, properties: union(F.properties(a), F.properties(c)) }
   } else if (av === true) {
     force({
       formula: c,
@@ -157,9 +160,9 @@ export function apply(opts: ApplyOptions) {
   }
 }
 
-export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Disproof | undefined) {
+export function disprove(theorems: T.Theorem[], formula: Formula): (Proof | undefined) {
   let traits = new Map<string, boolean>()
-  let contradiction: Disproof | undefined = undefined
+  let contradiction: Proof | undefined = undefined
 
   let theoremsByProp = {}
   theorems.forEach((t: T.Theorem) => {
@@ -172,7 +175,7 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
   let checkQ: T.Theorem[] = []
   let proofs = new Map()
 
-  const recordProof = (property: T.Id, proof: Proof) => {
+  const recordProof = (property: T.Id, proof: Evidence) => {
     if (!proofs.get(property)) {
       proofs.set(property, proof)
       const q = theoremsByProp[property] || []
@@ -182,7 +185,7 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
 
   try {
     force({
-      support: I.Set(),
+      support: new Set(),
       theorem: ({ uid: 'given' } as any), // FIXME
       formula,
       traits,
@@ -198,7 +201,7 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
         //   and we have just proved ~b, we need to re-force
         // TODO: diff traits and only run this when the formula applies
         force({
-          support: I.Set(),
+          support: new Set(),
           theorem: theorem!,
           formula,
           traits,
@@ -224,7 +227,7 @@ export function disprove(theorems: I.List<T.Theorem>, formula: Formula): (Dispro
 }
 
 // TODO: this should probably rule out tautologies
-export function proveConverse(theorems: I.List<T.Theorem>, theorem: T.Theorem): Disproof | undefined {
+export function proveConverse(theorems: T.Theorem[], theorem: T.Theorem): Proof | undefined {
   return disprove(
     theorems,
     F.and(

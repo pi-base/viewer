@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
-import Labeled from '../../components/Form/Labeled'
-import FormulaInput from '../../components/Formula/Input'
+import Labeled from '../Form/Labeled'
+import FormulaInput from '../Formula/Input'
 import { addTheorem } from '../../actions'
 
 const validate = values => {

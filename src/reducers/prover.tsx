@@ -31,8 +31,6 @@ const checkProofs = (state: State): State => {
     traits.set(space.uid, ts)
   })
 
-  console.log('proofs', proofs)
-
   return { ...state, traits, proofs }
 }
 

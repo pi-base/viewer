@@ -1,9 +1,8 @@
 /* tslint:disable switch-default */
-
 import * as Parser from './formula/parser.js'
-import * as I from 'immutable'
 
 import * as T from '../types'
+import { union } from '../utils'
 
 interface Atom<P> {
   kind: 'atom'
@@ -13,12 +12,12 @@ interface Atom<P> {
 
 interface And<P> {
   kind: 'and'
-  subs: I.List<Formula<P>>
+  subs: Formula<P>[]
 }
 
 interface Or<P> {
   kind: 'or'
-  subs: I.List<Formula<P>>
+  subs: Formula<P>[]
 }
 
 export type Formula<P> = And<P> | Or<P> | Atom<P>
@@ -30,9 +29,7 @@ export function map<P, Q>(func: (p: Atom<P>) => Atom<Q>, formula: Formula<P>): F
     default:
       return {
         ...formula,
-        subs: I.List<Formula<Q>>(
-          formula.subs.map(sub => map(func, sub!))
-        )
+        subs: formula.subs.map(sub => map(func, sub!))
       }
   }
 }
@@ -42,6 +39,20 @@ export function mapProperty<P, Q>(func: (p: P) => Q, formula: Formula<P>): Formu
     return { ...a, property: func(a.property) }
   }
   return map<P, Q>(mapAtom, formula)
+}
+
+export function compact<P>(f: Formula<P | undefined>): Formula<P> | undefined {
+  try {
+    return mapProperty(
+      p => {
+        if (p) { return p }
+        throw undefined
+      },
+      f
+    )
+  } catch (e) {
+    return
+  }
 }
 
 export function toString(f: Formula<T.Property>): string {
@@ -61,25 +72,22 @@ export function negate<P>(f: Formula<P>): Formula<P> {
     case 'atom':
       return { kind: 'atom', property: f.property, value: !f.value }
     case 'and':
-      return { kind: 'or', subs: I.List<Formula<P>>(f.subs.map(negate)) }
+      return { kind: 'or', subs: f.subs.map(negate) }
     case 'or':
-      return { kind: 'and', subs: I.List<Formula<P>>(f.subs.map(negate)) }
+      return { kind: 'and', subs: f.subs.map(negate) }
   }
 }
 
-export function properties<P>(f: Formula<P>): I.OrderedSet<P> {
+export function properties<P>(f: Formula<P>): Set<P> {
   switch (f.kind) {
     case 'atom':
-      return I.OrderedSet<P>([f.property])
+      return new Set([f.property])
     default:
-      return f.subs.reduce(
-        (acc: I.OrderedSet<P>, sf: Formula<P>) => acc.union(properties(sf)),
-        I.OrderedSet<P>()
-      )
+      return union(...f.subs.map(properties))
   }
 }
 
-export function evaluate(f: Formula<T.Id>, traits: I.Map<T.Id, boolean>): boolean | undefined {
+export function evaluate(f: Formula<T.Id>, traits: Map<T.Id, boolean>): boolean | undefined {
   let result: boolean | undefined
 
   switch (f.kind) {
@@ -149,11 +157,11 @@ export function parse(q: string): Formula<string> | undefined {
 }
 
 export function and<P>(...subs: Formula<P>[]): And<P> {
-  return { kind: 'and', subs: I.List<Formula<P>>(subs) }
+  return { kind: 'and', subs: subs }
 }
 
 export function or<P>(...subs: Formula<P>[]): Or<P> {
-  return { kind: 'or', subs: I.List<Formula<P>>(subs) }
+  return { kind: 'or', subs: subs }
 }
 
 export function atom<P>(p: P, v: boolean): Atom<P> {

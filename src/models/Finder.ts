@@ -1,5 +1,4 @@
 import * as Fuse from 'fuse.js'
-import * as I from 'immutable'
 
 export interface Record {
   uid: string
@@ -9,15 +8,14 @@ export type Weights = string[] | { name: string, weight: number }[]
 
 // TODO: unify w/ fuse usage in Filter.jsx
 export class Finder<T extends Record> {
-  records: I.Map<string, T>
+  records: Map<string, T>
   fuse: Fuse
 
-  constructor(props: I.Iterable<{}, T>, weights?: Weights) {
-    this.records = I.Map<string, T>(props.map((p: T) => {
-      return [p.uid, p]
-    }))
+  constructor(props: T[], weights?: Weights) {
+    this.records = new Map()
+    props.forEach(p => this.records.set(p.uid, p))
 
-    this.fuse = new Fuse(props.toJS(), {
+    this.fuse = new Fuse(props, {
       caseSensitive: false,
       shouldSort: true,
       keys: weights || ['name', 'aliases'],
@@ -27,22 +25,22 @@ export class Finder<T extends Record> {
   }
 
   find(q: string): T | undefined {
-    return this.search(q, 1).get(0)
+    return this.search(q, 1)[0]
   }
 
   getId(q: string): string | undefined {
     return this.fuse.search<string>(q)[0]
   }
 
-  search(str: string, limit?: number): I.Iterable<number, T> {
+  search(str: string, limit?: number): T[] {
     str = str || ''
-    if (str !== '' + str) { return I.List() }
+    if (str !== '' + str) { return [] }
     let ids: string[] = this.fuse.search<string>(str)
 
     if (limit) {
       ids = ids.slice(0, limit)
     }
 
-    return I.List(ids).map((id: string) => this.records.get(id))
+    return ids.map(id => this.records.get(id)!)
   }
 }

@@ -4,8 +4,8 @@ import { connect } from 'react-redux'
 import * as T from '../types'
 import * as F from '../models/Formula'
 
-import Formula from '../components/Formula'
-import Tex from '../components/Tex'
+import Formula from './Formula'
+import Tex from './Tex'
 
 interface OwnProps {
   theorem: T.Theorem

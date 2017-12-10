@@ -2,8 +2,6 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import * as I from 'immutable'
-
 import { State } from '../../reducers'
 import * as S from '../../selectors'
 import * as T from '../../types'
@@ -66,7 +64,7 @@ const Index = ({ properties, editing }: StateProps) => {
 
       <List
         name="properties"
-        objects={I.List(properties)}
+        objects={properties}
         component={Property}
       />
     </div>

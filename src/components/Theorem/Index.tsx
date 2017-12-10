@@ -1,25 +1,24 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import * as I from 'immutable'
 
 import { State as S } from '../../reducers'
 import * as Q from '../../queries'
-import * as T from '../../types'
+import { Theorem } from '../../types'
 
 import Filter from '../Filter'
-import Implication from '../../containers/Implication'
+import Implication from '../Implication'
 import Preview from '../Preview'
 import Tex from '../Tex'
 
 type StateProps = {
-  theorems: T.Theorem[]
+  theorems: Theorem[]
 }
 type Props = StateProps
 
 type State = {
   limit: number
-  theorems: T.Theorem[]
+  theorems: Theorem[]
 }
 
 class Theorems extends React.Component<Props, State> {
@@ -41,8 +40,8 @@ class Theorems extends React.Component<Props, State> {
     return (
       <section className="theorems">
         <Filter
-          collection={I.List<T.Theorem>(this.props.theorems)}
-          onChange={ts => this.setState({ theorems: (ts as I.List<T.Theorem>).toArray() })}
+          collection={this.props.theorems}
+          onChange={(theorems: Theorem[]) => this.setState({ theorems })}
           weights={[
             { name: 'if', weight: 0.7 },
             { name: 'then', weight: 0.7 },
@@ -51,7 +50,7 @@ class Theorems extends React.Component<Props, State> {
           placeholder="Filter theorems"
         />
 
-        {visible.map((t: T.Theorem) => (
+        {visible.map(t => (
           <Tex key={t.uid}>
             <h3>
               <Link to={`/theorems/${t.uid}`}>

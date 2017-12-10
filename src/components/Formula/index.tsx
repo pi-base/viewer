@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import * as I from 'immutable'
 
 import * as T from '../../types'
 import * as F from '../../models/Formula'
@@ -32,7 +31,7 @@ export function Formula({ formula, link }: Props) {
   }
 }
 
-function sepWith(delimiter: string, link: boolean, subs: I.List<F.Formula<T.Property>>) {
+function sepWith(delimiter: string, link: boolean, subs: F.Formula<T.Property>[]) {
   let result: JSX.Element[] = []
 
   subs.forEach((sub, i) => {

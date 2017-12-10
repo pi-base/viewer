@@ -1,11 +1,11 @@
-import * as A from '../actions'
-import * as T from '../types'
+import { Action, Id, Property } from '../types'
 
-const reducer = (
-  state: Map<T.Id, T.Property> | undefined,
-  action: A.Action
-) => {
-  state = state || new Map()
+export type State = Map<Id, Property>
+
+export const initial = new Map()
+
+export const reducer = (state: State, action: Action): State => {
+  state = state || initial
   let next
 
   switch (action.type) {
@@ -29,5 +29,3 @@ const reducer = (
       return state
   }
 }
-
-export default reducer

@@ -1,11 +1,9 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import * as I from 'immutable'
 
-import store from '../../store'
 import * as T from '../../types'
 
-import Implication from '../../containers/Implication'
+import Implication from '../Implication'
 import Tex from '../Tex'
 
 export interface Props {

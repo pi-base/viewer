@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router'
 
 import * as T from '../../types'
 import * as Q from '../../queries'
@@ -12,13 +13,12 @@ import TraitPager from '../Trait/Pager'
 import Tex from '../Tex'
 
 interface OwnProps {
-  params: { spaceId: string }
   children: JSX.Element
 }
 type StateProps = {
   space: T.Space | undefined
 }
-type Props = OwnProps & StateProps
+type Props = OwnProps & StateProps & RouteComponentProps<{ spaceId: string }>
 
 const Space = (props: Props) => {
   const { space } = props
@@ -52,6 +52,6 @@ const Space = (props: Props) => {
 
 export default connect<Props, StateProps>(
   (state: State, props: Props) => ({
-    space: state.spaces.get(props.params.spaceId)
+    space: state.spaces.get(props.match.params.spaceId)
   })
 )(Space)

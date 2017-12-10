@@ -19,7 +19,9 @@ interface DispatchProps {
 }
 
 class Layout extends React.PureComponent<StateProps & DispatchProps> {
-  componentWillMount() { this.props.boot() }
+  componentWillMount() {
+    if (!this.props.booted) { this.props.boot() }
+  }
 
   render() {
     return (
@@ -33,7 +35,7 @@ class Layout extends React.PureComponent<StateProps & DispatchProps> {
             : 'Loading...'}
         </div>
       </div>
-    );
+    )
   }
 }
 

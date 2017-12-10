@@ -1,5 +1,4 @@
 /* global it expect */
-import * as I from 'immutable'
 import * as F from './Formula'
 
 const f = F.parse('compact + (connected || not second countable) + ~first countable')

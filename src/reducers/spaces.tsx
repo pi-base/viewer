@@ -1,15 +1,18 @@
 import * as A from '../actions'
 import * as T from '../types'
 
+type State = Map<T.Id, T.Space>
+
 const reducer = (
-  state: Map<T.Id, T.Space> | undefined,
+  state: State | undefined,
   action: A.Action
-) => {
+): State => {
   state = state || new Map()
 
   switch (action.type) {
     case 'ADD_SPACE':
       return state.set(action.space.uid, action.space)
+
     case 'LOAD_VIEWER':
       const spaces = new Map()
       action.viewer.spaces.forEach(s => {
@@ -20,6 +23,7 @@ const reducer = (
         })
       })
       return new Map([...state, ...spaces])
+
     default:
       return state
   }
