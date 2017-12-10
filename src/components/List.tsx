@@ -7,7 +7,7 @@ interface Record { uid: string }
 export interface Props {
   name: string
   objects: Record[]
-  component: any
+  component: React.ComponentClass<{ object: Record }>
 }
 
 export interface State {

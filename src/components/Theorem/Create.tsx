@@ -18,6 +18,10 @@ type Values = {
   then?: string
   description?: string
 }
+type Errors = {
+  if?: string
+  then?: string
+}
 
 type StateProps = {
   initialValues: Values
@@ -44,7 +48,7 @@ const build = (state: State, values: Values): Theorem | undefined => {
 }
 
 const validate = (values: Values, props: Props) => {
-  const errors = {} as any
+  const errors: Errors = {}
   if (!values.if) {
     errors.if = 'Required'
   }
@@ -53,8 +57,8 @@ const validate = (values: Values, props: Props) => {
   }
 
   const theorem = props.build(values)
-  console.log('create theorem', theorem, values, errors)
-  // TODO: check for counterexamples
+  console.log('Check theorem for counterexamples', theorem, values, errors)
+
   return errors
 }
 

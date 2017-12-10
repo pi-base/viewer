@@ -56,10 +56,10 @@ function buildContradiction(
 
 interface ForceOptions {
   formula: Formula,
-  theorem: T.Theorem
+  theorem: { uid: T.Id | 'given' }
   support: Set<T.Id> // list of property ids
   traits: Map<T.Id, boolean> // propertyId => value
-  recordProof: (property: T.Id, proof: Evidence) => any
+  recordProof: (property: T.Id, proof: Evidence) => void
 }
 function force(opts: ForceOptions) {
   const { formula, theorem, support, traits, recordProof } = opts
@@ -130,7 +130,7 @@ function force(opts: ForceOptions) {
 interface ApplyOptions {
   theorem: T.Theorem
   traits: Map<T.Id, boolean>
-  recordProof: (property: T.Id, proof: Evidence) => any
+  recordProof: (property: T.Id, proof: Evidence) => void
 }
 export function apply(opts: ApplyOptions) {
   const { theorem, traits, recordProof } = opts
@@ -186,7 +186,7 @@ export function disprove(theorems: T.Theorem[], formula: Formula): (Proof | unde
   try {
     force({
       support: new Set(),
-      theorem: ({ uid: 'given' } as any), // FIXME
+      theorem: ({ uid: 'given' }),
       formula,
       traits,
       recordProof

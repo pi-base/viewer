@@ -5,6 +5,7 @@ import thunk from 'redux-thunk'
 
 import rootReducer, { State } from './reducers'
 
+// tslint:disable-next-line no-any
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const logger = createLogger({
   collapsed: true

@@ -11,7 +11,7 @@ import routes from '../routes'
 import { State } from '../reducers'
 
 type AppConfig = {
-  apollo: ApolloClient<any>
+  apollo: ApolloClient<{}>
   store: Store<State>
 }
 const makeApp = ({ apollo, store }: AppConfig) => () => (

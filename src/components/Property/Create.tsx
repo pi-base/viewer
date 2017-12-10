@@ -6,8 +6,11 @@ import uuid from 'uuid/v4'
 import Labeled from '../Form/Labeled'
 import { addProperty } from '../../actions'
 
+type Errors = {
+  name?: string
+}
 const validate = values => {
-  const errors = {} as any
+  const errors: Errors = {}
   if (!values.name) {
     errors.name = 'Required'
   }

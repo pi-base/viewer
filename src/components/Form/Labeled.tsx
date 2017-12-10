@@ -1,8 +1,8 @@
 import * as React from 'react'
 
 interface Props {
-  input: any
-  Component: any
+  input: { name: string }
+  Component: React.ComponentClass<{ placeholder: string, className: string }>
   label: string
   placeholder?: string
   meta: {
