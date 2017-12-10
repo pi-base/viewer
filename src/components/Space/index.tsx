@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { RouteComponentProps } from 'react-router'
+import { Route, RouteComponentProps } from 'react-router'
 
 import * as T from '../../types'
 import * as Q from '../../queries'
@@ -10,6 +10,7 @@ import Aliases from '../Aliases'
 import NotFound from '../NotFound'
 import Markdown from '../Markdown'
 import TraitPager from '../Trait/Pager'
+import Trait from '../Trait'
 import Tex from '../Tex'
 
 interface OwnProps {
@@ -43,14 +44,17 @@ const Space = (props: Props) => {
           <TraitPager space={space} />
         </div>
         <div className="col-md-8">
-          {props.children}
+          <Route
+            path={props.match.url + '/properties/:propertyId'}
+            render={ps => <Trait {...ps} space={space} />}
+          />
         </div>
       </div>
     </div>
   )
 }
 
-export default connect<Props, StateProps>(
+export default connect<StateProps, {}, Props>(
   (state: State, props: Props) => ({
     space: state.spaces.get(props.match.params.spaceId)
   })

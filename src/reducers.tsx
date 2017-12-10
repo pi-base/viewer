@@ -1,44 +1,43 @@
 import { combineReducers } from 'redux'
 import * as form from 'redux-form'
 
-import * as T from './types'
-import * as A from './actions'
+import { Action } from './types'
 
 import * as properties from './reducers/properties'
-import prover, { ProofState } from './reducers/prover'
+import * as prover from './reducers/prover'
 import * as search from './reducers/search'
-import spaces from './reducers/spaces'
-import theorems from './reducers/theorems'
-import traits, { State as TraitState } from './reducers/traits'
+import * as spaces from './reducers/spaces'
+import * as theorems from './reducers/theorems'
+import * as traits from './reducers/traits'
 import * as user from './reducers/user'
 import * as version from './reducers/version'
 
 export type State = {
-  proofs: ProofState
+  proofs: prover.State
   properties: properties.State
   search: search.State
-  spaces: Map<T.Id, T.Space>
-  theorems: Map<T.Id, T.Theorem>
-  traits: TraitState
+  spaces: spaces.State
+  theorems: theorems.State
+  traits: traits.State
   user: user.State
   version: version.State
 }
 
 const combined = combineReducers<State>({
-  proofs: (s) => s || new Map(),
+  proofs: (s) => s || prover.initial,
   properties: properties.reducer,
   search: (s) => s || search.initial,
-  spaces,
-  traits,
-  theorems,
+  spaces: spaces.reducer,
+  traits: traits.reducer,
+  theorems: theorems.reducer,
   user: user.reducer,
   version: version.reducer,
   form: form.reducer
 })
 
-const reducer = (state: State, action: A.Action): State => {
+const reducer = (state: State, action: Action): State => {
   let next = combined(state, action)
-  next = prover(next, action)
+  next = prover.reducer(next, action)
   return {
     ...next, search: search.reducer(next, action)
   }

@@ -3,7 +3,7 @@ import * as T from '../types'
 
 export type State = Map<T.Id, Map<T.Id, boolean>>
 
-const reducer = (
+export const reducer = (
   state: State | undefined,
   action: A.Action
 ) => {

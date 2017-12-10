@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 
-import { Formula, Id, Property, Space, Table, Theorem, Trait } from './types'
+import { Formula, Id, Proof, Property, Space, Table, Theorem, Trait } from './types'
 import { State } from './reducers'
 
 import * as F from './models/Formula'
@@ -25,8 +25,8 @@ export const prover = createSelector(
 )
 
 export const asserted = (state: State, sid: Id, pid: Id): boolean => {
-  const traits = state.proofs.get(sid)
-  return traits ? traits.get(pid) === 0 : false
+  const p = state.proofs.get(`${sid}|${pid}`)
+  return p ? p.type === 'asserted' : false
 }
 
 export const spaceTraits = (state: State, space: Space): Trait[] => {
@@ -39,13 +39,31 @@ export const spaceTraits = (state: State, space: Space): Trait[] => {
       space: space,
       property: state.properties.get(pid)!,
       value: value,
-      // FIXME
+      // FIXME:
       uid: '',
       description: '',
-      deduced: false
+      deduced: !asserted(state, space.uid, pid)
     })
   })
   return result
+}
+
+export const getTrait = (state: State, space: Space, propertyId: Id): Trait | undefined => {
+  const ts = state.traits.get(space.uid)
+  if (!ts) { return undefined }
+  const property = state.properties.get(propertyId)
+  if (!property) { return undefined }
+  const value = ts.get(propertyId)
+  if (!value) { return undefined }
+  return {
+    space,
+    property,
+    value,
+    // FIXME:
+    uid: '',
+    description: '',
+    deduced: !asserted(state, space.uid, propertyId)
+  }
 }
 
 const search = (
@@ -118,7 +136,6 @@ export const counterexamples = (state: State, theorem: Theorem): Space[] => {
 }
 
 export const theoremProperties = (state: State, theorem: Theorem): Property[] => {
-  // FIXME: duplicates
   const ids = union(F.properties(theorem.if), F.properties(theorem.then))
   const props: Property[] = []
   ids.forEach(uid => {
@@ -129,3 +146,47 @@ export const theoremProperties = (state: State, theorem: Theorem): Property[] =>
 }
 
 export const editing = (state: State) => state.version.branch === 'user'
+
+export const proof = (state: State, spaceId: string, propertyId: string): Proof | undefined => {
+  const space = state.spaces.get(spaceId)
+  if (!space) { return }
+
+  const root = state.proofs.get(`${spaceId}|${propertyId}`)
+  if (!root || root.type === 'asserted') { return }
+
+  const theoremIds: Id[] = [root.theorem]
+
+  // TODO: traversal ordering? preserve insertion order of properties
+  const queue = root.properties
+  const visited: Set<Id> = new Set()
+  const assumed: Set<Id> = new Set()
+  while (queue.length > 0) {
+    const pid = queue.shift()!
+    const step = state.proofs.get(`${spaceId}|${pid}`)
+    if (!step) { continue }
+    if (step.type === 'asserted') {
+      assumed.add(pid)
+    } else {
+      theoremIds.unshift(step.theorem)
+      step.properties.forEach(p => {
+        if (!visited.has(p)) {
+          queue.push(p)
+        }
+      })
+    }
+    visited.add(pid)
+  }
+
+  const traits = Array.from(assumed).map(pid => getTrait(state, space, pid))
+  const theorems = theoremIds.map(t => state.theorems.get(t))
+
+  if (traits.indexOf(undefined) !== -1 || theorems.indexOf(undefined) !== -1) {
+    // TODO
+    return undefined
+  }
+
+  return {
+    theorems: theorems as Theorem[],
+    traits: traits as Trait[]
+  }
+}

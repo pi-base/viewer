@@ -1,13 +1,15 @@
-import * as A from '../actions'
-import * as T from '../types'
+import { Action, Id, Theorem } from '../types'
 
 import * as F from '../models/Formula'
 
-const reducer = (
-  state: Map<T.Id, T.Theorem> | undefined,
-  action: A.Action
+export type State = Map<Id, Theorem>
+export const initial = new Map()
+
+export const reducer = (
+  state: Map<Id, Theorem> | undefined,
+  action: Action
 ) => {
-  state = state || new Map()
+  state = state || initial
   let next
 
   switch (action.type) {

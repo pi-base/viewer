@@ -73,7 +73,7 @@ function Results({ text, formula, results, prover }: Props) {
     }
   }
 
-  const columns = formula ? F.properties(formula) : []
+  const columns = formula ? Array.from(F.properties(formula)) : []
   return (
     <TraitTable spaces={results} properties={columns} />
   )

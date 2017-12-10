@@ -1,9 +1,9 @@
 import * as A from '../actions'
 import * as T from '../types'
 
-type State = Map<T.Id, T.Space>
+export type State = Map<T.Id, T.Space>
 
-const reducer = (
+export const reducer = (
   state: State | undefined,
   action: A.Action
 ): State => {

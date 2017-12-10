@@ -1,57 +1,50 @@
 import * as A from '../actions'
-import * as T from '../types'
+import { Id } from '../types'
 
 import * as Logic from '../logic'
-import { State } from '../reducers'
+import { State as StoreState } from '../reducers'
 
-type Asserted = 0
-type Proof = T.Proof | Asserted
+type Deduction = { theorem: Id, properties: Id[] }
+type Proof = { type: 'asserted' }
+  | { type: 'deduced' } & Deduction
 
-export type ProofState = Map<T.Id, Map<T.Id, Proof>>
+export type State = Map<Id, Proof>
 
-const checkProofs = (state: State): State => {
+export const initial = new Map()
+
+const checkProofs = (state: StoreState): StoreState => {
   const traits = new Map()
   const proofs = new Map(state.proofs)
 
   state.spaces.forEach(space => {
-    const ts = new Map(state.traits.get(space.uid) || [])
-
-    if (!proofs.has(space.uid)) {
-      proofs.set(space.uid, new Map())
+    const recordProof = (propertyId: Id, proof: Deduction) => {
+      proofs.set(`${space.uid}|${propertyId}`, { ...proof, type: 'deduced' })
     }
-
-    const recordProof = (propertyId, proof) => {
-      proofs.get(space.uid)!.set(propertyId, proof)
-    }
+    const spaceTraits = new Map([...state.traits.get(space.uid) || []])
 
     state.theorems.forEach(theorem => {
-      Logic.apply({ theorem, traits: ts, recordProof })
+      Logic.apply({ theorem, traits: spaceTraits, recordProof })
     })
 
-    traits.set(space.uid, ts)
+    traits.set(space.uid, spaceTraits)
   })
 
   return { ...state, traits, proofs }
 }
 
-const reducer = (
-  state: State,
+export const reducer = (
+  state: StoreState,
   action: A.Action
-): State => {
+): StoreState => {
   switch (action.type) {
     case 'LOAD_VIEWER':
-      const proofs: ProofState = new Map()
-      if (!state.proofs) { state.proofs = new Map() }
-      state.proofs.forEach((ps, sid) => {
-        proofs.set(sid, new Map(ps))
-      })
-      action.viewer.spaces.forEach(s => {
-        if (!proofs.has(s.uid)) {
-          proofs.set(s.uid, new Map())
-        }
-        const ps = proofs.get(s.uid)!
-        s.traits.forEach(t => {
-          ps.set(t.property.uid, 0)
+      const proofs = new Map([...state.proofs])
+      action.viewer.spaces.forEach(space => {
+        space.traits.forEach(trait => {
+          proofs.set(
+            `${space.uid}|${trait.property.uid}`,
+            { type: 'asserted' }
+          )
         })
       })
       return { ...state, proofs }

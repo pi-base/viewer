@@ -1,21 +1,50 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
-import * as Q from '../../queries'
-import * as T from '../../types'
+import * as S from '../../selectors'
+import { Proof, State, Trait } from '../../types'
 
+import Implication from '../Implication'
 import Markdown from '../Markdown'
-import ProofExplorer from './Explorer'
 import Tex from '../Tex'
 
-export interface Props {
-  space: T.Space
-  trait: T.Trait
-  proof?: T.Proof
+type OwnProps = {
+  trait: Trait
 }
+type StateProps = {
+  proof: Proof | undefined
+}
+type Props = OwnProps & StateProps
 
-function Proof({ space, trait, proof }: Props) {
+function Proof({ trait, proof }: Props) {
   if (proof) {
-    return <ProofExplorer space={space} proof={proof} />
+    return (
+      <div className="proofExplorer">
+        <p>Automatically deduced from the following properties</p>
+        <ul>
+          {proof.traits.map(t => (
+            <li key={`prop${t.property.uid}`}>
+              <Link to={`/spaces/${trait.space.uid}/properties/${t.property.uid}`}>
+                {t.value ? '' : '¬'}
+                <Tex component="span">{t.property.name}</Tex>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <p>and theorems</p>
+        <ul>
+          {proof.theorems.map(t => (
+            <li key={`implication${t.uid}`}>
+              <Link to={`/theorems/${t.uid}`}>
+                <Implication theorem={t} link={false} />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
   } else if (trait.description) {
     return <Tex><Markdown text={trait.description} /></Tex>
   } else {
@@ -27,4 +56,8 @@ function Proof({ space, trait, proof }: Props) {
   }
 }
 
-export default Proof
+export default connect<StateProps, {}, OwnProps>(
+  (state: State, ownProps: OwnProps): StateProps => ({
+    proof: S.proof(state, ownProps.trait.space.uid, ownProps.trait.property.uid)
+  })
+)(Proof)

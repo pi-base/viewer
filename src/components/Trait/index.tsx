@@ -1,6 +1,8 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
+import { RouteComponentProps } from 'react-router'
 
-import * as Q from '../../queries'
+import * as S from '../../selectors'
 import * as T from '../../types'
 
 import Icon from '../Icon'
@@ -8,15 +10,15 @@ import Markdown from '../Markdown'
 import Proof from '../Proof'
 import Tex from '../Tex'
 
-interface Props {
-  trait: T.Trait
-  params: {
-    spaceId: string
-    propertyId: string
-  }
+type OwnProps = {
+  space: T.Space
 }
+type StateProps = {
+  trait: T.Trait | undefined
+}
+type Props = OwnProps & StateProps & RouteComponentProps<{ propertyId: string }>
 
-interface State {
+type State = {
   showProperty: boolean
 }
 
@@ -56,14 +58,14 @@ class Trait extends React.Component<Props, State> {
             </Tex>
           ) : ''}
 
-        <Proof
-          space={trait.space}
-          trait={trait}
-          proof={undefined}
-        />
+        <Proof trait={trait} />
       </div>
     )
   }
 }
 
-export default Trait
+export default connect<StateProps, {}, OwnProps>(
+  (state: T.State, props: Props): StateProps => ({
+    trait: S.getTrait(state, props.space, props.match.params.propertyId)
+  })
+)(Trait)

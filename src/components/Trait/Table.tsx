@@ -72,7 +72,7 @@ function TraitTable({ spaces, properties, traits }: Props) {
   )
 }
 
-export default connect<OwnProps, StateProps>(
+export default connect<StateProps, {}, OwnProps>(
   (state: State) => ({
     traits: state.traits
   })

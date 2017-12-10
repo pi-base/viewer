@@ -108,7 +108,6 @@ export default connect(
     form: 'createTheorem',
     validate,
     onSubmit: (values: Values, dispatch: Dispatch, props: Props) => {
-      console.log('props', props)
       const theorem = props.build(values)
       if (theorem) { // TODO: this should always happen, if validation passed
         props.save(theorem)

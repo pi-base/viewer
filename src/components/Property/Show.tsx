@@ -31,7 +31,12 @@ const Property = ({ property }: Props) => {
       <Tex><Markdown text={property.description} /></Tex>
       <hr />
 
-      <RelatedTheorems property={property} />
+      <div className="row">
+        <div className="col-md-6">
+          <RelatedTheorems property={property} />
+        </div>
+        <div className="col-md-6" />
+      </div>
     </div>
   )
 }

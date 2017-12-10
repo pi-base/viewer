@@ -24,6 +24,7 @@ export function makeStore(): Store<State> {
         deserialize: (json) => {
           // Arbitrary Maps don't round-trip through JSON
           json = JSON.parse(json)
+          if (json === null) { return null }
 
           const traits = new Map()
           json.traits.forEach(([sid, ts]) => {
@@ -34,19 +35,10 @@ export function makeStore(): Store<State> {
             traits.set(sid, map)
           })
 
-          const proofs = new Map()
-          json.proofs.forEach(([sid, ps]) => {
-            const map = ps.reduce(
-              (acc, [pid, proof]) => acc.set(pid, proof),
-              new Map()
-            )
-            proofs.set(sid, map)
-          })
-
           return {
             ...json,
-            proofs,
             traits,
+            proofs: new Map(json.proofs),
             properties: new Map(json.properties),
             spaces: new Map(json.spaces),
             theorems: new Map(json.theorems)
