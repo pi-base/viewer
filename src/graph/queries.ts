@@ -57,38 +57,32 @@ export const traits = gql`
   }
 `
 
-export const viewerFragment = gql`
-  fragment Viewer on Viewer {
-    version
-    spaces {
-      uid
-      name
-      description
-      traits {
-        property {
-          uid
-        }
-        value
-      }
-    }
-    properties {
-      uid
-      name
-      description
-    }
-    theorems {
-      uid
-      if
-      then
-      description
-    }
-  }
-`
-
 export const viewer = gql`
   query Viewer {
     viewer {
-      ...Viewer
+      version
+      spaces {
+        uid
+        name
+        description
+        traits {
+          property {
+            uid
+          }
+          value
+        }
+      }
+      properties {
+        uid
+        name
+        description
+      }
+      theorems {
+        uid
+        if
+        then
+        description
+      }
     }
   }
 `

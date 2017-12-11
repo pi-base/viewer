@@ -33,6 +33,7 @@
     "@types/react-dom": "^16.0.3",
     "@types/react-router": "^4.0.19",
     "@types/react-router-dom": "^4.2.3",
+    "apollo-codegen": "^0.18.1",
     "babel-polyfill": "^6.22.0",
     "graphql-cli": "^2.0.9",
     "graphql-config": "^1.1.0",

@@ -11,7 +11,7 @@ export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'LOAD_VIEWER':
       next = new Map()
-      action.viewer.properties.forEach(p => {
+      action.viewer.viewer.properties.forEach(p => {
         next.set(p.uid, {
           uid: p.uid,
           name: p.name,

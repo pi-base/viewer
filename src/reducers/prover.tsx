@@ -39,7 +39,7 @@ export const reducer = (
   switch (action.type) {
     case 'LOAD_VIEWER':
       const proofs = new Map([...state.proofs])
-      action.viewer.spaces.forEach(space => {
+      action.viewer.viewer.spaces.forEach(space => {
         space.traits.forEach(trait => {
           proofs.set(
             `${space.uid}|${trait.property.uid}`,

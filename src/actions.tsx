@@ -9,7 +9,7 @@ export type AddSpace = { type: 'ADD_SPACE', space: T.Space }
 export type AddTheorem = { type: 'ADD_THEOREM', theorem: T.Theorem }
 export type CheckProofs = { type: 'CHECK_PROOFS' }
 export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: T.Branch }
-export type LoadViewer = { type: 'LOAD_VIEWER', viewer: G.ViewerFragment }
+export type LoadViewer = { type: 'LOAD_VIEWER', viewer: G.ViewerQuery }
 export type Login = { type: 'LOGIN', token: T.Token, user: T.User }
 export type Search = { type: 'SEARCH', text?: string, formula?: string }
 
@@ -66,7 +66,7 @@ const load = (client, dispatch): Promise<G.ViewerQuery> => {
 }
 export const boot = (client: G.Client, dispatch: T.Dispatch) => {
   load(client, dispatch).then((data: G.ViewerQuery) => {
-    dispatch({ type: 'LOAD_VIEWER', viewer: data.viewer })
+    dispatch({ type: 'LOAD_VIEWER', viewer: data })
     dispatch({ type: 'CHECK_PROOFS' })
   })
 }

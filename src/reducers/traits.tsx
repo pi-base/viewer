@@ -15,7 +15,7 @@ export const reducer = (
       state.forEach((props, sid) => {
         traits.set(sid, new Map(props))
       })
-      action.viewer.spaces.forEach(s => {
+      action.viewer.viewer.spaces.forEach(s => {
         if (!traits.has(s.uid)) {
           traits.set(s.uid, new Map())
         }

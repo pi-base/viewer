@@ -15,7 +15,7 @@ export const reducer = (
 
     case 'LOAD_VIEWER':
       const spaces = new Map()
-      action.viewer.spaces.forEach(s => {
+      action.viewer.viewer.spaces.forEach(s => {
         spaces.set(s.uid, {
           uid: s.uid,
           name: s.name,
