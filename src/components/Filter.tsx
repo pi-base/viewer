@@ -17,8 +17,8 @@ export interface State {
 class Filter extends React.Component<Props, State> {
   finder: Finder<Record>
 
-  constructor() {
-    super()
+  constructor(props: Props) {
+    super(props)
     this.state = { q: '' }
   }
 

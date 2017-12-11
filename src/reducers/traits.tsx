@@ -1,11 +1,11 @@
-import * as A from '../actions'
-import * as T from '../types'
+import { Action } from '../actions'
+import { Id } from '../types'
 
-export type State = Map<T.Id, Map<T.Id, boolean>>
+export type State = Map<Id, Map<Id, boolean>>
 
 export const reducer = (
   state: State | undefined,
-  action: A.Action
+  action: Action
 ) => {
   state = state || new Map()
 
