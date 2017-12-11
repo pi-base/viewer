@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-let refresh = (e) => {
+const refresh = (e) => {
   e.preventDefault();
   localStorage.clear();
   location.reload();
