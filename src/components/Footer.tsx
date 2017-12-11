@@ -14,7 +14,8 @@ const Footer = () => (
       Having trouble? Try{' '}
       <a
         href="#"
-        onClick={refresh}>
+        onClick={refresh}
+      >
         refreshing your cache
       </a>.
     </div>
