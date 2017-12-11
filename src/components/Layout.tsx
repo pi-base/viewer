@@ -9,6 +9,7 @@ import { State } from '../reducers'
 
 import BranchSelect from './Form/BranchSelect'
 import Navbar from './Navbar'
+import Footer from './Footer'
 
 interface StateProps {
   booted: boolean
@@ -33,6 +34,7 @@ class Layout extends React.PureComponent<StateProps & DispatchProps> {
           {this.props.booted || this.props.location.pathname === '/'
             ? this.props.children
             : 'Loading...'}
+          <Footer />
         </div>
       </div>
     )
