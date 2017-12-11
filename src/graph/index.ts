@@ -2,7 +2,10 @@ import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
-export type Client = ApolloClient<any>
+export * from './queries'
+export * from './types'
+
+export type Client = ApolloClient<{}>
 
 const root = 'http://localhost:3141'
 

@@ -1,21 +1,23 @@
-import { Dispatch } from 'redux'
+import { DocumentNode } from 'graphql'
 import uuid from 'uuid/v4'
 
-import { Client } from './graph'
+import * as G from './graph'
 import * as T from './types'
-import * as GQ from './graph/queries'
 
 export type AddProperty = { type: 'ADD_PROPERTY', property: T.Property }
 export type AddSpace = { type: 'ADD_SPACE', space: T.Space }
 export type AddTheorem = { type: 'ADD_THEOREM', theorem: T.Theorem }
 export type CheckProofs = { type: 'CHECK_PROOFS' }
 export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: T.Branch }
-export type LoadViewer = { type: 'LOAD_VIEWER', viewer: any }
+export type LoadViewer = { type: 'LOAD_VIEWER', viewer: G.ViewerFragment }
 export type Login = { type: 'LOGIN', token: T.Token, user: T.User }
+export type Search = { type: 'SEARCH', text?: string, formula?: string }
+
+// tslint:disable no-any
 export type QueryError = { type: 'QUERY_ERROR', id: string, error: any }
 export type QueryStart = { type: 'QUERY_START', id: string, query: any }
 export type QuerySuccess = { type: 'QUERY_SUCCESS', id: string, data: any }
-export type Search = { type: 'SEARCH', text?: string, formula?: string }
+// tslint:enable no-any
 
 export type Action
   = AddProperty
@@ -31,9 +33,10 @@ export type Action
   | Search
 
 type QueryParams = {
-  client: Client
-  dispatch: Dispatch<Action>
-  q: any
+  client: G.Client
+  dispatch: T.Dispatch
+  q: DocumentNode
+  // tslint:disable-next-line no-any
   context?: any
 }
 export function query<Response>({ client, dispatch, q, context }: QueryParams): Promise<Response> {
@@ -58,11 +61,11 @@ export function query<Response>({ client, dispatch, q, context }: QueryParams): 
   })
 }
 
-const load = (client, dispatch): Promise<GQ.ViewerResponse> => {
-  return query<GQ.ViewerResponse>({ client, dispatch, q: GQ.viewer })
+const load = (client, dispatch): Promise<G.ViewerQuery> => {
+  return query<G.ViewerQuery>({ client, dispatch, q: G.viewer })
 }
-export const boot = (client, dispatch) => {
-  load(client, dispatch).then(data => {
+export const boot = (client: G.Client, dispatch: T.Dispatch) => {
+  load(client, dispatch).then((data: G.ViewerQuery) => {
     dispatch({ type: 'LOAD_VIEWER', viewer: data.viewer })
     dispatch({ type: 'CHECK_PROOFS' })
   })
@@ -83,8 +86,8 @@ export const changeBranch = (branch: T.Branch): Action => ({
 })
 
 export const login = (
-  client: Client,
-  dispatch: Dispatch<Action>,
+  client: G.Client,
+  dispatch: T.Dispatch,
   token: T.Token
 ): Promise<T.Token> => {
   const context = {
@@ -92,7 +95,7 @@ export const login = (
       authorization: token
     }
   }
-  return query<GQ.MeResponse>({ client, dispatch, q: GQ.me, context }).then(data => {
+  return query<G.MeQuery>({ client, dispatch, q: G.me, context }).then(data => {
     dispatch({ type: 'LOGIN', token, user: data.me })
     return token
   })
