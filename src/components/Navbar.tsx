@@ -14,6 +14,7 @@ const Navbar = () => (
       </ul>
 
       <ul className="nav navbar-nav pull-right">
+        <li><NavLink activeClassName="active" to="/about">About</NavLink></li>
         <UserTab />
       </ul>
     </div>

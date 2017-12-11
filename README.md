@@ -37,3 +37,7 @@ See the `docker-compose.yml` file for the specifics of what is running and optio
 
 * Ensure the server is running (`docker-compose up server`)
 * `npm test`
+
+## Attribution
+
+Banner image reused from <https://commons.wikimedia.org/wiki/File:Sierpinski_pyramid.png>

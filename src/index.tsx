@@ -8,6 +8,7 @@ import { makeStore } from './store'
 
 import makeApp from './components/App'
 
+import './img/jumbotron.jpg'
 import './index.css'
 import './errors'
 
