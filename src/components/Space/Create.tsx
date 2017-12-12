@@ -4,10 +4,12 @@ import { Field, formValueSelector, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
 import { addSpace } from '../../actions'
-import { Id, State } from '../../types'
+import { Id, Space, State } from '../../types'
 
 import Detail from './Detail'
-import Labeled from '../Form/Labeled'
+import { Text, Textarea } from '../Form/Labeled'
+
+import form from '../Form'
 
 type Values = {
   uid: Id
@@ -17,19 +19,10 @@ type Values = {
 type Errors = {
   name?: string
 }
-const validate = (values: Values) => {
-  const errors: Errors = {}
-  if (!values.name) {
-    errors.name = 'Required'
-  }
-  return errors
-}
-
-const Text = props => <Labeled {...props} Component="input" />
-const Textarea = props => <Labeled {...props} Component="textarea" />
 
 const Create = props => {
-  const { handleSubmit, pristine, reset, submitting, valid, space } = props
+  const { handleSubmit, submitting, valid, getResult } = props
+  const space = getResult()
 
   return (
     <div className="row">
@@ -54,33 +47,29 @@ const Create = props => {
       </div>
 
       <div className="col-sm-6">
-        {valid
-          ? <Detail space={space} />
-          : ''
-        }
+        {space ? <Detail space={space} /> : ''}
       </div>
     </div>
   )
 }
 
-const selector = formValueSelector('createSpace')
+const build = (state: State, values: Values) => {
+  const errors: Errors = {}
+  if (!values.name) { errors.name = 'Required' }
 
-export default connect(
-  (state: State) => {
-    return {
-      initialValues: { uid: uuid() },
-      space: selector(state, 'name', 'description')
-    }
-  },
-  (dispatch, ownProps) => ({
-    onSubmit: (space: Values) => {
-      dispatch(addSpace(space))
-      ownProps.history.push(`/spaces/${space.uid}`)
-    }
-  })
-)(
-  reduxForm({
-    form: 'createSpace',
-    validate
-  })
-    (Create))
+  const result: Space = values
+  return { result, errors }
+}
+
+const save = (dispatch, ownProps, space) => {
+  dispatch(addSpace(space))
+  ownProps.history.push(`/spaces/${space.uid}`)
+}
+
+export default form<Space, Values>({
+  build,
+  initial: () => ({ uid: uuid(), name: '', description: '' }),
+  name: 'createSpace',
+  fields: ['name', 'description'],
+  save
+})(Create)

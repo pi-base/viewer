@@ -141,8 +141,8 @@ export const searchResults = (state: State): Space[] =>
 
 export const counterexamples = (state: State, theorem: Theorem): Space[] => {
   const formula = F.and(
-    F.negate(theorem.if),
-    theorem.then
+    theorem.if,
+    F.negate(theorem.then)
   )
   return search(state, formula)
 }

@@ -1,5 +1,7 @@
 import * as React from 'react'
 
+import FormulaInput from '../Formula/Input'
+
 export interface Props {
   input: { name: string }
   Component: React.ComponentClass<{ placeholder: string, className: string }> | string
@@ -21,7 +23,7 @@ const Labeled = ({
   children,
   meta: { touched, error }
 }: Props) => (
-    <div className="form-group">
+    <div className={`form-group ${touched && error ? 'has-error' : ''}`}>
       <label htmlFor={input.name}>{label}</label>
       <div>
         <Component
@@ -31,10 +33,14 @@ const Labeled = ({
           children={children}
         />
         {touched && error
-          ? <span>{error}</span>
+          ? <span className="help-block">{error}</span>
           : ''}
       </div>
     </div>
   )
 
 export default Labeled
+
+export const Formula = props => <Labeled {...props} Component={FormulaInput} />
+export const Text = props => <Labeled {...props} Component="input" type="text" />
+export const Textarea = props => <Labeled {...props} Component="input" type="textarea" />

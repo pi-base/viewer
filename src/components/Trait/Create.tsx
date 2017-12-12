@@ -9,7 +9,9 @@ import * as S from '../../selectors'
 import { Dispatch, Id, Property, Space, State, Trait } from '../../types'
 import { by } from '../../utils'
 
-import Labeled from '../Form/Labeled'
+import Labeled, { Textarea } from '../Form/Labeled'
+
+import form from '../Form'
 
 type Values = {
   uid: string
@@ -77,7 +79,6 @@ const ValueSelect = props => (
     <option value="false">False</option>
   </Labeled>
 )
-const Textarea = props => <Labeled {...props} Component="textarea" />
 
 const Create = props => {
   const { handleSubmit, submitting, unknownProperties } = props
