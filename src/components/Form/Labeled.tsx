@@ -1,10 +1,12 @@
 import * as React from 'react'
 
-interface Props {
+export interface Props {
   input: { name: string }
-  Component: React.ComponentClass<{ placeholder: string, className: string }>
+  Component: React.ComponentClass<{ placeholder: string, className: string }> | string
   label: string
   placeholder?: string
+  // tslint:disable-next-line no-any
+  children: any
   meta: {
     touched: boolean
     error: boolean
@@ -16,6 +18,7 @@ const Labeled = ({
   Component,
   label,
   placeholder,
+  children,
   meta: { touched, error }
 }: Props) => (
     <div className="form-group">
@@ -25,6 +28,7 @@ const Labeled = ({
           {...input}
           placeholder={placeholder || label}
           className="form-control"
+          children={children}
         />
         {touched && error
           ? <span>{error}</span>

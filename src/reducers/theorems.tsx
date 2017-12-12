@@ -25,7 +25,7 @@ export const reducer = (
       })
       return new Map([...state, ...next])
 
-    case 'ADD_THEOREM':
+    case 'ASSERT_THEOREM':
       next = new Map(state)
       next.set(action.theorem.uid, action.theorem)
       return next

@@ -49,6 +49,10 @@ class Search extends React.PureComponent<Props> {
             placeholder="e.g. compact + ~metrizable"
             component={Formula}
           />
+
+          <Link to="/spaces/new" className="btn btn-default">
+            New Space
+          </Link>
         </div>
 
         <div className="col-md-8">

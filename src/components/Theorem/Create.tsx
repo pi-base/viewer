@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router'
 import { Field, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
-import { addTheorem } from '../../actions'
+import { assertTheorem, checkProofs } from '../../actions'
 import { parseFormula } from '../../selectors'
 import { Dispatch, State, Theorem } from '../../types'
 
@@ -104,8 +104,8 @@ export default connect(
   }),
   (dispatch: Dispatch, ownProps: Props): DispatchProps => ({
     save: theorem => {
-      dispatch(addTheorem(theorem))
-      dispatch({ type: 'CHECK_PROOFS' })
+      dispatch(assertTheorem(theorem))
+      dispatch(checkProofs())
       ownProps.history.push(`/theorems/${theorem.uid}`)
     }
   })

@@ -17,10 +17,11 @@ const validate = values => {
   return errors
 }
 
-const Text = props => <Labeled {...props} Component="input" />
+const Text = props => <Labeled {...props} Component="input" type="text" />
+const Textarea = props => <Labeled {...props} Component="textarea" />
 
 const Create = props => {
-  const { handleSubmit, pristine, reset, submitting } = props
+  const { handleSubmit, submitting } = props
 
   return (
     <div className="row">
@@ -28,15 +29,13 @@ const Create = props => {
         <form onSubmit={handleSubmit}>
           <Field
             name="name"
-            type="text"
             label="Name"
             component={Text}
           />
           <Field
             name="description"
-            type="textarea"
             label="Description"
-            component={Text}
+            component={Textarea}
           />
           <button className="btn btn-default" type="submit" disabled={submitting}>
             Save
