@@ -4,13 +4,15 @@ import { RouteComponentProps } from 'react-router'
 import { Field, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
-import { addTheorem } from '../../actions'
-import { parseFormula } from '../../selectors'
+import { assertTheorem, checkProofs } from '../../actions'
+import * as S from '../../selectors'
 import { Dispatch, State, Theorem } from '../../types'
 
-import * as F from '../../models/Formula'
-import Labeled from '../Form/Labeled'
-import FormulaInput from '../Formula/Input'
+import { Formula, Textarea } from '../Form/Labeled'
+import Detail from './Detail'
+import TraitTable from '../Trait/Table'
+
+import form from '../Form'
 
 type Values = {
   uid: string
@@ -23,50 +25,31 @@ type Errors = {
   then?: string
 }
 
-type StateProps = {
-  initialValues: Values
-  build: (values: Values) => Theorem | undefined
-}
-type DispatchProps = {
-  save: (theorem: Theorem) => void
-}
-type Props = StateProps & DispatchProps & RouteComponentProps<{}>
+const Preview = connect(
+  (state, ownProps) => ({
+    counterexamples: S.counterexamples(state, ownProps.theorem).slice(0, 5),
+    properties: S.theoremProperties(state, ownProps.theorem)
+  })
+)(({ theorem, counterexamples, properties }) => (
+  <article>
+    <Detail theorem={theorem} />
+    <hr />
+    {counterexamples.length > 0
+      ?
+      <div>
+        <p>Found counterexamples:</p>
+        <TraitTable spaces={counterexamples} properties={properties} />
+      </div>
+      : <p>No couterexamples found</p>
+    }
+  </article>
+))
 
-const build = (state: State, values: Values): Theorem | undefined => {
-  if (!values.if || !values.then) { return undefined }
-  const antecedent = parseFormula(state, values.if)
-  if (!antecedent) { return undefined }
-  const consequent = parseFormula(state, values.then)
-  if (!consequent) { return undefined }
 
-  return {
-    uid: values.uid,
-    if: antecedent!,
-    then: consequent!,
-    description: values.description || ''
-  }
-}
+const Create = props => {
+  const { handleSubmit, submitting, valid, getResult } = props
+  const theorem = getResult()
 
-const validate = (values: Values, props: Props) => {
-  const errors: Errors = {}
-  if (!values.if) {
-    errors.if = 'Required'
-  }
-  if (!values.then) {
-    errors.then = 'Required'
-  }
-
-  const theorem = props.build(values)
-  console.log('Check theorem for counterexamples', theorem, values, errors)
-
-  return errors
-}
-
-const Formula = props => <Labeled {...props} Component={FormulaInput} />
-const Textarea = props => <Labeled {...props} Component="textarea" />
-
-const CreateTheorem = props => {
-  const { handleSubmit, pristine, reset, submitting } = props
   return (
     <div className="row">
       <div className="col-sm-6">
@@ -93,31 +76,50 @@ const CreateTheorem = props => {
           </button>
         </form>
       </div>
+      <div className="col-sm-6">
+        {theorem ? <Preview theorem={theorem} /> : ''}
+      </div>
     </div>
   )
 }
 
-export default connect(
-  (state: State): StateProps => ({
-    initialValues: { uid: uuid() },
-    build: (values) => build(state, values)
-  }),
-  (dispatch: Dispatch, ownProps: Props): DispatchProps => ({
-    save: theorem => {
-      dispatch(addTheorem(theorem))
-      dispatch({ type: 'CHECK_PROOFS' })
-      ownProps.history.push(`/theorems/${theorem.uid}`)
-    }
-  })
-)(
-  reduxForm({
-    form: 'createTheorem',
-    validate,
-    onSubmit: (values: Values, dispatch: Dispatch, props: Props) => {
-      const theorem = props.build(values)
-      if (theorem) { // TODO: this should always happen, if validation passed
-        props.save(theorem)
-      }
-    }
-  })
-    (CreateTheorem))
+const build = (state: State, values: Values) => {
+  const errors: Errors = {}
+  if (!values.if) { errors.if = 'Required' }
+  if (!values.then) { errors.then = 'Required' }
+  if (!values.if || !values.then) { return { errors } }
+
+  const antecedent = S.parseFormula(state, values.if)
+  if (!antecedent) {
+    errors.if = 'Could not be parsed'
+    return { errors }
+  }
+  const consequent = S.parseFormula(state, values.then)
+  if (!consequent) {
+    errors.then = 'Could not be parsed'
+    return { errors }
+  }
+
+  const result: Theorem = {
+    uid: values.uid,
+    if: antecedent!,
+    then: consequent!,
+    description: values.description || ''
+  }
+
+  return { result, errors }
+}
+
+const save = (dispatch, ownProps, theorem) => {
+  dispatch(assertTheorem(theorem))
+  dispatch(checkProofs())
+  ownProps.history.push(`/theorems/${theorem.uid}`)
+}
+
+export default form<Theorem, Values>({
+  build,
+  initial: () => ({ uid: uuid() }),
+  name: 'createTheorem',
+  fields: ['if', 'then', 'description'],
+  save
+})(Create)

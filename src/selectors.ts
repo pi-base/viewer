@@ -48,6 +48,18 @@ export const spaceTraits = (state: State, space: Space): Trait[] => {
   return result
 }
 
+export const unknownProperties = (state: State, space: Space): Property[] => {
+  const values = state.traits.get(space.uid) || new Map()
+
+  return Array.from(state.properties.values()).reduce<Property[]>(
+    (acc, prop) => {
+      if (!values.has(prop.uid)) { acc.push(prop) }
+      return acc
+    },
+    []
+  )
+}
+
 export const getTrait = (state: State, space: Space, propertyId: Id): Trait | undefined => {
   const ts = state.traits.get(space.uid)
   if (!ts) { return undefined }
@@ -129,8 +141,8 @@ export const searchResults = (state: State): Space[] =>
 
 export const counterexamples = (state: State, theorem: Theorem): Space[] => {
   const formula = F.and(
-    F.negate(theorem.if),
-    theorem.then
+    theorem.if,
+    F.negate(theorem.then)
   )
   return search(state, formula)
 }

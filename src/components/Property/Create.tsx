@@ -1,26 +1,28 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
+import { Field, formValueSelector, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
-import Labeled from '../Form/Labeled'
 import { addProperty } from '../../actions'
+import { Id, Property, State } from '../../types'
 
+import Detail from './Detail'
+import { Text, Textarea } from '../Form/Labeled'
+
+import form from '../Form'
+
+type Values = {
+  uid: Id
+  name: string
+  description: string
+}
 type Errors = {
   name?: string
 }
-const validate = values => {
-  const errors: Errors = {}
-  if (!values.name) {
-    errors.name = 'Required'
-  }
-  return errors
-}
-
-const Text = props => <Labeled {...props} Component="input" />
 
 const Create = props => {
-  const { handleSubmit, pristine, reset, submitting } = props
+  const { handleSubmit, submitting, valid, getResult } = props
+  const property = getResult()
 
   return (
     <div className="row">
@@ -28,38 +30,44 @@ const Create = props => {
         <form onSubmit={handleSubmit}>
           <Field
             name="name"
-            type="text"
             label="Name"
             component={Text}
           />
           <Field
             name="description"
-            type="textarea"
             label="Description"
-            component={Text}
+            component={Textarea}
           />
           <button className="btn btn-default" type="submit" disabled={submitting}>
             Save
           </button>
         </form>
       </div>
+
+      <div className="col-sm-6">
+        {property ? <Detail property={property} /> : ''}
+      </div>
     </div>
   )
 }
 
-export default connect(
-  () => ({
-    initialValues: { uid: uuid() }
-  }),
-  (dispatch, ownProps) => ({
-    onSubmit: (property) => {
-      dispatch(addProperty(property))
-      ownProps.history.push(`/properties/${property.uid}`)
-    }
-  })
-)(
-  reduxForm({
-    form: 'createProperty',
-    validate
-  })
-    (Create))
+const build = (state: State, values: Values) => {
+  const errors: Errors = {}
+  if (!values.name) { errors.name = 'Required' }
+
+  const result: Property = values
+  return { result, errors }
+}
+
+const save = (dispatch, ownProps, property) => {
+  dispatch(addProperty(property))
+  ownProps.history.push(`/properties/${property.uid}`)
+}
+
+export default form<Property, Values>({
+  build,
+  initial: () => ({ uid: uuid(), name: '', description: '' }),
+  name: 'createProperty',
+  fields: ['name', 'description'],
+  save
+})(Create)

@@ -5,11 +5,9 @@ import { RouteComponentProps } from 'react-router'
 import { State } from '../../reducers'
 import * as T from '../../types'
 
-import Aliases from '../Aliases'
-import Markdown from '../Markdown'
+import Detail from './Detail'
 import NotFound from '../NotFound'
 import RelatedTheorems from './RelatedTheorems'
-import Tex from '../Tex'
 
 type StateProps = {
   property: T.Property
@@ -22,13 +20,7 @@ const Property = ({ property }: Props) => {
 
   return (
     <div>
-      <h1>
-        <Tex>
-          {property.name}
-          {property.aliases ? <Aliases aliases={property.aliases} /> : ''}
-        </Tex>
-      </h1>
-      <Tex><Markdown text={property.description} /></Tex>
+      <Detail property={property} />
       <hr />
 
       <div className="row">

@@ -6,8 +6,9 @@ import * as T from './types'
 
 export type AddProperty = { type: 'ADD_PROPERTY', property: T.Property }
 export type AddSpace = { type: 'ADD_SPACE', space: T.Space }
-export type AddTheorem = { type: 'ADD_THEOREM', theorem: T.Theorem }
-export type CheckProofs = { type: 'CHECK_PROOFS' }
+export type AssertTheorem = { type: 'ASSERT_THEOREM', theorem: T.Theorem }
+export type AssertTrait = { type: 'ASSERT_TRAIT', trait: T.Trait }
+export type CheckProofs = { type: 'CHECK_PROOFS', spaces?: T.Space[] }
 export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: T.Branch }
 export type LoadViewer = { type: 'LOAD_VIEWER', viewer: G.ViewerQuery }
 export type Login = { type: 'LOGIN', token: T.Token, user: T.User }
@@ -22,7 +23,8 @@ export type QuerySuccess = { type: 'QUERY_SUCCESS', id: string, data: any }
 export type Action
   = AddProperty
   | AddSpace
-  | AddTheorem
+  | AssertTheorem
+  | AssertTrait
   | ChangeBranch
   | CheckProofs
   | LoadViewer
@@ -72,17 +74,27 @@ export const boot = (client: G.Client, dispatch: T.Dispatch) => {
 }
 
 export const addProperty = (property: T.Property): Action => ({
-  type: 'ADD_PROPERTY',
-  property
+  type: 'ADD_PROPERTY', property
 })
 
-export const addTheorem = (theorem: T.Theorem): Action => ({
-  type: 'ADD_THEOREM',
-  theorem
+export const addSpace = (space: T.Space): Action => ({
+  type: 'ADD_SPACE', space
+})
+
+export const assertTheorem = (theorem: T.Theorem): Action => ({
+  type: 'ASSERT_THEOREM', theorem
+})
+
+export const assertTrait = (trait: T.Trait): Action => ({
+  type: 'ASSERT_TRAIT', trait
 })
 
 export const changeBranch = (branch: T.Branch): Action => ({
-  type: 'CHANGE_BRANCH', branch: branch
+  type: 'CHANGE_BRANCH', branch
+})
+
+export const checkProofs = (spaces?: T.Space[]): Action => ({
+  type: 'CHECK_PROOFS', spaces
 })
 
 export const login = (

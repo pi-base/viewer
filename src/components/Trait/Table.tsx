@@ -42,8 +42,6 @@ function TraitTable({ spaces, properties, traits }: Props) {
         <tr>
           <th>
             Space
-            {' '}
-            <Link to="/spaces/new" className="btn btn-default btn-xs">New</Link>
           </th>
           {properties.map(p => (
             <th key={p.uid}>
