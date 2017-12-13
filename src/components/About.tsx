@@ -6,51 +6,85 @@ import Tex from './Tex'
 const About = () => (
   <div className="container">
     <h2>Contributing and Collaborating</h2>
-    <div className="alert alert-info">
-      <p><span className="glyphicon glyphicon-alert" /> There is a major
-        data cleanup and standardization effort underway
-        <a href="https://github.com/jamesdabbs/pi-base-data">on Github</a>.
-        Data will be in-flux while that effort is in progress.
-      </p>
-    </div>
-    <p>See something wrong? Want to add a property or theorem of your own?</p>
-    <p>The data powering this site is hosted
-      <a href="https://github.com/jamesdabbs/pi-base-data">on Github</a>
-      and pull requests are welcome. If you're interested in getting involved
-      but unsure about how this all works, do feel free to post an issue on the
-      <a href="http://github.com/jamesdabbs/pi-base-viewer/issues">issue tracker</a>
-      or get in touch <a href="mailto:jamesdabbs@gmail.com">by email</a>.
+    <p>
+      The pi-Base is a reflection of the results in general topology
+      that have been published in peer-reviewed journals and
+      textbooks, including appropriate citations. All contributions made
+      are open-sourced at{' '}
+      <a href="https://github.com/pi-base">github.com/pi-base</a>.
     </p>
+    <p>
+      Currently, the pi-Base redesign is in beta and may only be edited by
+      invited contributors. However, contributions may still be made by opening
+      an Issue on the appropriate GitHub repository.
+    </p>
+    <ul>
+      <li>
+        To suggest a contribution or edit for our mathematical content:{' '}
+        <a href="https://github.com/pi-base/data/issues">pi-base/data</a>
+      </li>
+      <li>
+        To suggest an improvement or report a bug in this web application:{' '}
+        <a href="https://github.com/pi-base/viewer/issues">pi-base/viewer</a>
+      </li>
+    </ul>
 
     <h3>On Definitions</h3>
     <Tex>
-      We have broken with Counterexamples in a few notable places, mostly to
-      update things like the separation axioms to their more modern useage
-      (where $T_i$ ⇒ $T_j$ whenever $i > j$). Our definitions should
-      match those given in e.g.
-      <a href="http://www.amazon.com/General-Topology-Dover-Books-Mathematics/dp/0486434796">
-        Willard's <i>General Topology</i></a>.
+      Notation on the pi-base attempts to be consistent with modern usage.
+      For example, we assume definitions for \(T\)-separation axioms such that
+      \(T_i \Rightarrow T_j\) whenever \(i \geq j\). A full style-guide{' '}
+      <a href="https://github.com/pi-base/viewer/issues/28">is planned</a>.
     </Tex>
 
-    <h3> Acknowledgements</h3>
-    <p> Many people have contributed to this project, and all contributions are
+    <h2>Our Team</h2>
+
+    <h3>James Dabbs - Lead Software Developer</h3>
+    <p>
+      TODO: add info about James.
+    </p>
+
+    <h3>Steven Clontz - Lead Mathematical Editor</h3>
+    <p>
+      TODO: add info about Steven.
+    </p>
+
+    <h3>You?</h3>
+    <p>
+      Development of the pi-Base platform and data is open-sourced and
+      hosted publicly at <a href="http://github.com">GitHub</a>. Contact{' '}
+      <a href="#">TODO</a>{' '}
+      if you are interested in becoming a member of the pi-Base team!
+    </p>
+
+    <h2>Acknowledgements</h2>
+    <p>Many people have contributed to this project, and all contributions are
       appreciated, but a few individuals deserve special recognition:</p>
     <ul>
       <li>
-        <a href="http://clontz.org/">Steven Clontz</a> for continued advice and friendship</li>
+        <a href="http://www.montevallo.edu/staff-bio/scott-varagona/">
+          Scott Varagona
+        </a>{' '}
+        for his heroic work entering the initial data used in the original
+        launch of the database
+      </li>
       <li>
-        <a href="http://www.montevallo.edu/staff-bio/scott-varagona/">Scott Varagona</a>
-        for his heroic work entering data into the database</li>
+        <a href="http://www.auburn.edu/~gruengf/">Gary Gruenhage</a>,
+        mentor for James and Steven's theses at Auburn University,
+        for all his support and guidance
+      </li>
       <li>
-        My advisor, <a href="http://www.auburn.edu/~gruengf/">Gary Gruenhage</a>
-        for all his support and guidance</li>
+        <a href="http://austinmohr.com/home/">Austin Mohr</a>{' '}
+        for his work using
+        the pi-Base as a pedagogical tool, and all his invaluable feedback
+      </li>
       <li>
-        <a href="http://austinmohr.com/home/">Austin Mohr</a> for his work using
-        the 𝜋-Base as a pedagogical tool, and all his invaluable feedback</li>
-      <li>
-        Steen and Seebach for writing
-        <a href="http://www.amazon.com/Counterexamples-Topology-Dover-Books-Mathematics/dp/048668735X">
-          Counterexamples in Topology</a> in the first place and inspiring this project</li>
+        Steen and Seebach for writing{' '}
+        <a href="https://en.wikipedia.org/wiki/Counterexamples_in_Topology">
+          Counterexamples in Topology
+        </a>{' '}
+        in the first place and inspiring this project
+      </li>
     </ul>
   </div>
 )

@@ -34,18 +34,20 @@ class Property extends React.Component<Props, { expanded: boolean }> {
     const property = this.props.object
 
     return (
-      <Tex className="row">
-        <div className="col-md-2">
-          <h4>
-            <Link to={`/properties/${property.uid}`}>
-              {property.name}
-            </Link>
-          </h4>
-        </div>
-        <div className="col-md-10">
-          <Preview text={property.description} />
-        </div>
-      </Tex>
+      <div className="container">
+        <Tex className="row">
+          <div className="col-md-2">
+            <h4>
+              <Link to={`/properties/${property.uid}`}>
+                {property.name}
+              </Link>
+            </h4>
+          </div>
+          <div className="col-md-10">
+            <Preview text={property.description} />
+          </div>
+        </Tex>
+      </div>
     )
   }
 }
@@ -56,7 +58,7 @@ interface StateProps {
 }
 const Index = ({ properties, editing }: StateProps) => {
   return (
-    <div>
+    <div className="container">
       {editing
         ? <Link to="/properties/new" className="btn btn-default">New</Link>
         : ''

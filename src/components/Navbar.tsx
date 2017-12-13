@@ -6,7 +6,7 @@ import UserTab from './Layout/UserTab'
 const Navbar = () => (
   <nav className="navbar navbar-default navbar-static-top">
     <div className="container">
-      <Link to="/" className="navbar-brand">π-Base</Link>
+      <Link to="/" className="navbar-brand">pi-Base</Link>
       <ul className="nav navbar-nav">
         <li><NavLink activeClassName="active" to="/spaces">Spaces</NavLink></li>
         <li><NavLink activeClassName="active" to="/properties">Properties</NavLink></li>

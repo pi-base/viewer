@@ -7,7 +7,7 @@ const Home = () => (
   <div>
     <div className="jumbotron">
       <Tex className="container">
-        <h1>π-Base</h1>
+        <h1>pi-Base</h1>
         <p>a community database of topological examples supporting expressive searches</p>
         <p>• Find <Link to="/spaces?q=compact%20%2B%20connected%20%2B%20t_2%20%2B%20~metrizable">non-metric continua</Link></p>
         <p>• List spaces described as <Link to="/spaces?text=compactification">compactifications</Link></p>
@@ -31,16 +31,17 @@ const Home = () => (
       </blockquote>
       <p>
         Inspired by this quote and the work done by Steen and Seebach,
-        the pi-Base serves as a living database supporting 21st-century
-        topologists.
+        the pi-Base serves as a living database that catalogs topological
+        spaces, their properties, and the theorems that connect them.
         The{' '}
         <a href="#">pi-Base team</a>{' '}
-        hopes that researchers will benefit from the organization and uniformity provided by the pi-Base, and that mathematicians and students exploring new branches of topology will benefit from having the pi-Base as a guide.
+        hopes that active researchers of general topology
+        will benefit from the organization and uniformity provided by the pi-Base, and that mathematicians and students exploring new branches of topology will benefit from having the pi-Base as a guide.
       </p>
       <p>
-        <a href="#">
+        <Link to="/about">
           Learn more about the pi-Base. »
-        </a>
+        </Link>
       </p>
     </div>
   </div>
