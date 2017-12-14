@@ -40,6 +40,7 @@ class Theorems extends React.Component<Props, State> {
     const visible = this.state.theorems.slice(0, this.state.limit)
     return (
       <div className="container">
+        <h3>Thoerems of topology</h3>
         <section className="theorems">
           {this.props.editing
             ? <Link to="/theorems/new" className="btn btn-default">New</Link>

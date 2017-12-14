@@ -59,6 +59,7 @@ interface StateProps {
 const Index = ({ properties, editing }: StateProps) => {
   return (
     <div className="container">
+      <h3>Properties of topological spaces</h3>
       {editing
         ? <Link to="/properties/new" className="btn btn-default">New</Link>
         : ''

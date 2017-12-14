@@ -6,13 +6,13 @@ import Tex from './Tex'
 const Home = () => (
   <div>
     <div className="jumbotron">
-      <Tex className="container">
+      <div className="container">
         <h1>pi-Base</h1>
         <p>a community database of topological examples supporting expressive searches</p>
         <p>• Find <Link to="/spaces?q=compact%20%2B%20connected%20%2B%20t_2%20%2B%20~metrizable">non-metric continua</Link></p>
-        <p>• List spaces described as <Link to="/spaces?text=compactification">compactifications</Link></p>
-        <p>• Show counter-examples witnessing that <Link to="/theorems/I000112">$T_5$ ⇒ $T_4$ does not reverse</Link></p>
-      </Tex>
+        <p>• List spaces described as <Link to="/spaces?text=plank">planks</Link></p>
+        <p>• Show counter-examples witnessing that <Link to="/theorems/I000112">T₅ ⇒ T₄ does not reverse</Link></p>
+      </div>
     </div>
     <div className="container">
       <h2>Our Purpose</h2>

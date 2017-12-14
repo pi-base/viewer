@@ -10,7 +10,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 
 // const tryConvertFormula = (q: string) => {
 //   if (!q) { return }
-// 
+//
 //   try {
 //     const f = F.fromJSON(JSON.parse(q))
 //     return F.mapProperty(id => store.properties.find(Id('P', id))!, f)
@@ -66,15 +66,17 @@ class NotFound extends React.PureComponent<Props> {
 
     return (
       <div className="jumbotron">
-        <h1>404: Page Not Found</h1>
-        <p>You appear to be looking for <code>{location.pathname}</code>, but we don't know how to find that.</p>
-        <p>
-          You can press the back button to head back where you were, or
-          {' '}
-          <a href="https://github.com/pi-base/viewer/issues">report this</a>
-          {' '}
-          if you think it's a bug.
+        <div className="container">
+          <h1>404: Page Not Found</h1>
+          <p>You appear to be looking for <code>{location.pathname}</code>, but we don't know how to find that.</p>
+          <p>
+            You can press the back button to head back where you were, or
+            {' '}
+            <a href="https://github.com/pi-base/viewer/issues">report this</a>
+            {' '}
+            if you think it's a bug.
           </p>
+        </div>
       </div>
     )
   }
