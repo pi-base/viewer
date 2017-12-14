@@ -29,15 +29,6 @@ See the `docker-compose.yml` file for the specifics of what is running and optio
 
 * By default, we mount the `../data` directory inside the server container and store the data repository there. You can adjust where that data is located by mounting a different directory in the container at `/data` (or remove the mount).
 
-
-<<<<<<< HEAD
-* Ensure the server is running (`docker-compose up server`)
-* `npm test`
-
-## Attribution
-
-Banner image reused from <https://commons.wikimedia.org/wiki/File:Sierpinski_pyramid.png>
-=======
 ## Running the frontend
 
 You can run the frontend development server using docker as well (`docker-compose up`) but the development experience is better if you run it locally:
@@ -59,4 +50,7 @@ We use yarn as a package manager to ensure consistent build. You can install yar
 The first time you start the server (and any time your packages are updated), you should run `yarn install`
 
 Once all packages are installed, run `yarn run start` to start the server. After a short build process, your browser should open a copy of the viewer.
->>>>>>> update
+
+## Attribution
+
+Banner image reused from <https://commons.wikimedia.org/wiki/File:Sierpinski_pyramid.png>
