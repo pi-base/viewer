@@ -34,7 +34,9 @@ const Home = () => (
         the pi-Base serves as a living database that catalogs topological
         spaces, their properties, and the theorems that connect them.
         The{' '}
-        <a href="#">pi-Base team</a>{' '}
+        <Link to="/about">
+          pi-Base team
+        </Link>{' '}
         hopes that active researchers of general topology
         will benefit from the organization and uniformity provided by the pi-Base, and that mathematicians and students exploring new branches of topology will benefit from having the pi-Base as a guide.
       </p>
