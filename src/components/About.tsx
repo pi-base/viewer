@@ -46,7 +46,13 @@ const About = () => (
 
     <h3>Steven Clontz - Lead Mathematical Editor</h3>
     <p>
-      TODO: add info about Steven.
+      <a href="http://clontz.org">Steven Clontz</a>{' '}
+      serves as Assistant Professor of Mathematics at the
+      University of South Alabama. His research focuses on game-theoretic
+      characterizations of topological properties. When they were in graduate
+      school, Steven co-founded a technology start-up
+      with James to provide customer relationship management
+      services to collegiate music organizations.
     </p>
 
     <h3>You?</h3>
@@ -54,7 +60,8 @@ const About = () => (
       Development of the pi-Base platform and data is open-sourced and
       hosted publicly at <a href="http://github.com">GitHub</a>. Contact{' '}
       <a href="#">TODO</a>{' '}
-      if you are interested in becoming a member of the pi-Base team!
+      if you are interested in becoming a member of the pi-Base team,
+      or submit a pull request to make a direct contribution.
     </p>
 
     <h2>Acknowledgements</h2>
@@ -84,6 +91,17 @@ const About = () => (
           Counterexamples in Topology
         </a>{' '}
         in the first place and inspiring this project
+      </li>
+    </ul>
+    <p>
+      We'd like to thank the following organizations for their support
+      of the pi-Base platform.
+    </p>
+    <ul>
+      <li>
+        <a href="http://www.southalabama.edu/graduatemajors/graduateschool/research.html">
+          USA Faculty Development Council
+        </a>
       </li>
     </ul>
   </div>
