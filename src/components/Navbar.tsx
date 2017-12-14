@@ -1,10 +1,21 @@
 import * as React from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { State } from '../reducers'
 
 import UserTab from './Layout/UserTab'
+import BranchSelect from './Form/BranchSelect'
 
-const Navbar = () => (
-  <nav className="navbar navbar-default navbar-static-top">
+const NavbarStyle = (branch) => {
+  if (branch === 'user') {
+    return ('navbar navbar-static-top navbar-inverse')
+  } else {
+    return ('navbar navbar-static-top navbar-default')
+  }
+}
+
+const Navbar = ({branch}) => (
+  <nav className={NavbarStyle(branch)}>
     <div className="container">
       <Link to="/" className="navbar-brand">pi-Base</Link>
       <ul className="nav navbar-nav">
@@ -15,10 +26,15 @@ const Navbar = () => (
 
       <ul className="nav navbar-nav pull-right">
         <li><NavLink activeClassName="active" to="/about">About</NavLink></li>
+        <BranchSelect />
         <UserTab />
       </ul>
     </div>
   </nav>
 )
 
-export default Navbar
+export default connect(
+  (state: State) => ({
+    branch: state.version.branch
+  })
+)(Navbar)

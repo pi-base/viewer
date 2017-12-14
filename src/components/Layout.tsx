@@ -7,7 +7,6 @@ import { Dispatch } from 'redux'
 import { Action, boot } from '../actions'
 import { State } from '../reducers'
 
-import BranchSelect from './Form/BranchSelect'
 import Navbar from './Navbar'
 import Footer from './Footer'
 
@@ -28,9 +27,6 @@ class Layout extends React.PureComponent<StateProps & DispatchProps> {
     return (
       <div>
         <Navbar />
-        <div className="container">
-          <BranchSelect />
-        </div>
         {this.props.booted || this.props.location.pathname === '/'
           ? this.props.children
           : 'Loading...'}

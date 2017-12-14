@@ -7,30 +7,25 @@ import * as A from '../../actions'
 const BranchSelect = ({ branch, changeBranch }) => {
   if (branch === 'user') {
     return (
-      <div className="alert alert-info">
-        <p>
-          Currently viewing your personal branch.
-          {' '}
-          <a href="#" onClick={() => changeBranch('audit')}>
-            Swtich to audited content
-          </a>
-          .
-        </p>
-      </div>
+      <li className="dropdown">
+        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          User Branch <span className="caret" />
+        </a>
+        <ul className="dropdown-menu">
+          <li><a onClick={() => changeBranch('audit')}>Swtich to master branch</a></li>
+        </ul>
+      </li>
     )
   } else {
     return (
-      <div className="alert alert-info">
-        <p>
-          Currently viewing only audited content.
-          {' '}
-          <a href="#" onClick={() => changeBranch('user')}>
-            Swtich to your personal branch
-          </a>
-          {' '}
-          to edit.
-        </p>
-      </div>
+      <li className="dropdown">
+        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          Master Branch <span className="caret" />
+        </a>
+        <ul className="dropdown-menu">
+          <li><a onClick={() => changeBranch('user')}>Swtich to user branch</a></li>
+        </ul>
+      </li>
     )
   }
 }
