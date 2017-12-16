@@ -13,11 +13,6 @@ const TAB = 9, ENTER = 13, UP = 38, DOWN = 40 // RIGHT = 39
 
 type Formula = F.Formula<T.Property>
 
-interface Event {
-  which: number
-  preventDefault: () => void
-}
-
 interface OwnProps {
   name?: string
   value?: string
@@ -69,7 +64,7 @@ class FormulaInput extends React.Component<Props, State> {
     })
   }
 
-  handleKeyDown(e: Event) {
+  handleKeyDown(e: any) {
     switch (e.which) {
       case UP:
         e.preventDefault()
@@ -108,12 +103,10 @@ class FormulaInput extends React.Component<Props, State> {
   }
 
   handleChange(newValue: string) {
-    this.setState(({ formula }) => {
-      if (this.props.onChange) {
-        this.props.onChange(newValue)
-      }
+    if (this.props.onChange) { this.props.onChange(newValue) }
 
-      const parsed = this.parseFormula(newValue) || formula
+    this.setState(({ formula }) => {
+      const parsed = this.parseFormula(newValue)
       if (parsed !== formula && this.props.onFormulaChange) {
         this.props.onFormulaChange(parsed)
       }
@@ -139,8 +132,8 @@ class FormulaInput extends React.Component<Props, State> {
           name={this.props.name}
           value={this.props.value}
           placeholder={this.props.placeholder}
-          onKeyDown={(e) => this.handleKeyDown(e)}
-          onChange={(e) => this.handleChange(e.target.value)}
+          onKeyDown={e => this.handleKeyDown(e)}
+          onChange={e => this.handleChange(e.target.value)}
           onBlur={() => this.handleBlur()}
         />
 

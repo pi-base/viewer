@@ -1,53 +1,58 @@
 import * as React from 'react'
 import qs from 'query-string'
 
-import { Dispatch, connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
+import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import { Link } from 'react-router-dom'
 
-import { search } from '../actions'
-import * as Q from '../queries'
+import * as A from '../actions'
 import * as S from '../selectors'
-import { Action } from '../types'
+import { Dispatch, Formula, Property, State } from '../types'
 
-import Labeled from './Form/Labeled'
+import { Wrapped } from './Form/Labeled'
 import FormulaInput from './Formula/Input'
 import Results from './Search/Results'
 
-type Props = RouteComponentProps<{}> & { dispatch: Dispatch<Action> }
+type StateProps = {
+  text: string
+  formula: string
+  parsedFormula: Formula<Property> | undefined
+}
+type DispatchProps = {
+  search: (query: { text?: string, formula?: string }) => void
+}
+type Props = StateProps & DispatchProps & RouteComponentProps<{}>
 
 // See https://github.com/erikras/redux-form/issues/1094
-const Text = props => <Labeled {...props} Component="input" />
-const Formula = props => <Labeled {...props} Component={FormulaInput} />
+const Text = props => <Wrapped {...props} component="input" />
+const Formula = props => <Wrapped {...props} component={FormulaInput} />
 
 class Search extends React.PureComponent<Props> {
   componentWillMount() {
     const query = qs.parse(this.props.location.search)
     if (query.formula || query.text) {
-      this.props.dispatch(search({ formula: query.formula, text: query.text }))
+      this.props.search({ text: query.text, formula: query.formula })
     }
   }
 
   render() {
+    const { text, formula, parsedFormula, search } = this.props
+
     // TODO: add widget to allow displaying extra traits inline
     return (
       <form className="search row" >
         <div className="col-md-4">
-          <Field
-            name="text"
-            type="text"
+          <Text
             label="Filter by Text"
-            placeholder="e.g. plank"
-            component={Text}
+            placeholder="plank"
+            value={text}
+            onChange={e => search({ text: e.target.value })}
           />
-
-          <Field
-            name="formula"
-            type="text"
+          <Formula
             label="Filter by Formula"
-            placeholder="e.g. compact + ~metrizable"
-            component={Formula}
+            placeholder="compact + ~metrizable"
+            value={formula}
+            onChange={value => search({ formula: value })}
           />
 
           <Link to="/spaces/new" className="btn btn-default">
@@ -56,42 +61,41 @@ class Search extends React.PureComponent<Props> {
         </div>
 
         <div className="col-md-8">
-          <Results />
+          <Results text={text} formula={parsedFormula} />
         </div>
       </form >
     )
   }
 }
 
-export default connect(
-  (state, { location }) => {
-    const query = qs.parse(location.search)
-    return {
-      initialValues: {
-        text: query.text,
-        formula: query.formula
-      }
-    }
+const updateQueryParams = (history, text, formula) => {
+  const query = qs.parse(history.location.search)
+  if (text) { query.text = text }
+  if (formula) { query.formula = formula }
+  const search = `?${qs.stringify(query)}`
+
+  if (history.location.search === search) { return }
+
+  const path = `${history.location.pathname}${search}`
+  if (history.location.search) {
+    // Don't want a history entry for each letter
+    history.replace(path)
+  } else {
+    // Do want one for the initial search
+    history.push(path)
   }
-)(
-  reduxForm({
-    form: 'search',
-    onChange: ({ text, formula }, dispatch, { history }) => {
+}
 
-      const query: { text?: string, formula?: string } = {}
-      if (text) { query.text = text }
-      if (formula) { query.formula = formula }
-      const path = `${history.location.pathname}?${qs.stringify(query)}`
-
-      if (history.location.search) {
-        // Don't want a history entry for each letter
-        history.replace(path)
-      } else {
-        // Do want one for the initial search
-        history.push(path)
-      }
-
-      dispatch(search({ text, formula }))
+export default connect(
+  (state: State): StateProps => ({
+    text: state.search.text,
+    formula: state.search.formula,
+    parsedFormula: S.searchFormula(state)
+  }),
+  (dispatch: Dispatch, props: Props): DispatchProps => ({
+    search: ({ text, formula }) => {
+      updateQueryParams(props.history, text, formula)
+      dispatch(A.search({ text, formula }))
     }
-  })(
-    Search))
+  })
+)(Search)

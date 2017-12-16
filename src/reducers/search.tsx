@@ -4,11 +4,16 @@ import { parseFormula } from '../selectors'
 import { Formula, Id } from '../types'
 
 export type State = {
-  text: string | undefined
-  formula: Formula<Id> | undefined
+  text: string
+  formula: string
+  formulaMemo: Formula<Id> | undefined
 }
 
-export const initial: State = { text: undefined, formula: undefined }
+export const initial: State = {
+  text: '',
+  formula: '',
+  formulaMemo: undefined
+}
 
 export const reducer = (
   state: RootState,
@@ -17,11 +22,14 @@ export const reducer = (
   switch (action.type) {
     case 'SEARCH':
       const next = Object.assign({}, state.search)
-      if (action.formula) {
-        const formula = parseFormula(state, action.formula)
-        if (formula) { next.formula = formula }
+      if (action.text !== undefined) {
+        next.text = action.text
       }
-      if (action.text) { next.text = action.text }
+      if (action.formula !== undefined) {
+        next.formula = action.formula
+        const parsed = parseFormula(state, action.formula)
+        if (parsed || action.formula === '') { next.formulaMemo = parsed }
+      }
       return next
     default:
       return state.search

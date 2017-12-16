@@ -15,6 +15,21 @@ export interface Props {
   }
 }
 
+export const Wrapped = props => {
+  const Component = props.component
+  return (
+    <div className="form-group">
+      <label htmlFor={props.name}>{props.label}</label>
+      <div>
+        <Component
+          {...props}
+          className="form-control"
+        />
+      </div>
+    </div>
+  )
+}
+
 const Labeled = ({
   input,
   Component,

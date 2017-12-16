@@ -78,7 +78,7 @@ export const getTrait = (state: State, space: Space, propertyId: Id): Trait | un
   }
 }
 
-const search = (
+export const search = (
   state: State,
   formula?: Formula<Id>,
   text?: string,
@@ -103,7 +103,7 @@ const search = (
 }
 
 export const searchFormula = createSelector(
-  (state: State) => state.search.formula,
+  (state: State) => state.search.formulaMemo,
   (state: State) => state.properties,
   (formula, properties) => {
     if (!formula) { return }
@@ -135,9 +135,6 @@ export const parseFormula = (
   )
   return errors ? undefined : F.mapProperty(p => p.uid, result)
 }
-
-export const searchResults = (state: State): Space[] =>
-  search(state, state.search.formula, state.search.text)
 
 export const counterexamples = (state: State, theorem: Theorem): Space[] => {
   const formula = F.and(

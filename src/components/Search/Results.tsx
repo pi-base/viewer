@@ -13,13 +13,15 @@ import Formula from '../Formula'
 import Implication from '../Implication'
 import TraitTable from '../Trait/Table'
 
-type StateProps = {
+type OwnProps = {
   text: string | undefined
   formula: T.Formula<T.Property> | undefined
+}
+type StateProps = {
   results: T.Space[]
   prover: T.Prover
 }
-type Props = StateProps
+type Props = OwnProps & StateProps
 
 const Tautology = ({ formula }) => (
   <div>
@@ -79,13 +81,13 @@ function Results({ text, formula, results, prover }: Props) {
   )
 }
 
-const mapStateToProps = (state: State): StateProps => ({
-  text: state.search.text,
-  formula: S.searchFormula(state),
-  results: S.searchResults(state),
-  prover: S.prover(state)
-})
-
-export default connect<{}, StateProps>(
-  mapStateToProps
+export default connect<StateProps, {}, OwnProps>(
+  (state: State, ownProps: OwnProps): StateProps => ({
+    results: S.search(
+      state,
+      ownProps.formula ? F.mapProperty(p => p.uid, ownProps.formula) : undefined,
+      ownProps.text
+    ),
+    prover: S.prover(state)
+  })
 )(Results)
