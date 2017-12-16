@@ -3,7 +3,6 @@ import * as React from 'react'
 import { Route, Switch } from 'react-router'
 
 import Home from './components/Home'
-import Layout from './components/Layout'
 import Login from './components/Login'
 import NotFound from './components/NotFound'
 
@@ -18,13 +17,9 @@ import TheoremCreate from './components/Theorem/Create'
 import Theorems from './components/Theorem/Index'
 import Theorem from './components/Theorem/Show'
 
-import Trait from './components/Trait'
-import TraitHelp from './components/Trait/Help'
-
 import Search from './components/Search'
 import User from './components/User'
 
-// TODO: better loading indicator
 const routes = (
   <Switch>
     <Route path="/" exact={true} component={Home} />

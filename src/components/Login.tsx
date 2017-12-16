@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { withApollo } from 'react-apollo'
 import { connect } from 'react-redux'
-import { RouteComponentProps } from 'react-router'
+import { RouteComponentProps, withRouter } from 'react-router'
 
 import { login } from '../actions'
+import { Token } from '../types'
 
 type RouteProps = RouteComponentProps<{ token: string }>
 type StateProps = {
-  login: (token: string) => void
+  login: (token: Token) => Promise<Token>
 }
 type Props = RouteProps & StateProps
 
@@ -21,9 +22,13 @@ class Login extends React.PureComponent<Props> {
   }
 }
 
-export default withApollo(connect(
+export default withRouter(withApollo(connect(
   () => ({}),
   (dispatch, ownProps) => ({
-    login: (token) => login(ownProps.client, dispatch, token)
+    login: (token: Token) => login(ownProps.client, dispatch, token).then(() => {
+      const next = localStorage.getItem('piBase.returnTo') || '/'
+      localStorage.removeItem('piBase.returnTo')
+      ownProps.history.push(next)
+    })
   })
-)(Login))
+)(Login)))

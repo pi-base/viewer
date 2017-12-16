@@ -12,6 +12,7 @@ export type CheckProofs = { type: 'CHECK_PROOFS', spaces?: T.Space[] }
 export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: T.Branch }
 export type LoadViewer = { type: 'LOAD_VIEWER', viewer: G.ViewerQuery }
 export type Login = { type: 'LOGIN', token: T.Token, user: T.User }
+export type Logout = { type: 'LOGOUT' }
 export type Search = { type: 'SEARCH', text?: string, formula?: string }
 
 // tslint:disable no-any
@@ -29,6 +30,7 @@ export type Action
   | CheckProofs
   | LoadViewer
   | Login
+  | Logout
   | QueryError
   | QueryStart
   | QuerySuccess
@@ -111,6 +113,14 @@ export const login = (
     dispatch({ type: 'LOGIN', token, user: data.me })
     return token
   })
+}
+
+export const logout = (
+  client: G.Client,
+  dispatch: T.Dispatch
+): Promise<void> => {
+  dispatch({ type: 'LOGOUT' })
+  return Promise.resolve()
 }
 
 export const search = ({ text, formula }: { text?: string, formula?: string }): Action => {

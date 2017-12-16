@@ -45,7 +45,6 @@ const Preview = connect(
   </article>
 ))
 
-
 const Create = props => {
   const { handleSubmit, submitting, valid, getResult } = props
   const theorem = getResult()

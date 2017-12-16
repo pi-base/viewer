@@ -12,7 +12,7 @@ import Detail from './Detail'
 import NotFound from '../NotFound'
 import TraitCreate from '../Trait/Create'
 import TraitPager from '../Trait/Pager'
-import Trait from '../Trait'
+import Trait from '../Trait/Show'
 
 interface OwnProps {
   children: JSX.Element
