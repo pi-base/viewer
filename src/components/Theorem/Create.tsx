@@ -6,7 +6,7 @@ import uuid from 'uuid/v4'
 
 import { assertTheorem, checkProofs } from '../../actions'
 import * as S from '../../selectors'
-import { Dispatch, State, Theorem } from '../../types'
+import { Dispatch, Space, State, Theorem } from '../../types'
 
 import { Formula, Textarea } from '../Form/Labeled'
 import Detail from './Detail'
@@ -27,18 +27,17 @@ type Errors = {
 
 const Preview = connect(
   (state, ownProps) => ({
-    counterexamples: S.counterexamples(state, ownProps.theorem).slice(0, 5),
     properties: S.theoremProperties(state, ownProps.theorem)
   })
-)(({ theorem, counterexamples, properties }) => (
+)(({ theorem, properties }) => (
   <article>
     <Detail theorem={theorem} />
     <hr />
-    {counterexamples.length > 0
+    {theorem.counterexamples.length > 0
       ?
       <div>
         <p>Found counterexamples:</p>
-        <TraitTable spaces={counterexamples} properties={properties} />
+        <TraitTable spaces={theorem.counterexamples} properties={properties} />
       </div>
       : <p>No couterexamples found</p>
     }
@@ -99,11 +98,17 @@ const build = (state: State, values: Values) => {
     return { errors }
   }
 
-  const result: Theorem = {
+  const result: Theorem & { counterexamples: Space[] } = {
     uid: values.uid,
     if: antecedent!,
     then: consequent!,
-    description: values.description || ''
+    description: values.description || '',
+    counterexamples: []
+  }
+
+  result.counterexamples = S.counterexamples(state, result)
+  if (result.counterexamples.length > 0) {
+    errors.then = 'Has counterexamples'
   }
 
   return { result, errors }
