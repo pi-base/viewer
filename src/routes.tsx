@@ -13,6 +13,7 @@ import Properties from './components/Property/Index'
 import Property from './components/Property/Show'
 
 import SpaceCreate from './components/Space/Create'
+import SpaceCompare from './components/Space/Compare'
 import Space from './components/Space'
 
 import TheoremCreate from './components/Theorem/Create'
@@ -35,6 +36,7 @@ const routes = (
     <Route path="/user" component={User} />
 
     <Route path="/spaces/new" component={SpaceCreate} />
+    <Route path="/spaces/compare" component={SpaceCompare} />
     <Route path="/spaces/:spaceId" component={Space} />
     <Route path="/spaces" component={Search} />
 
