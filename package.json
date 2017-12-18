@@ -72,7 +72,7 @@
     "start": "node scripts/start.js",
     "build": "npm run schema && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "schema": "apollo-codegen introspect-schema schema.graphql --output schema.json && apollo-codegen generate src/**/*.{ts,tsx} --schema schema.json --target ts --output src/graph/types.ts"
+    "schema": "apollo-codegen introspect-schema src/graph/schema.gql --output schema.json && apollo-codegen generate src/graph/queries/*.gql --schema schema.json --target ts --output src/graph/types.ts"
   },
   "jest": {
     "mapCoverage": true,

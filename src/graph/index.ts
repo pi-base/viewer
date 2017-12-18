@@ -2,8 +2,10 @@ import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
-export * from './queries'
 export * from './types'
+
+export const me = require('./queries/me.gql')
+export const viewer = require('./queries/viewer.gql')
 
 export type Client = ApolloClient<{}>
 
