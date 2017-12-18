@@ -7,8 +7,12 @@ import { Dispatch } from 'redux'
 import { Action, boot } from '../actions'
 import { State } from '../reducers'
 
+import '../img/github-mark-32.png'
+
 import Navbar from './Navbar'
 import Footer from './Footer'
+
+const GithubMark = require('../img/github-mark-32.png')
 
 interface StateProps {
   booted: boolean
@@ -36,6 +40,15 @@ class Layout extends React.PureComponent<StateProps & DispatchProps> {
         }
         <div className="container">
           <Footer />
+          <p className="text-center">
+            <a href="http://github.com/pi-base">
+              <img src={GithubMark} />
+            </a>
+          </p>
+          <p className="text-center">
+            <a href="http://github.com/pi-base/data">Data</a>{' '}
+            <a href="http://github.com/pi-base/viewer">Viewer</a>
+          </p>
         </div>
       </div>
     )
