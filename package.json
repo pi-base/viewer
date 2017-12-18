@@ -6,13 +6,28 @@
     "apollo-cache-inmemory": "^1.1.2",
     "apollo-client": "^2.1.0",
     "apollo-link-http": "^1.3.0",
+    "autoprefixer": "7.1.2",
+    "case-sensitive-paths-webpack-plugin": "2.1.1",
+    "chalk": "1.1.3",
+    "css-loader": "0.28.4",
+    "dotenv": "4.0.0",
+    "extract-text-webpack-plugin": "3.0.0",
+    "file-loader": "0.11.2",
+    "fs-extra": "3.0.1",
     "fuse.js": "^2.7.4",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.5.0",
+    "html-webpack-plugin": "2.29.0",
     "immutable": "^3.8.2",
+    "jest": "20.0.4",
+    "object-assign": "4.1.1",
     "pi-base-core": "0.0.2",
+    "postcss-flexbugs-fixes": "3.2.0",
+    "postcss-loader": "2.0.6",
+    "promise": "8.0.1",
     "react": "^16.2.0",
     "react-apollo": "^2.0.1",
+    "react-dev-utils": "^4.0.1",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
@@ -24,7 +39,21 @@
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
-    "uuid": "^3.1.0"
+    "source-map-loader": "^0.2.1",
+    "style-loader": "0.18.2",
+    "sw-precache-webpack-plugin": "0.11.4",
+    "ts-jest": "^20.0.7",
+    "ts-loader": "^2.2.1",
+    "tslint": "^5.2.0",
+    "tslint-loader": "^3.5.3",
+    "tslint-react": "^3.0.0",
+    "typescript": "~2.4.0",
+    "url-loader": "0.5.9",
+    "uuid": "^3.1.0",
+    "webpack": "3.5.1",
+    "webpack-dev-server": "2.7.1",
+    "webpack-manifest-plugin": "1.2.1",
+    "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
     "@types/jest": "^21.1.1",
@@ -37,14 +66,63 @@
     "babel-polyfill": "^6.22.0",
     "graphql-cli": "^2.0.9",
     "graphql-config": "^1.1.0",
-    "isomorphic-fetch": "^2.2.1",
-    "react-scripts-ts": "2.7.0"
+    "isomorphic-fetch": "^2.2.1"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "npm run schema && react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject",
+    "start": "node scripts/start.js",
+    "build": "npm run schema && node scripts/build.js",
+    "test": "node scripts/test.js --env=jsdom",
     "schema": "apollo-codegen introspect-schema schema.graphql --output schema.json && apollo-codegen generate src/**/*.{ts,tsx} --schema schema.json --target ts --output src/graph/types.ts"
+  },
+  "jest": {
+    "mapCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.ts?(x)",
+      "<rootDir>/src/**/?(*.)(spec|test).ts?(x)"
+    ],
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^.+\\.tsx?$": "<rootDir>/config/jest/typescriptTransform.js",
+      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$"
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    },
+    "moduleFileExtensions": [
+      "web.ts",
+      "ts",
+      "web.tsx",
+      "tsx",
+      "web.js",
+      "js",
+      "web.jsx",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "/data/src/pi-base/viewer/tsconfig.test.json"
+      }
+    }
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
   }
 }
