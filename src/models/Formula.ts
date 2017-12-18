@@ -138,9 +138,7 @@ export function fromJSON(json: any): Formula<string> {
 }
 
 export function parse(q: string): Formula<string> | undefined {
-  if (!q) {
-    return
-  }
+  if (!q) { return }
 
   let parsed
   try {

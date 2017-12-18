@@ -21,7 +21,7 @@ type Props = OwnProps & StateProps
 
 type State = {
   filtered: Trait[]
-  limit: number
+  limit: number | undefined
   tabs: {
     asserted: boolean
     deduced: boolean
