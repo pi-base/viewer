@@ -19,7 +19,7 @@ const Property = ({ property }: Props) => {
   if (!property) { return <NotFound /> }
 
   return (
-    <div>
+    <div className="container">
       <Detail property={property} />
       <hr />
 

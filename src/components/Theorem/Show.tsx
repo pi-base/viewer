@@ -20,7 +20,7 @@ const Theorem = ({ theorem }: Props) => {
   if (!theorem) { return <NotFound /> }
 
   return (
-    <div>
+    <div className="container">
       <Detail theorem={theorem} />
       <hr />
 
