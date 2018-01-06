@@ -3,6 +3,7 @@ import 'babel-polyfill'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
+import { login } from './actions'
 import { makeClient } from './graph'
 import { makeStore } from './store'
 
@@ -23,14 +24,19 @@ if (window) {
   }
 }
 
+const getToken = () => localStorage.getItem('piBase.token')
+const setToken = (t) => localStorage.setItem('piBase.token', t)
+
 const store = makeStore()
-const graph = makeClient({
-  getToken: () => localStorage.getItem('piBase.token')
-})
+const graph = makeClient({ getToken })
+
+const token = getToken()
+if (token) { login(graph, store.dispatch, token) }
+
 const App = makeApp({
   graph,
   store,
-  setToken: (token) => localStorage.setItem('piBase.token', token)
+  setToken
 })
 
 ReactDOM.render(

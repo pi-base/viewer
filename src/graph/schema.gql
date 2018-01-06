@@ -24,8 +24,15 @@ type Theorem {
   description: String!
 }
 
+type Branch {
+  name: String!
+  access: String!
+  sha: String!
+}
+
 type User {
   name: String!
+  branches: [Branch!]!
 }
 
 type Viewer {
@@ -35,10 +42,12 @@ type Viewer {
   version: String!
 }
 
-type Query {
-  me: User
-  viewer(version: String): Viewer!
+type ResetBranchResponse {
+  branch: String!
+  sha: String!
 }
+
+# Inputs
 
 input CreateSpaceInput {
   name: String!
@@ -50,20 +59,59 @@ input CreatePropertyInput {
   description: String!
 }
 
-input TestResetInput {
-  token: String
-  ref: String!
+input AssertTraitInput {
+  spaceId: String!
+  propertyId: String!
+  value: Boolean!
 }
 
-type TestResetResponse {
-  version: String!
-  token: String
+input AssertTheoremInput {
+  antecedent: String!
+  consequent: String!
+  description: String!
+}
+
+input ResetBranchInput {
+  branch: String!
+  to: String!
+}
+
+input UpdateSpaceInput {
+  uid: String!
+  description: String!
+}
+
+input UpdatePropertyInput {
+  uid: String! 
+  description: String!
+}
+
+input UpdateTheoremInput {
+  uid: String!
+  description: String!
+}
+
+input PatchInput {
+  branch: String!
+  sha: String!
+}
+
+# Root types
+
+type Query {
+  me: User!
+  viewer(version: String): Viewer!
 }
 
 type Mutation {
-  createSpace(input: CreateSpaceInput): Viewer
-  createProperty(input: CreatePropertyInput): Viewer
-  testReset(input: TestResetInput!): TestResetResponse
+  createSpace(patch: PatchInput!, space: CreateSpaceInput!): Viewer!
+  createProperty(patch: PatchInput!, property: CreatePropertyInput!): Viewer!
+  updateSpace(patch: PatchInput!, space: UpdateSpaceInput!): Viewer!
+  updateProperty(patch: PatchInput!, property: UpdatePropertyInput!): Viewer!
+  updateTheorem(patch: PatchInput!, theorem: UpdateTheoremInput!): Viewer!
+  assertTrait(patch: PatchInput!, trait: AssertTraitInput!): Viewer!
+  assertTheorem(patch: PatchInput!, theorem: AssertTheoremInput!): Viewer!
+  resetBranch(input: ResetBranchInput!): ResetBranchResponse!
 }
 
 schema {

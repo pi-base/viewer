@@ -12,7 +12,7 @@ export type AssertTrait = { type: 'ASSERT_TRAIT', trait: T.Trait }
 export type CheckProofs = { type: 'CHECK_PROOFS', spaces?: T.Space[] }
 export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: T.Branch }
 export type LoadViewer = { type: 'LOAD_VIEWER', viewer: G.ViewerQuery }
-export type Login = { type: 'LOGIN', token: T.Token, user: T.User }
+export type Login = { type: 'LOGIN', token: T.Token, user: T.User, branches: T.Branch[] }
 export type Logout = { type: 'LOGOUT' }
 export type Search = { type: 'SEARCH', text?: string, formula?: string }
 
@@ -131,13 +131,24 @@ export const login = (
     }
   }
   return query<G.MeQuery>({ client, dispatch, q: G.me, context }).then(data => {
-    dispatch({ type: 'LOGIN', token, user: data.me })
+    const user = { name: data.me.name }
+    const branches = data.me.branches
+    const action: Login = {
+      type: 'LOGIN',
+      token,
+      user: { name: data.me.name },
+      branches: data.me.branches.map(b => ({
+        name: b.name,
+        sha: b.sha,
+        access: b.access as any
+      }))
+    }
+    dispatch(action)
     return token
   })
 }
 
 export const logout = (
-  client: G.Client,
   dispatch: T.Dispatch
 ): Promise<void> => {
   dispatch({ type: 'LOGOUT' })

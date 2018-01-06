@@ -8,7 +8,7 @@ export * from './types'
 export const me = require('./queries/me.gql')
 export const viewer = require('./queries/viewer.gql')
 
-export const createSpace = require('./mutations/createSpace.gql')
+export const createSpace = require('./queries/createSpace.gql')
 
 export type Client = ApolloClient<{}>
 

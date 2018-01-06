@@ -154,7 +154,15 @@ export const theoremProperties = (state: State, theorem: Theorem): Property[] =>
   return props
 }
 
-export const editing = (state: State) => state.version.branch === 'user'
+export const activeBranch = (state: State) => {
+  if (!state.version.active) { return undefined } // FIXME
+  return state.version.branches.get(state.version.active)!
+}
+export const editing = (state: State) => {
+  const branch = activeBranch(state)
+  if (!branch) { return false }
+  return branch.access === 'admin'
+}
 
 export const proof = (state: State, spaceId: string, propertyId: string): Proof | undefined => {
   const space = state.spaces.get(spaceId)

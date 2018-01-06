@@ -1,0 +1,14 @@
+mutation AssertTrait($patch: PatchInput!, $trait: AssertTraitInput!) {
+  assertTrait(patch: $patch, trait: $trait) {
+    version
+    spaces {
+      uid
+      traits {
+        property {
+          uid
+        }
+        value
+      }
+    }
+  }
+}

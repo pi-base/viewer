@@ -13,6 +13,8 @@ import * as G from './graph'
 import rootReducer, { State } from './reducers'
 import { makeStore } from './store'
 
+import { activeBranch } from './selectors'
+
 const middleware = [thunk]
 
 const store = createStore<State>(
@@ -47,6 +49,6 @@ it('can create a space', async () => {
   const state: State = store.getState()
   expect(state.spaces.get('123')!.name).toEqual('S')
 
-  const version = state.version.sha!
-  expect(version.length).toEqual(40)
+  const branch = activeBranch(state)!
+  expect(branch.sha.length).toEqual(40)
 })

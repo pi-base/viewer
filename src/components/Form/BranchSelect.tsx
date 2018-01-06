@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import { State } from '../../reducers'
 import * as A from '../../actions'
+import { activeBranch } from '../../selectors'
 
 const BranchSelect = ({ branch, changeBranch }) => {
   if (branch === 'user') {
@@ -37,7 +38,7 @@ const BranchSelect = ({ branch, changeBranch }) => {
 
 export default connect(
   (state: State) => ({
-    branch: state.version.branch
+    branch: activeBranch(state)
   }),
   (dispatch) => ({
     changeBranch: (name) => dispatch(A.changeBranch(name))

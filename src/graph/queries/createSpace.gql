@@ -1,0 +1,9 @@
+mutation CreateSpace($patch: PatchInput!, $space: CreateSpaceInput!) {
+  createSpace(patch: $patch, space: $space) {
+    version
+    spaces {
+      uid
+      name
+    }
+  }
+}

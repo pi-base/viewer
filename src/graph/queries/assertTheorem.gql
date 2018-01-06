@@ -1,0 +1,17 @@
+mutation AssertTheorem($patch: PatchInput!, $theorem: AssertTheoremInput!) {
+  assertTheorem(patch: $patch, theorem: $theorem) {
+    version
+    spaces {
+      uid
+      traits {
+        property {
+          uid
+        }
+        value
+      }
+    }
+    theorems {
+      uid
+    }
+  }
+}

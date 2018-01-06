@@ -42,7 +42,11 @@ export function makeStore(): Store<State> {
             proofs: new Map(json.proofs),
             properties: new Map(json.properties),
             spaces: new Map(json.spaces),
-            theorems: new Map(json.theorems)
+            theorems: new Map(json.theorems),
+            version: {
+              active: json.version.active,
+              branches: new Map(json.version.branches)
+            }
           }
         }
       })

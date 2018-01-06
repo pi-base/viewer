@@ -13,9 +13,7 @@ const Navbar = () => (
         <li><NavLink activeClassName="active" to="/theorems">Theorems</NavLink></li>
       </ul>
 
-      <ul className="nav navbar-nav pull-right">
-        <UserTab />
-      </ul>
+      <UserTab />
     </div>
   </nav>
 )

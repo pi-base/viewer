@@ -18,7 +18,13 @@ export type Config = {
   readonly setToken: (token: Token) => void
 }
 
-export type Branch = 'audited' | 'user'
+export type BranchName = string
+export type Branch = {
+  name: BranchName,
+  sha: string,
+  access: 'read' | 'admin'
+}
+
 export type Id = string
 export type Token = string
 

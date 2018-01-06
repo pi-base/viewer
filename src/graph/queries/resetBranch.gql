@@ -1,0 +1,6 @@
+mutation ResetBranch($input: ResetBranchInput!) {
+  resetBranch(input: $input) {
+    branch
+    sha
+  }
+}
