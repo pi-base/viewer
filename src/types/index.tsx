@@ -1,6 +1,9 @@
+import { Store } from 'redux'
 import { Dispatch as _Dispatch } from 'react-redux'
 import { Action } from '../actions'
+import { Client } from '../graph'
 import { Formula } from '../models/Formula'
+import { State } from '../reducers'
 
 export { Action } from '../actions'
 export { Finder } from '../models/Finder'
@@ -8,6 +11,12 @@ export { Formula } from '../models/Formula'
 export { Prover } from '../models/Prover'
 export { Table } from '../models/Table'
 export { State } from '../reducers'
+
+export type Config = {
+  readonly graph: Client
+  readonly store: Store<State>
+  readonly setToken: (token: Token) => void
+}
 
 export type Branch = 'audited' | 'user'
 export type Id = string

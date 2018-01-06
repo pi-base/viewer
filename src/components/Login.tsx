@@ -3,14 +3,16 @@ import { withApollo } from 'react-apollo'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
 
+import { ConfigProps, withConfig } from './Config'
+
 import { login } from '../actions'
 import { Token } from '../types'
 
 type RouteProps = RouteComponentProps<{ token: string }>
-type StateProps = {
+type DispatchProps = {
   login: (token: Token) => Promise<Token>
 }
-type Props = RouteProps & StateProps
+type Props = RouteProps & DispatchProps & ConfigProps
 
 class Login extends React.PureComponent<Props> {
   componentWillMount() {
@@ -22,13 +24,17 @@ class Login extends React.PureComponent<Props> {
   }
 }
 
-export default withRouter(withApollo(connect(
+export default withConfig(connect(
   () => ({}),
-  (dispatch, ownProps) => ({
-    login: (token: Token) => login(ownProps.client, dispatch, token).then(() => {
-      const next = localStorage.getItem('piBase.returnTo') || '/'
-      localStorage.removeItem('piBase.returnTo')
-      ownProps.history.push(next)
-    })
+  (dispatch, ownProps): DispatchProps => ({
+    login: (token: Token) => {
+      return login(ownProps.config.graph, dispatch, token).then(t => {
+        ownProps.config.setToken(t)
+        const next = localStorage.getItem('piBase.returnTo') || '/'
+        localStorage.removeItem('piBase.returnTo')
+        ownProps.history.push(next)
+        return t
+      })
+    }
   })
-)(Login)))
+)(Login))

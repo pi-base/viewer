@@ -1,0 +1,6 @@
+mutation TestReset($input: TestResetInput!) {
+  testReset(input: $input) {
+    version
+    token
+  }
+}

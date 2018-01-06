@@ -43,8 +43,7 @@ const cssFilename = 'static/css/[name].[contenthash:8].css';
 const extractTextPluginOptions = shouldUseRelativeAssetPaths ? // Making sure that the publicPath goes back to to build folder.
   {
     publicPath: Array(cssFilename.split('/').length).join('../')
-  } :
-  {};
+  } : {};
 
 // This is the production configuration.
 // It compiles slowly and is focused on producing a fast and minimal bundle.
@@ -133,8 +132,8 @@ module.exports = {
       },
       {
         test: /\.(graphql|gql)$/,
-        exclude: /node_modules/,
-        loader: 'graphql-tag/loader'
+        loader: require.resolve('graphql-tag/loader'),
+        include: paths.appSrc
       },
       {
         test: /\.js$/,

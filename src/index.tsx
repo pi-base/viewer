@@ -24,8 +24,14 @@ if (window) {
 }
 
 const store = makeStore()
-const apollo = makeClient()
-const App = makeApp({ apollo, store })
+const graph = makeClient({
+  getToken: () => localStorage.getItem('piBase.token')
+})
+const App = makeApp({
+  graph,
+  store,
+  setToken: (token) => localStorage.setItem('piBase.token', token)
+})
 
 ReactDOM.render(
   <App />,

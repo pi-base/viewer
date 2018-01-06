@@ -1,8 +1,9 @@
 import { DocumentNode } from 'graphql'
-import uuid from 'uuid/v4'
+import { v4 as uuid } from 'uuid'
 
 import * as G from './graph'
 import * as T from './types'
+import { Dispatch } from 'redux';
 
 export type AddProperty = { type: 'ADD_PROPERTY', property: T.Property }
 export type AddSpace = { type: 'ADD_SPACE', space: T.Space }
@@ -19,6 +20,8 @@ export type Search = { type: 'SEARCH', text?: string, formula?: string }
 export type QueryError = { type: 'QUERY_ERROR', id: string, error: any }
 export type QueryStart = { type: 'QUERY_START', id: string, query: any }
 export type QuerySuccess = { type: 'QUERY_SUCCESS', id: string, data: any }
+
+export type PersistSuccess = { type: 'PERSIST_SUCCESS', version: string }
 // tslint:enable no-any
 
 export type Action
@@ -31,6 +34,7 @@ export type Action
   | LoadViewer
   | Login
   | Logout
+  | PersistSuccess
   | QueryError
   | QueryStart
   | QuerySuccess
@@ -82,6 +86,23 @@ export const addProperty = (property: T.Property): Action => ({
 export const addSpace = (space: T.Space): Action => ({
   type: 'ADD_SPACE', space
 })
+
+export const createSpace = (client: G.Client, dispatch: T.Dispatch, space: T.Space) => {
+  dispatch(addSpace(space))
+  return client.mutate({
+    mutation: G.createSpace,
+    variables: {
+      input: {
+        name: space.name,
+        description: space.description
+      }
+    }
+  }).then(response => {
+    dispatch({ ...(response.data as any).createSpace, type: 'PERSIST_SUCCESS' })
+  }).catch(() => {
+    dispatch({ type: 'PERSIST_ERROR', space })
+  })
+}
 
 export const assertTheorem = (theorem: T.Theorem): Action => ({
   type: 'ASSERT_THEOREM', theorem

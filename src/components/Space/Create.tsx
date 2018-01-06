@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
-import { addSpace } from '../../actions'
+import { createSpace } from '../../actions'
 import { Id, Space, State } from '../../types'
 
+import { withConfig } from '../Config'
 import Detail from './Detail'
 import { Text, Textarea } from '../Form/Labeled'
 
@@ -62,14 +63,14 @@ const build = (state: State, values: Values) => {
 }
 
 const save = (dispatch, ownProps, space) => {
-  dispatch(addSpace(space))
+  createSpace(ownProps.config.graph, dispatch, space)
   ownProps.history.push(`/spaces/${space.uid}`)
 }
 
-export default form<Space, Values>({
+export default withConfig(form<Space, Values>({
   build,
   initial: () => ({ uid: uuid(), name: '', description: '' }),
   name: 'createSpace',
   fields: ['name', 'description'],
   save
-})(Create)
+})(Create))

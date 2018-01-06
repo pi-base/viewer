@@ -66,13 +66,14 @@
     "babel-polyfill": "^6.22.0",
     "graphql-cli": "^2.0.9",
     "graphql-config": "^1.1.0",
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "jest-transform-graphql": "^2.1.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
     "build": "npm run schema && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "schema": "apollo-codegen introspect-schema src/graph/schema.gql --output schema.json && apollo-codegen generate src/graph/queries/*.gql --schema schema.json --target ts --output src/graph/types.ts"
+    "schema": "apollo-codegen introspect-schema src/graph/schema.gql --output schema.json && apollo-codegen generate src/graph/**/*.gql --schema schema.json --target ts --output src/graph/types.ts"
   },
   "jest": {
     "mapCoverage": true,
@@ -91,6 +92,7 @@
     "transform": {
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^.+\\.tsx?$": "<rootDir>/config/jest/typescriptTransform.js",
+      "\\.(gql|graphql)$": "jest-transform-graphql",
       "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [

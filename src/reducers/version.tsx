@@ -3,10 +3,12 @@ import { Action } from '../actions'
 
 export type State = {
   branch: Branch
+  sha: string | null
 }
 
 export const initial = {
-  branch: 'audited'
+  branch: 'audited',
+  sha: null
 }
 
 export const reducer = (
@@ -18,6 +20,8 @@ export const reducer = (
   switch (action.type) {
     case 'CHANGE_BRANCH':
       return { ...state, branch: action.branch }
+    case 'PERSIST_SUCCESS':
+      return { ...state, sha: action.version }
     default:
       return state
   }

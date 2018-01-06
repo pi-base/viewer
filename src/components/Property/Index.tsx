@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { State } from '../../reducers'
 import * as S from '../../selectors'
 import * as T from '../../types'
+import { by } from '../../utils'
 
 import List from '../List'
 import Preview from '../Preview'
@@ -73,7 +74,7 @@ const Index = ({ properties, editing }: StateProps) => {
 
 export default connect(
   (state: State) => ({
-    properties: Array.from(state.properties.values()),
+    properties: Array.from(state.properties.values()).sort(by('name')),
     editing: S.editing(state)
   })
 )(Index)

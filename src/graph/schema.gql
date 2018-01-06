@@ -42,15 +42,28 @@ type Query {
 
 input CreateSpaceInput {
   name: String!
+  description: String!
 }
 
 input CreatePropertyInput {
   name: String!
+  description: String!
+}
+
+input TestResetInput {
+  token: String
+  ref: String!
+}
+
+type TestResetResponse {
+  version: String!
+  token: String
 }
 
 type Mutation {
   createSpace(input: CreateSpaceInput): Viewer
   createProperty(input: CreatePropertyInput): Viewer
+  testReset(input: TestResetInput!): TestResetResponse
 }
 
 schema {

@@ -1,0 +1,8 @@
+mutation CreateSpace($input: CreateSpaceInput!) {
+  createSpace(input: $input) {
+    version
+    spaces {
+      uid
+    }
+  }
+}
