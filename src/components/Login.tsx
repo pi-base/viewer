@@ -17,7 +17,11 @@ class Login extends React.PureComponent<Props> {
   }
 
   render() {
-    return (<p>Logging in ...</p>)
+    return (
+      <div className="container">
+        <h4>Logging in ...</h4>
+      </div>
+    )
   }
 }
 
