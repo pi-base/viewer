@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Field, formValueSelector, reduxForm } from 'redux-form'
 import uuid from 'uuid/v4'
 
-import { createProperty } from '../../actions'
+import { updateProperty } from '../../actions'
 import { Id, Property, State } from '../../types'
 
 import Detail from './Detail'
@@ -20,7 +20,8 @@ type Errors = {
   name?: string
 }
 
-const Create = props => {
+// FIXME: share form between create and edit
+const Edit = props => {
   const { handleSubmit, submitting, valid, getResult } = props
   const property = getResult()
 
@@ -60,14 +61,14 @@ const build = (state: State, values: Values) => {
 }
 
 const save = (dispatch, ownProps, property) => {
-  dispatch(createProperty(property))
+  dispatch(updateProperty(property))
   ownProps.history.push(`/properties/${property.uid}`)
 }
 
 export default form<Property, Values>({
   build,
-  initial: () => ({ uid: 'p' + uuid(), name: '', description: '' }),
-  name: 'createProperty',
+  initial: (_, { property }) => property,
+  name: 'updateProperty',
   fields: ['name', 'description'],
   save
-})(Create)
+})(Edit)

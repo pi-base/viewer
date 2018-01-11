@@ -122,7 +122,7 @@ const save = (dispatch, ownProps, theorem) => {
 
 export default form<Theorem, Values>({
   build,
-  initial: () => ({ uid: uuid() }),
+  initial: () => ({ uid: 't' + uuid() }),
   name: 'createTheorem',
   fields: ['if', 'then', 'description'],
   save

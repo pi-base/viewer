@@ -15,7 +15,15 @@ import { makeStore } from './store'
 
 import { activeBranch } from './selectors'
 
-const middleware = [thunk]
+const token = '' // FIXME: need a better strategy for getting a working token in test
+const initial = 'b91cbfb12122fc4fc5379f7a9f68cc42c487aa81'
+let userBranch = ''
+
+const getToken = () => { return token }
+
+const client = G.makeClient({ getToken, fetch })
+
+const middleware = [thunk.withExtraArgument({ client })]
 
 const store = createStore<State>(
   rootReducer,
@@ -23,32 +31,24 @@ const store = createStore<State>(
 )
 const dispatch = store.dispatch
 
-let token = 'test'
-const getToken = () => { return token }
-
-const client = G.makeClient({ getToken, fetch })
-
-const resetMutation = require('./graph/mutations/testReset.gql')
-
-const reset = async (ref = 'development') => {
-  return client.mutate({
-    mutation: resetMutation,
-    variables: {
-      input: { token, ref }
-    }
-  }).then(response => {
-    return (response.data as any).testReset
+beforeAll(() => {
+  return dispatch(A.login(token)).then(user => {
+    userBranch = `users/${user.name}`
+    dispatch(A.changeBranch(userBranch))
   })
-}
+})
 
 it('can create a space', async () => {
-  await reset()
-  await A.createSpace(client, dispatch, {
+  await dispatch(A.resetBranch(userBranch, initial))
+
+  await dispatch(A.createSpace({
     uid: '123', name: 'S', description: 'New Space'
-  })
+  }))
+
   const state: State = store.getState()
   expect(state.spaces.get('123')!.name).toEqual('S')
 
-  const branch = activeBranch(state)!
-  expect(branch.sha.length).toEqual(40)
+  const sha = activeBranch(state)!.sha
+  expect(sha.length).toEqual(40)
+  expect(sha).not.toEqual(initial)
 })

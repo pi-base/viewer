@@ -63,13 +63,13 @@ const build = (state: State, values: Values) => {
 }
 
 const save = (dispatch, ownProps, space) => {
-  createSpace(ownProps.config.graph, dispatch, space)
+  dispatch(createSpace(space))
   ownProps.history.push(`/spaces/${space.uid}`)
 }
 
 export default withConfig(form<Space, Values>({
   build,
-  initial: () => ({ uid: uuid(), name: '', description: '' }),
+  initial: () => ({ uid: 's' + uuid(), name: '', description: '' }),
   name: 'createSpace',
   fields: ['name', 'description'],
   save

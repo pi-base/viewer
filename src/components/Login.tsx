@@ -28,12 +28,11 @@ export default withConfig(connect(
   () => ({}),
   (dispatch, ownProps): DispatchProps => ({
     login: (token: Token) => {
-      return login(ownProps.config.graph, dispatch, token).then(t => {
-        ownProps.config.setToken(t)
+      return dispatch(login(token)).then(user => {
         const next = localStorage.getItem('piBase.returnTo') || '/'
         localStorage.removeItem('piBase.returnTo')
         ownProps.history.push(next)
-        return t
+        return token
       })
     }
   })

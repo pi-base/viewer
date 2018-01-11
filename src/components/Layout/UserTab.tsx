@@ -51,6 +51,6 @@ export default withRouter(connect<StateProps, DispatchProps>(
       // tslint:disable-next-line no-any
       (window as any).location = loginUrl({ redirectTo: window.location })
     },
-    logout: () => A.logout(dispatch)
+    logout: () => dispatch(A.logout)
   })
 )(UserTab))

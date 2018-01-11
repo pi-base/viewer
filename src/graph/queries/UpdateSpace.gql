@@ -1,0 +1,10 @@
+mutation UpdateSpace($patch: PatchInput!, $space: UpdateSpaceInput!) {
+  updateSpace(patch: $patch, space: $space) {
+    version
+    spaces {
+      uid
+      name
+      description
+    }
+  }
+}

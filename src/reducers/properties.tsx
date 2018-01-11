@@ -20,6 +20,9 @@ export const reducer = (state: State, action: Action): State => {
       })
       return new Map([...state, ...next])
 
+    case 'CHANGE_BRANCH':
+      return new Map()
+
     case 'ADD_PROPERTY':
       next = new Map(state)
       next.set(action.property.uid, action.property)

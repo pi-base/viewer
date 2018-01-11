@@ -18,10 +18,11 @@ export type Config = {
   readonly setToken: (token: Token) => void
 }
 
+export type Sha = string
 export type BranchName = string
 export type Branch = {
   name: BranchName,
-  sha: string,
+  sha: Sha,
   access: 'read' | 'admin'
 }
 

@@ -13,6 +13,9 @@ export const reducer = (
     case 'ADD_SPACE':
       return state.set(action.space.uid, action.space)
 
+    case 'CHANGE_BRANCH':
+      return new Map()
+
     case 'LOAD_VIEWER':
       const spaces = new Map()
       action.viewer.viewer.spaces.forEach(s => {

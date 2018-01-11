@@ -17,11 +17,18 @@ export const reducer = (
 ): State => {
   state = state || initial as State
 
+  let branches
+
   switch (action.type) {
     case 'CHANGE_BRANCH':
-      return { ...state, active: action.branch.name }
+      return { ...state, active: action.branch }
+    case 'UPDATE_BRANCH':
+      branches = new Map([...state.branches])
+      const branch = branches.get(action.branch)
+      if (branch) { branch.sha = action.sha }
+      return { ...state, branches }
     case 'LOGIN':
-      const branches = new Map()
+      branches = new Map()
       action.branches.forEach(b => branches.set(b.name, b))
       return { ...state, branches }
     case 'PERSIST_SUCCESS':

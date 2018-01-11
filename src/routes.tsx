@@ -11,7 +11,7 @@ import Properties from './components/Property/Index'
 import Property from './components/Property/Show'
 
 import SpaceCreate from './components/Space/Create'
-import Space from './components/Space'
+import Space from './components/Space/Show'
 
 import TheoremCreate from './components/Theorem/Create'
 import Theorems from './components/Theorem/Index'

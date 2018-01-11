@@ -5,10 +5,14 @@ import { ApolloLink, concat } from 'apollo-link'
 
 export * from './types'
 
-export const me = require('./queries/me.gql')
-export const viewer = require('./queries/viewer.gql')
+export const me = require('./queries/Me.gql')
+export const viewer = require('./queries/Viewer.gql')
 
-export const createSpace = require('./queries/createSpace.gql')
+export const createProperty = require('./queries/CreateProperty.gql')
+export const createSpace = require('./queries/CreateSpace.gql')
+export const resetBranch = require('./queries/ResetBranch.gql')
+export const updateProperty = require('./queries/UpdateProperty.gql')
+export const updateSpace = require('./queries/UpdateSpace.gql')
 
 export type Client = ApolloClient<{}>
 

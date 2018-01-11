@@ -1,11 +1,14 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { RouteComponentProps } from 'react-router'
+import { Route, RouteComponentProps, Switch } from 'react-router'
 
 import { State } from '../../reducers'
+import * as S from '../../selectors'
 import * as T from '../../types'
 
 import Detail from './Detail'
+import Edit from './Edit'
+import EditLink from '../Form/EditLink'
 import NotFound from '../NotFound'
 import RelatedTheorems from './RelatedTheorems'
 
@@ -15,12 +18,28 @@ type StateProps = {
 type RouteProps = RouteComponentProps<{ id: string }>
 type Props = StateProps & RouteProps
 
-const Property = ({ property }: Props) => {
+const Preview = ({ property, match }) => (
+  <div>
+    <EditLink to={match.url + '/edit'} />
+    <Detail property={property} />
+  </div>
+)
+
+const Property = ({ property, match }: Props) => {
   if (!property) { return <NotFound /> }
 
   return (
     <div>
-      <Detail property={property} />
+      <Switch>
+        <Route
+          path={match.url + '/edit'}
+          render={ps => <Edit {...ps} property={property} />}
+        />
+        <Route
+          render={ps => <Preview {...ps} property={property} />}
+        />
+      </Switch>
+
       <hr />
 
       <div className="row">

@@ -9,7 +9,7 @@ const none = (errors) => !errors || Object.keys(errors).length === 0
 // tslint:disable no-any
 type Options<Result, Values> = {
   build: (state: State, values: Values) => { result?: Result, errors?: any }
-  initial?: (state: State) => Values
+  initial?: (state: State, ownProps: any) => Values
   name: string
   fields: string[]
   save: (dispatch: Dispatch, ownProps: any, result: Result) => void
@@ -25,8 +25,8 @@ function form<Result, Values>(options: Options<Result, Values>) {
   }
 
   return component => connect(
-    (state: State) => ({
-      initialValues: options.initial ? options.initial(state) : {},
+    (state: State, ownProps) => ({
+      initialValues: options.initial ? options.initial(state, ownProps) : {},
       build: (values) => options.build(state, values),
       getResult: () => options.build(
         state,

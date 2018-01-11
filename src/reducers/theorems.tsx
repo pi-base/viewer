@@ -25,6 +25,9 @@ export const reducer = (
       })
       return new Map([...state, ...next])
 
+    case 'CHANGE_BRANCH':
+      return new Map()
+
     case 'ASSERT_THEOREM':
       next = new Map(state)
       next.set(action.theorem.uid, action.theorem)

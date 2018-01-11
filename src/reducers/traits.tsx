@@ -34,6 +34,10 @@ export const reducer = (
         })
       })
       return next
+
+    case 'CHANGE_BRANCH':
+      return new Map()
+
     case 'ASSERT_TRAIT':
       next = clone(state)
       if (!next.has(action.trait.space.uid)) {
