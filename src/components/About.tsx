@@ -39,12 +39,15 @@ const About = () => (
 
     <h2>Our Team</h2>
 
-    <h3>James Dabbs - Lead Software Developer</h3>
+    <h3>James Dabbs <small>Lead Software Developer</small></h3>
     <p>
-      TODO: add info about James.
+      TODO: add info about James. Email:{' '}
+      <a href="mailto:jamesdabbs@gmail.com">
+        jamesdabbs@gmail.com
+      </a>
     </p>
 
-    <h3>Steven Clontz - Lead Mathematical Editor</h3>
+    <h3>Steven Clontz <small>Lead Mathematical Editor</small></h3>
     <p>
       <a href="http://clontz.org">Steven Clontz</a>{' '}
       serves as Assistant Professor of Mathematics at the
@@ -52,16 +55,10 @@ const About = () => (
       characterizations of topological properties. When they were in graduate
       school, Steven co-founded a technology start-up
       with James to provide customer relationship management
-      services to collegiate music organizations.
-    </p>
-
-    <h3>You?</h3>
-    <p>
-      Development of the pi-Base platform and data is open-sourced and
-      hosted publicly at <a href="http://github.com">GitHub</a>. Contact{' '}
-      <a href="#">TODO</a>{' '}
-      if you are interested in becoming a member of the pi-Base team,
-      or submit a pull request to make a direct contribution.
+      services to collegiate music organizations. Email:{' '}
+      <a href="mailto:sclontz@southalabama.edu">
+        sclontz@southalabama.edu
+      </a>
     </p>
 
     <h2>Acknowledgements</h2>
