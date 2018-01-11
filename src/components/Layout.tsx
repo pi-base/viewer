@@ -46,7 +46,7 @@ class Layout extends React.PureComponent<StateProps & DispatchProps> {
             </a>
           </p>
           <p className="text-center">
-            <a href="http://github.com/pi-base/data">Data</a>{' '}
+            <a href="http://github.com/pi-base/data">Data</a>{' | '}
             <a href="http://github.com/pi-base/viewer">Viewer</a>
           </p>
         </div>

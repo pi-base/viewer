@@ -18,7 +18,7 @@ const User = ({ username, branch, changeBranch }: Props) => {
     return (<div />)
   } else {
     return (
-      <div>
+      <div className="container">
         <h1>{username}</h1>
 
         <h3>Branch</h3>
