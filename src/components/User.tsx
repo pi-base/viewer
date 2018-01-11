@@ -19,13 +19,13 @@ const User = ({ username, branch, changeBranch }: Props) => {
   } else {
     return (
       <div className="container">
-        <h1>{username}</h1>
+        <h1>User: {username}</h1>
 
         <h3>Branch</h3>
         <p>{branch}</p>
 
-        <button onClick={() => changeBranch('audited')}>Reviewed</button>
-        <button onClick={() => changeBranch('user')}>User</button>
+        <button className="btn btn-default" onClick={() => changeBranch('audited')}>Reviewed</button>
+        <button className="btn btn-default" onClick={() => changeBranch('user')}>User</button>
       </div>
     )
   }
