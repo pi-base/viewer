@@ -5,25 +5,59 @@ import { State } from '../../reducers'
 import * as A from '../../actions'
 
 const BranchSelect = ({ branch, changeBranch }) => {
+  let preventDefaultAndChangeBranch = (theBranch) => {
+    return (e) => {
+      e.preventDefault();
+      changeBranch(theBranch);
+    }
+  }
   if (branch === 'user') {
     return (
       <li className="dropdown">
-        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        <a
+          href="#"
+          className="dropdown-toggle"
+          data-toggle="dropdown"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
           User Branch <span className="caret" />
         </a>
         <ul className="dropdown-menu">
-          <li><a onClick={() => changeBranch('audit')}>Swtich to master branch</a></li>
+          <li>
+            <a
+              href="#"
+              onClick={preventDefaultAndChangeBranch('audit')}
+            >
+              Swtich to master branch
+            </a>
+          </li>
         </ul>
       </li>
     )
   } else {
     return (
       <li className="dropdown">
-        <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        <a
+          href="#"
+          className="dropdown-toggle"
+          data-toggle="dropdown"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
           Master Branch <span className="caret" />
         </a>
         <ul className="dropdown-menu">
-          <li><a onClick={() => changeBranch('user')}>Swtich to user branch</a></li>
+          <li>
+            <a
+              href="#"
+              onClick={preventDefaultAndChangeBranch('user')}
+            >
+              Swtich to user branch
+            </a>
+          </li>
         </ul>
       </li>
     )
