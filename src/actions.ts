@@ -71,21 +71,21 @@ export const search = ({ text, formula }: { text?: string, formula?: string }): 
   return { type: 'SEARCH', text, formula }
 }
 
-type Async<R> = ThunkAction<Promise<R>, T.State, { client: G.Client }>
+type Async<R> = ThunkAction<Promise<R>, T.State, { graph: G.Client, token: T.TokenStorage }>
 
 type QueryParams = {
-  client: G.Client
+  graph: G.Client
   dispatch: T.Dispatch
   q: DocumentNode
   // tslint:disable-next-line no-any
   context?: any
   variables?: any
 }
-export function query<Response>({ client, dispatch, q, context, variables }: QueryParams): Promise<Response> {
+export function query<Response>({ graph, dispatch, q, context, variables }: QueryParams): Promise<Response> {
   const id = uuid()
   dispatch({ type: 'QUERY_START', id, query: q })
 
-  return client.query<Response>({ query: q, context, variables }).then(response => {
+  return graph.query<Response>({ query: q, context, variables }).then(response => {
     const data = response.data
     dispatch({ type: 'QUERY_SUCCESS', id, data })
     return data
@@ -96,14 +96,14 @@ export function query<Response>({ client, dispatch, q, context, variables }: Que
 }
 
 const fetchViewer = (): Async<void> =>
-  (dispatch, getState, { client }) => {
+  (dispatch, getState, { graph }) => {
     const p = getPatch(getState())
     const variables = {
       version: p ? p.sha : undefined
     }
 
     return query<G.ViewerQuery>({
-      client,
+      graph,
       dispatch,
       q: G.viewer,
       variables
@@ -117,7 +117,7 @@ const fetchViewer = (): Async<void> =>
 export const boot = () => fetchViewer()
 
 export const changeBranch = (branch: T.BranchName): Async<void> =>
-  (dispatch, getState, { client }) => {
+  (dispatch, getState, { graph }) => {
     dispatch({ type: 'CHANGE_BRANCH', branch })
     dispatch(fetchViewer())
     return Promise.resolve()
@@ -134,15 +134,17 @@ const getPatch = (state: T.State): G.PatchInput | undefined => {
 }
 
 export const login = (token: T.Token): Async<T.User> =>
-  (dispatch, _, { client }) => {
+  (dispatch, _, extra) => {
     const context = {
       headers: {
         authorization: token
       }
     }
-    return query<G.MeQuery>({ client, dispatch, q: G.me, context }).then(data => {
+    return query<G.MeQuery>({ graph: extra.graph, dispatch, q: G.me, context }).then(data => {
       const user = { name: data.me.name }
       const branches = data.me.branches
+
+      extra.token.set(token)
 
       const action: Login = {
         type: 'LOGIN',
@@ -155,19 +157,20 @@ export const login = (token: T.Token): Async<T.User> =>
         }))
       }
       dispatch(action)
+
       return user
     })
   }
 
 export const logout = (): Async<void> =>
-  (dispatch, _, { client }) => {
+  (dispatch, _, { graph }) => {
     dispatch({ type: 'LOGOUT' })
     return Promise.resolve()
   }
 
 export const resetBranch = (branch: T.BranchName, to: T.Sha): Async<void> =>
-  (dispatch, _, { client }) => {
-    return client.mutate({
+  (dispatch, _, { graph }) => {
+    return graph.mutate({
       mutation: G.resetBranch,
       variables: {
         input: { branch, to }
@@ -184,7 +187,7 @@ type PatchParams<V> = {
   field?: string
 }
 function patch<V>({ before, mutation, variables, field }: PatchParams<V>) {
-  return (dispatch, getState, { client }) => {
+  return (dispatch, getState, { graph }) => {
     const p = getPatch(getState())
     if (!p) { return Promise.resolve() } // FIXME
 
@@ -200,7 +203,7 @@ function patch<V>({ before, mutation, variables, field }: PatchParams<V>) {
     }
 
     variables.patch = p
-    return client.mutate({ mutation, variables }).then(response => {
+    return graph.mutate({ mutation, variables }).then(response => {
       const version = response.data![field!].version
       dispatch({ type: 'UPDATE_BRANCH', branch: p.branch, sha: version })
     })

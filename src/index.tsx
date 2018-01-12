@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom'
 
 import { boot, login } from './actions'
 import { makeClient } from './graph'
-import { makeStore } from './store'
+import { makeStore, localToken } from './store'
 
 import makeApp from './components/App'
 
@@ -24,24 +24,20 @@ if (window) {
   }
 }
 
-const getToken = () => localStorage.getItem('piBase.token')
-const setToken = (t) => localStorage.setItem('piBase.token', t)
-
-const graph = makeClient({ getToken })
-const store = makeStore(graph)
+const graph = makeClient({ token: localToken })
+const store = makeStore({ graph, token: localToken })
 
 const state = store.getState()
 if (state.spaces.size === 0) { store.dispatch(boot()) }
 
 if (state.user === 'unauthenticated') {
-  const token = getToken()
+  const token = localToken.get()
   if (token) { store.dispatch(login(token)) }
 }
 
 const App = makeApp({
   graph,
-  store,
-  setToken
+  store
 })
 
 ReactDOM.render(

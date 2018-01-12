@@ -5,15 +5,21 @@ import thunk from 'redux-thunk'
 
 import * as G from './graph'
 import rootReducer, { State } from './reducers'
+import { TokenStorage } from './types'
 
 // tslint:disable-next-line no-any
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const makeMiddleware = (client: G.Client) => {
+export const localToken = {
+  get: () => localStorage.getItem('piBase.token'),
+  set: token => localStorage.setItem('piBase.token', token)
+}
+
+const makeMiddleware = ({ graph, token }: { graph: G.Client, token: TokenStorage }) => {
   const logger = createLogger({ collapsed: true })
 
   return [
-    thunk.withExtraArgument({ client }),
+    thunk.withExtraArgument({ graph, token }),
     logger
   ]
 }
@@ -48,8 +54,8 @@ const loadFromLocalStorage = persistState(null, {
   }
 })
 
-export function makeStore(client: G.Client): Store<State> {
-  const middleware = makeMiddleware(client)
+export function makeStore({ graph, token }: { graph: G.Client, token: TokenStorage }): Store<State> {
+  const middleware = makeMiddleware({ graph, token })
   return createStore<State>(
     rootReducer,
     composeEnhancers(

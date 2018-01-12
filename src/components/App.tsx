@@ -9,22 +9,20 @@ import { Store } from 'redux'
 import { Config } from './Config'
 import Layout from './Layout'
 
+import { Client } from '../graph'
 import routes from '../routes'
 import { State } from '../reducers'
-import { Config as AppConfig } from '../types'
 
-const makeApp = (config: AppConfig) => () => (
-  <Config config={config}>
-    <ApolloProvider client={config.graph}>
-      <Provider store={config.store}>
-        <BrowserRouter>
-          <Layout>
-            {routes}
-          </Layout>
-        </BrowserRouter>
-      </Provider>
-    </ApolloProvider>
-  </Config>
+const makeApp = ({ graph, store }: { graph: Client, store: Store<State> }) => () => (
+  <ApolloProvider client={graph}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Layout>
+          {routes}
+        </Layout>
+      </BrowserRouter>
+    </Provider>
+  </ApolloProvider>
 )
 
 export default makeApp

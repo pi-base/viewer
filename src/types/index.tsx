@@ -18,6 +18,11 @@ export type Config = {
   readonly setToken: (token: Token) => void
 }
 
+export type TokenStorage = {
+  get: () => string | null
+  set: (token: string) => void
+}
+
 export type Sha = string
 export type BranchName = string
 export type Branch = {

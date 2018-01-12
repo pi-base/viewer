@@ -3,6 +3,8 @@ import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloLink, concat } from 'apollo-link'
 
+import { TokenStorage } from '../types'
+
 export * from './types'
 
 export const me = require('./queries/Me.gql')
@@ -24,14 +26,14 @@ export const loginUrl = ({ redirectTo }) =>
 type ClientOptions = {
   root?: string
   fetch?: (input: RequestInfo, init?: RequestInit) => Promise<Response>
-  getToken: () => string | null
+  token: TokenStorage
 }
 
 export function makeClient(opts: ClientOptions): Client {
   const base = opts.root || 'http://localhost:3141'
 
   const authMiddleware = new ApolloLink((operation, forward) => {
-    const token = opts.getToken()
+    const token = opts.token.get()
     if (token) {
       operation.setContext({
         headers: {

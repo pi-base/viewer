@@ -15,13 +15,19 @@ import { makeStore } from './store'
 
 import { activeBranch } from './selectors'
 
-const token = '' // FIXME: need a better strategy for getting a working token in test
 const initial = 'b91cbfb12122fc4fc5379f7a9f68cc42c487aa81'
 let userBranch = ''
 
-const getToken = () => { return token }
+const token = (() => {
+  let t = '' // FIXME: need a better strategy for getting a working token in test
 
-const client = G.makeClient({ getToken, fetch })
+  return {
+    get: () => t,
+    set: value => t = value
+  }
+})()
+
+const client = G.makeClient({ token, fetch })
 
 const middleware = [thunk.withExtraArgument({ client })]
 
@@ -32,7 +38,7 @@ const store = createStore<State>(
 const dispatch = store.dispatch
 
 beforeAll(() => {
-  return dispatch(A.login(token)).then(user => {
+  return dispatch(A.login(token.get())).then(user => {
     userBranch = `users/${user.name}`
     dispatch(A.changeBranch(userBranch))
   })
