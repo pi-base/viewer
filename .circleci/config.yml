@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # Node container running the tests
+      - image: circleci/node:8.9
+      # Backend server for integration tests
+      - image: pibase/server:latest
+        command: pi-base-server
+        environment:
+          DEFAULT_BRANCH: development
+          PORT: 3141
+          REPO_PATH: /data/repo
+          SQLITE_DATABASE: /data/pi-base.sqlite3
+          TEST_MODE: true
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-node-deps-{{ checksum "package.json" }}
+          - v1-node-deps-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-node-deps-{{ checksum "package.json" }}
+        
+      # Run the tests
+      - run:
+          name: Compile queries
+          command: yarn run schema
+      - run: 
+          name: Run tests
+          command: yarn test
+

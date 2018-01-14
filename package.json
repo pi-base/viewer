@@ -115,7 +115,7 @@
     ],
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "/data/src/pi-base/viewer/tsconfig.test.json"
+        "tsConfigFile": "tsconfig.test.json"
       }
     }
   },

@@ -1,3 +1,7 @@
+# π-Base Viewer
+
+[![CircleCI](https://circleci.com/gh/pi-base/viewer.svg?style=svg)](https://circleci.com/gh/pi-base/viewer)
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). Please see that documentation for more information on common project tasks.
 
 # Running Locally
