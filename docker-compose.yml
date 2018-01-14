@@ -30,5 +30,5 @@ server:
     - VIEWER_REDIRECT_URL=http://localhost:3000
   ports:
     - 3141:3141
-  volumes:
-    - "../data:/data"
+  # volumes:
+  #   - "../data:/data"

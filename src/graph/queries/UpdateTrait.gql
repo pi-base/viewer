@@ -1,0 +1,15 @@
+mutation UpdateTrait($patch: PatchInput!, $trait: UpdateTraitInput!) {
+  updateTrait(patch: $patch, trait: $trait) {
+    version
+    spaces {
+      uid
+      traits {
+        property {
+          uid
+        }
+        value
+        description
+      }
+    }
+  }
+}

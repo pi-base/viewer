@@ -10,11 +10,15 @@ export * from './types'
 export const me = require('./queries/Me.gql')
 export const viewer = require('./queries/Viewer.gql')
 
+export const assertTrait = require('./queries/AssertTrait.gql')
+export const assertTheorem = require('./queries/AssertTheorem.gql')
 export const createProperty = require('./queries/CreateProperty.gql')
 export const createSpace = require('./queries/CreateSpace.gql')
 export const resetBranch = require('./queries/ResetBranch.gql')
 export const updateProperty = require('./queries/UpdateProperty.gql')
 export const updateSpace = require('./queries/UpdateSpace.gql')
+export const updateTheorem = require('./queries/UpdateTheorem.gql')
+export const updateTrait = require('./queries/UpdateTrait.gql')
 
 export type Client = ApolloClient<{}>
 

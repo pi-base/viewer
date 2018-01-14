@@ -137,6 +137,19 @@ export function fromJSON(json: any): Formula<string> {
   }
 }
 
+export function toJSON(f: Formula<string>) {
+  switch (f.kind) {
+    case 'atom':
+      const result = {}
+      result[f.property] = f.value
+      return result
+    case 'and':
+      return { and: f.subs.map(sf => toJSON(sf)) }
+    case 'or':
+      return { or: f.subs.map(sf => toJSON(sf)) }
+  }
+}
+
 export function parse(q: string): Formula<string> | undefined {
   if (!q) { return }
 

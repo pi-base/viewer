@@ -1,6 +1,7 @@
 import { DocumentNode } from 'graphql'
 import { v4 as uuid } from 'uuid'
 
+import * as F from './models/Formula'
 import * as G from './graph'
 import * as T from './types'
 import { Dispatch } from 'redux'
@@ -55,11 +56,11 @@ const updateBranch = (branch: T.BranchName, sha: T.Sha): Action => ({
   type: 'UPDATE_BRANCH', branch, sha
 })
 
-export const assertTheorem = (theorem: T.Theorem): Action => ({
+export const addTheorem = (theorem: T.Theorem): Action => ({
   type: 'ASSERT_THEOREM', theorem
 })
 
-export const assertTrait = (trait: T.Trait): Action => ({
+export const addTrait = (trait: T.Trait): Action => ({
   type: 'ASSERT_TRAIT', trait
 })
 
@@ -206,27 +207,90 @@ function patch<V>({ before, mutation, variables, field }: PatchParams<V>) {
     return graph.mutate({ mutation, variables }).then(response => {
       const version = response.data![field!].version
       dispatch({ type: 'UPDATE_BRANCH', branch: p.branch, sha: version })
+      return response
     })
   }
 }
 
+export const assertTrait = (trait: T.Trait): Async<void> =>
+  patch<{ trait: G.AssertTraitInput }>({
+    before: addTrait(trait),
+    mutation: G.assertTrait,
+    variables: {
+      trait: {
+        spaceId: trait.space.uid,
+        propertyId: trait.property.uid,
+        value: trait.value,
+        description: trait.description || ''
+      }
+    }
+  })
+
+const serializeFormula = (f: F.Formula<string>) => JSON.stringify(F.toJSON(f))
+
+export const assertTheorem = (theorem: T.Theorem): Async<void> =>
+  patch<{ theorem: G.AssertTheoremInput }>({
+    before: addTheorem(theorem),
+    mutation: G.assertTheorem,
+    variables: {
+      theorem: {
+        uid: theorem.uid,
+        antecedent: serializeFormula(theorem.if),
+        consequent: serializeFormula(theorem.then),
+        description: theorem.description
+      }
+    }
+  })
+
 export const createSpace = (space: T.Space): Async<void> =>
-  patch({
+  patch<{ space: G.CreateSpaceInput }>({
     before: addSpace(space),
     mutation: G.createSpace,
     variables: { space }
   })
 
 export const createProperty = (property: T.Property): Async<void> =>
-  patch({
+  patch<{ property: G.CreatePropertyInput }>({
     before: addProperty(property),
     mutation: G.createProperty,
     variables: { property }
   })
 
+export const updateSpace = (space: T.Space): Async<void> =>
+  patch<{ space: G.UpdateSpaceInput }>({
+    before: addSpace(space),
+    mutation: G.updateSpace,
+    variables: { space }
+  })
+
 export const updateProperty = (property: T.Property): Async<void> =>
-  patch({
+  patch<{ property: G.UpdatePropertyInput }>({
     before: addProperty(property),
     mutation: G.updateProperty,
     variables: { property }
+  })
+
+export const updateTrait = (trait: T.Trait): Async<void> =>
+  patch<{ trait: G.UpdateTraitInput }>({
+    before: addTrait(trait),
+    mutation: G.updateTrait,
+    variables: {
+      trait: {
+        spaceId: trait.space.uid,
+        propertyId: trait.property.uid,
+        description: trait.description || ''
+      }
+    }
+  })
+
+export const updateTheorem = (theorem: T.Theorem): Async<void> =>
+  patch<{ theorem: G.UpdateTheoremInput }>({
+    before: addTheorem(theorem),
+    mutation: G.updateTheorem,
+    variables: {
+      theorem: {
+        uid: theorem.uid,
+        description: theorem.description
+      }
+    }
   })

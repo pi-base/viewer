@@ -91,6 +91,12 @@ input UpdateTheoremInput {
   description: String!
 }
 
+input UpdateTraitInput {
+  spaceId: String!
+  propertyId: String!
+  description: String!
+}
+
 input PatchInput {
   branch: String!
   sha: String!
@@ -109,6 +115,7 @@ type Mutation {
   updateSpace(patch: PatchInput!, space: UpdateSpaceInput!): Viewer!
   updateProperty(patch: PatchInput!, property: UpdatePropertyInput!): Viewer!
   updateTheorem(patch: PatchInput!, theorem: UpdateTheoremInput!): Viewer!
+  updateTrait(patch: PatchInput!, trait: UpdateTraitInput!): Viewer!
   assertTrait(patch: PatchInput!, trait: AssertTraitInput!): Viewer!
   assertTheorem(patch: PatchInput!, theorem: AssertTheoremInput!): Viewer!
   resetBranch(input: ResetBranchInput!): ResetBranchResponse!
