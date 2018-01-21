@@ -16,12 +16,17 @@ type DispatchProps = {
 }
 type Props = StateProps & DispatchProps & RouteComponentProps<{}>
 
+// FIXME: About link belongs in navbar
 const UserTab = ({ username, startLogin, logout }: Props) => {
   if (username) {
     return (
       <ul className="nav navbar-nav pull-right">
         <li>
-          <Link to="/user">{username}</Link></li>
+          <Link to="/about">About</Link>
+        </li>
+        <li>
+          <Link to="/user">{username}</Link>
+        </li>
         <li>
           <a href="#" onClick={() => logout()}>Logout</a>
         </li>
@@ -30,6 +35,9 @@ const UserTab = ({ username, startLogin, logout }: Props) => {
   } else {
     return (
       <ul className="nav navbar-nav pull-right">
+        <li>
+          <Link to="/about">About</Link>
+        </li>
         <li>
           <a href="#" onClick={() => startLogin()}>
             Login with Github

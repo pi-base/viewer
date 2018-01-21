@@ -11,3 +11,17 @@ body {
 .traitFilter table {
   margin-top: 1em;
 }
+
+.navbar {
+  margin-bottom: 0;
+}
+
+.jumbotron {
+  background-image: url('img/jumbotron.jpg'); /* https://commons.wikimedia.org/wiki/File:Sierpinski_pyramid.png */
+  background-position: center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+  margin-bottom: 50px;
+}

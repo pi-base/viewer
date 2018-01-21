@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Route, Switch } from 'react-router'
 
 import Home from './components/Home'
+import About from './components/About'
 import Login from './components/Login'
 import NotFound from './components/NotFound'
 
@@ -23,6 +24,7 @@ import User from './components/User'
 const routes = (
   <Switch>
     <Route path="/" exact={true} component={Home} />
+    <Route path="/about" exact={true} component={About} />
 
     <Route path="/login/:token" component={Login} />
     <Route path="/user" component={User} />
