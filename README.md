@@ -15,7 +15,7 @@ The easiest way to set this up is using Docker:
 
 * Install [docker](https://docs.docker.com/engine/installation/) and
   [docker-compose](https://docs.docker.com/compose/install/)
-* Copy/rename `.env.server.example` to `.env.server` and change the values
+* Copy `.env.server.example` to `.env.server` and change the values
   as needed
 * Run `docker-compose up server`
   (or possibly `sudo docker-compose up server`) to start the server
@@ -46,6 +46,13 @@ See the `docker-compose.yml` file for the specifics of what is running and optio
 ```
 
 * By default, we mount the `../data` directory inside the server container and store the data repository there. You can adjust where that data is located by mounting a different directory in the container at `/data` (or remove the mount).
+
+## Inspecting the server
+
+(Prefacing with `sudo` as needed) run
+`docker ps` to obtain the active `CONTAINER ID` and use
+`docker run -i <CONTAINER ID> -t /bin/bash` to obtain an interactive
+shell inside the server.
 
 
 # Setting up the viewer
