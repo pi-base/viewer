@@ -28,7 +28,7 @@ const Space = (props: Props) => {
   if (!space) { return <NotFound /> }
 
   return (
-    <div>
+    <div className="container">
       <Detail space={space} />
 
       <hr />

@@ -39,38 +39,40 @@ class Theorems extends React.Component<Props, State> {
   render() {
     const visible = this.state.theorems.slice(0, this.state.limit)
     return (
-      <section className="theorems">
-        {this.props.editing
-          ? <Link to="/theorems/new" className="btn btn-default">New</Link>
-          : ''
-        }
+      <div className="container">
+        <section className="theorems">
+          {this.props.editing
+            ? <Link to="/theorems/new" className="btn btn-default">New</Link>
+            : ''
+          }
 
-        <Filter
-          collection={this.props.theorems}
-          onChange={(theorems: Theorem[]) => this.setState({ theorems })}
-          weights={[
-            { name: 'if', weight: 0.7 },
-            { name: 'then', weight: 0.7 },
-            { name: 'description', weight: 0.5 }
-          ]}
-          placeholder="Filter theorems"
-        />
+          <Filter
+            collection={this.props.theorems}
+            onChange={(theorems: Theorem[]) => this.setState({ theorems })}
+            weights={[
+              { name: 'if', weight: 0.7 },
+              { name: 'then', weight: 0.7 },
+              { name: 'description', weight: 0.5 }
+            ]}
+            placeholder="Filter theorems"
+          />
 
-        {visible.map(t => (
-          <Tex key={t.uid}>
-            <h3>
-              <Link to={`/theorems/${t.uid}`}>
-                <Implication theorem={t} link={false} />
-              </Link>
-            </h3>
-            <Preview text={t.description} />
-          </Tex>
-        ))}
+          {visible.map(t => (
+            <Tex key={t.uid}>
+              <h3>
+                <Link to={`/theorems/${t.uid}`}>
+                  <Implication theorem={t} link={false} />
+                </Link>
+              </h3>
+              <Preview text={t.description} />
+            </Tex>
+          ))}
 
-        {this.state.theorems.length > visible.length
-          ? <button className="btn btn-default" onClick={this.showMore}>Show More</button>
-          : ''}
-      </section>
+          {this.state.theorems.length > visible.length
+            ? <button className="btn btn-default" onClick={this.showMore}>Show More</button>
+            : ''}
+        </section>
+      </div>
     )
   }
 }

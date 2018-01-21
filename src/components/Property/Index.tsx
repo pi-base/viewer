@@ -57,7 +57,7 @@ interface StateProps {
 }
 const Index = ({ properties, editing }: StateProps) => {
   return (
-    <div>
+    <div className="container">
       {editing
         ? <Link to="/properties/new" className="btn btn-default">New</Link>
         : ''

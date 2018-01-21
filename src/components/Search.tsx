@@ -40,30 +40,32 @@ class Search extends React.PureComponent<Props> {
 
     // TODO: add widget to allow displaying extra traits inline
     return (
-      <form className="search row" >
-        <div className="col-md-4">
-          <Text
-            label="Filter by Text"
-            placeholder="plank"
-            value={text}
-            onChange={e => search({ text: e.target.value })}
-          />
-          <Formula
-            label="Filter by Formula"
-            placeholder="compact + ~metrizable"
-            value={formula}
-            onChange={value => search({ formula: value })}
-          />
+      <div className="container">
+        <form className="search row" >
+          <div className="col-md-4">
+            <Text
+              label="Filter by Text"
+              placeholder="plank"
+              value={text}
+              onChange={e => search({ text: e.target.value })}
+            />
+            <Formula
+              label="Filter by Formula"
+              placeholder="compact + ~metrizable"
+              value={formula}
+              onChange={value => search({ formula: value })}
+            />
 
-          <Link to="/spaces/new" className="btn btn-default">
-            New Space
-          </Link>
-        </div>
+            <Link to="/spaces/new" className="btn btn-default">
+              New Space
+            </Link>
+          </div>
 
-        <div className="col-md-8">
-          <Results text={text} formula={parsedFormula} />
-        </div>
-      </form >
+          <div className="col-md-8">
+            <Results text={text} formula={parsedFormula} />
+          </div>
+        </form>
+      </div>
     )
   }
 }

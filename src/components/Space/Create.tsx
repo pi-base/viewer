@@ -25,29 +25,31 @@ const Create = props => {
   const space = getResult()
 
   return (
-    <div className="row">
-      <div className="col-sm-6">
-        <form onSubmit={handleSubmit}>
-          <Field
-            name="name"
-            type="text"
-            label="Name"
-            component={Text}
-          />
-          <Field
-            name="description"
-            type="textarea"
-            label="Description"
-            component={Text}
-          />
-          <button className="btn btn-default" type="submit" disabled={submitting}>
-            Save
-          </button>
-        </form>
-      </div>
+    <div className="container">
+      <div className="row">
+        <div className="col-sm-6">
+          <form onSubmit={handleSubmit}>
+            <Field
+              name="name"
+              type="text"
+              label="Name"
+              component={Text}
+            />
+            <Field
+              name="description"
+              type="textarea"
+              label="Description"
+              component={Text}
+            />
+            <button className="btn btn-default" type="submit" disabled={submitting}>
+              Save
+            </button>
+          </form>
+        </div>
 
-      <div className="col-sm-6">
-        {space ? <Detail space={space} /> : ''}
+        <div className="col-sm-6">
+          {space ? <Detail space={space} /> : ''}
+        </div>
       </div>
     </div>
   )

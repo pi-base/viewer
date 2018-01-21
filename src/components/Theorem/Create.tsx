@@ -49,33 +49,35 @@ const Create = props => {
   const theorem = getResult()
 
   return (
-    <div className="row">
-      <div className="col-sm-6">
-        <form onSubmit={handleSubmit}>
-          <Field
-            name="if"
-            label="If"
-            placeholder="compact + t_2"
-            component={Formula}
-          />
-          <Field
-            name="then"
-            label="Then"
-            placeholder="t_4"
-            component={Formula}
-          />
-          <Field
-            name="description"
-            label="Description"
-            component={Textarea}
-          />
-          <button className="btn btn-default" type="submit" disabled={submitting}>
-            Save
-          </button>
-        </form>
-      </div>
-      <div className="col-sm-6">
-        {theorem ? <Preview theorem={theorem} /> : ''}
+    <div className="container">
+      <div className="row">
+        <div className="col-sm-6">
+          <form onSubmit={handleSubmit}>
+            <Field
+              name="if"
+              label="If"
+              placeholder="compact + t_2"
+              component={Formula}
+            />
+            <Field
+              name="then"
+              label="Then"
+              placeholder="t_4"
+              component={Formula}
+            />
+            <Field
+              name="description"
+              label="Description"
+              component={Textarea}
+            />
+            <button className="btn btn-default" type="submit" disabled={submitting}>
+              Save
+            </button>
+          </form>
+        </div>
+        <div className="col-sm-6">
+          {theorem ? <Preview theorem={theorem} /> : ''}
+        </div>
       </div>
     </div>
   )

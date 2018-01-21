@@ -29,7 +29,7 @@ const Property = ({ property, match }: Props) => {
   if (!property) { return <NotFound /> }
 
   return (
-    <div>
+    <div className="container">
       <Switch>
         <Route
           path={match.url + '/edit'}

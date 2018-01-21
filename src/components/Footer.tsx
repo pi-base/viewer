@@ -8,16 +8,18 @@ const refresh = (e) => {
 }
 
 const Footer = () => (
-  <div className="row">
-    <div className="col-xs-12">
-      <hr />
-      Having trouble? Try{' '}
-      <a
-        href="#"
-        onClick={refresh}
-      >
-        refreshing your cache
-      </a>.
+  <div className="container">
+    <div className="row">
+      <div className="col-xs-12">
+        <hr />
+        Having trouble? Try{' '}
+        <a
+          href="#"
+          onClick={refresh}
+        >
+          refreshing your cache
+        </a>.
+      </div>
     </div>
   </div>
 )

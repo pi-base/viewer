@@ -17,7 +17,7 @@ const User = ({ user }: Props) => {
     return (<div />)
   } else {
     return (
-      <div>
+      <div className="container">
         <h1>{user.name}</h1>
         <Branches />
       </div>

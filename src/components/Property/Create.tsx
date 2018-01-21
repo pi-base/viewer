@@ -25,27 +25,29 @@ const Create = props => {
   const property = getResult()
 
   return (
-    <div className="row">
-      <div className="col-sm-6">
-        <form onSubmit={handleSubmit}>
-          <Field
-            name="name"
-            label="Name"
-            component={Text}
-          />
-          <Field
-            name="description"
-            label="Description"
-            component={Textarea}
-          />
-          <button className="btn btn-default" type="submit" disabled={submitting}>
-            Save
-          </button>
-        </form>
-      </div>
+    <div className="container">
+      <div className="row">
+        <div className="col-sm-6">
+          <form onSubmit={handleSubmit}>
+            <Field
+              name="name"
+              label="Name"
+              component={Text}
+            />
+            <Field
+              name="description"
+              label="Description"
+              component={Textarea}
+            />
+            <button className="btn btn-default" type="submit" disabled={submitting}>
+              Save
+            </button>
+          </form>
+        </div>
 
-      <div className="col-sm-6">
-        {property ? <Detail property={property} /> : ''}
+        <div className="col-sm-6">
+          {property ? <Detail property={property} /> : ''}
+        </div>
       </div>
     </div>
   )
