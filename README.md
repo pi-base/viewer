@@ -61,12 +61,12 @@ We recommend installing `nvm` to manage `node` versions. We are currently develo
 * Run `nvm install lts/carbon` to install
 * Run `nvm use lts/carbon` to set the default version of node
 
-### Installing yarn
+## Installing yarn
 
 We use `yarn` as a package manager to ensure consistent builds. You can install
 yarn by following the directions at https://yarnpkg.com/lang/en/docs/install/
 
-### Running the viewer
+## Running the viewer
 
 The first time you start the viewer (and any time your packages are updated),
 you should run `yarn install` and `yarn run schema`.
