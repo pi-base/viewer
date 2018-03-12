@@ -30,7 +30,9 @@ export const reducer = (
     case 'LOGIN':
       branches = new Map()
       action.branches.forEach(b => branches.set(b.name, b))
-      return { ...state, branches }
+      // TODO: this should check that the SHA matches the loaded data
+      let active = action.branches.find(b => b.access === 'read')!.name
+      return { ...state, branches, active }
     case 'PERSIST_SUCCESS':
       return state
     default:

@@ -9,6 +9,7 @@ import * as A from '../actions'
 import * as S from '../selectors'
 import { Dispatch, Formula, Property, State } from '../types'
 
+import EditLink from './Form/EditLink'
 import { Wrapped } from './Form/Labeled'
 import FormulaInput from './Formula/Input'
 import Results from './Search/Results'
@@ -55,9 +56,9 @@ class Search extends React.PureComponent<Props> {
             onChange={value => search({ formula: value })}
           />
 
-          <Link to="/spaces/new" className="btn btn-default">
+          <EditLink to="/spaces/new" className="btn btn-default">
             New Space
-          </Link>
+          </EditLink>
         </div>
 
         <div className="col-md-8">

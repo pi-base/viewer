@@ -41,12 +41,7 @@ const createUser = (name: string): Promise<string> => {
     then(json => json.token.uuid)
 }
 
-const store = createStore<State>(
-  rootReducer,
-  applyMiddleware(
-    thunk.withExtraArgument({ graph, token })
-  )
-)
+const store = makeStore({ graph, token })
 const dispatch = store.dispatch;
 
 beforeAll(async () => {

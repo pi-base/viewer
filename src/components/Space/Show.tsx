@@ -9,6 +9,7 @@ import * as Q from '../../queries'
 import { State } from '../../reducers'
 
 import Detail from './Detail'
+import EditLink from '../Form/EditLink'
 import NotFound from '../NotFound'
 import TraitCreate from '../Trait/Create'
 import TraitPager from '../Trait/Pager'
@@ -38,12 +39,12 @@ const Space = (props: Props) => {
           <h3>
             Properties
             {' '}
-            <Link
+            <EditLink
               to={props.match.url + '/properties/new'}
               className="btn btn-default btn-sm"
             >
               New
-            </Link>
+            </EditLink>
           </h3>
           <TraitPager space={space} />
         </div>
@@ -59,12 +60,12 @@ const Space = (props: Props) => {
             />
             <Route
               render={ps =>
-                <Link
+                <EditLink
                   to={props.match.url + '/properties/new'}
                   className="btn btn-default"
                 >
                   New
-                </Link>
+                </EditLink>
               }
             />
           </Switch>

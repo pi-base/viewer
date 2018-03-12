@@ -25,8 +25,12 @@ class Layout extends React.PureComponent<StateProps> {
           {this.props.booted || this.props.location.pathname === '/'
             ? this.props.children
             : 'Loading...'}
-          <Footer />
         </div>
+
+        {process.env.NODE_ENV === 'development'
+          ? <Footer />
+          : ''
+        }
       </div>
     )
   }

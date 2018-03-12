@@ -7,6 +7,7 @@ import * as S from '../../selectors'
 import * as T from '../../types'
 import { by } from '../../utils'
 
+import EditLink from '../Form/EditLink'
 import List from '../List'
 import Preview from '../Preview'
 import Tex from '../Tex'
@@ -53,15 +54,11 @@ class Property extends React.Component<Props, { expanded: boolean }> {
 
 interface StateProps {
   properties: T.Property[]
-  editing: boolean
 }
-const Index = ({ properties, editing }: StateProps) => {
+const Index = ({ properties }: StateProps) => {
   return (
     <div>
-      {editing
-        ? <Link to="/properties/new" className="btn btn-default">New</Link>
-        : ''
-      }
+      <EditLink to="/properties/new" className="btn btn-default">New</EditLink>
 
       <List
         name="properties"
@@ -74,7 +71,6 @@ const Index = ({ properties, editing }: StateProps) => {
 
 export default connect(
   (state: State) => ({
-    properties: Array.from(state.properties.values()).sort(by('name')),
-    editing: S.editing(state)
+    properties: Array.from(state.properties.values()).sort(by('name'))
   })
 )(Index)

@@ -23,12 +23,14 @@ export type TokenStorage = {
   set: (token: string) => void
 }
 
+export type BranchAccess = 'read' | 'admin'
+
 export type Sha = string
 export type BranchName = string
 export type Branch = {
   name: BranchName,
   sha: Sha,
-  access: 'read' | 'admin'
+  access: BranchAccess
 }
 
 export type Id = string
