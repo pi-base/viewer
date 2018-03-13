@@ -20,6 +20,7 @@ export const reducer = (
           uid: t.uid,
           if: F.fromJSON(JSON.parse(t.if)),
           then: F.fromJSON(JSON.parse(t.then)),
+          references: t.references,
           description: t.description
         })
       })

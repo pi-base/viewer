@@ -44,10 +44,20 @@ export type User = {
   readonly name: string
 }
 
+export type SearchModifier = 'true' | 'false' | 'unknown' | 'not_false'
+export type CitationType = 'doi' | 'mr' | 'wikipedia'
+
+export type Citation = {
+  readonly type: CitationType
+  readonly ref: string
+  readonly name: string
+}
+
 export type Space = {
   readonly uid: Id
   readonly name: string
   readonly aliases?: string[]
+  readonly references: Citation[]
   readonly description: string
 }
 
@@ -55,6 +65,7 @@ export type Property = {
   readonly uid: Id
   readonly name: string
   readonly aliases?: string[]
+  readonly references: Citation[]
   readonly description: string
 }
 
@@ -73,6 +84,7 @@ export type Theorem = {
   readonly if: Formula<Id>
   readonly then: Formula<Id>
   readonly converse?: Id[] // ids of theorems proving converse
+  readonly references: Citation[]
   readonly description: string
 }
 

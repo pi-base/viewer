@@ -11,6 +11,7 @@ import { State } from '../../reducers'
 import Detail from './Detail'
 import EditLink from '../Form/EditLink'
 import NotFound from '../NotFound'
+import References from '../References'
 import TraitCreate from '../Trait/Create'
 import TraitPager from '../Trait/Pager'
 import Trait from '../Trait/Show'
@@ -31,6 +32,8 @@ const Space = (props: Props) => {
   return (
     <div>
       <Detail space={space} />
+
+      <References references={space.references} />
 
       <hr />
 

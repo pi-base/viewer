@@ -1,6 +1,7 @@
 type Space {
   uid: ID!
   name: String!
+  references: [Citation]!
   description: String!
   traits: [Trait!]!
 }
@@ -8,12 +9,14 @@ type Space {
 type Property {
   uid: ID!
   name: String!
+  references: [Citation]!
   description: String!
 }
 
 type Trait {
   property: Property!
   value: Boolean!
+  references: [Citation]!
   description: String!
 }
 
@@ -21,7 +24,14 @@ type Theorem {
   uid: ID!
   if: String!
   then: String!
+  references: [Citation]!
   description: String!
+}
+
+type Citation {
+  type: String!
+  ref: String!
+  name: String!
 }
 
 type Branch {

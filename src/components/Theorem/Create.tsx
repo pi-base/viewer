@@ -103,7 +103,8 @@ const build = (state: State, values: Values) => {
     if: antecedent!,
     then: consequent!,
     description: values.description || '',
-    counterexamples: []
+    counterexamples: [],
+    references: []
   }
 
   result.counterexamples = S.counterexamples(state, result)

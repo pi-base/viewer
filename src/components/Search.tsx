@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 
 import * as A from '../actions'
 import * as S from '../selectors'
-import { Dispatch, Formula, Property, State } from '../types'
+import { Dispatch, Formula, Property, State, SearchModifier } from '../types'
 
 import EditLink from './Form/EditLink'
 import { Wrapped } from './Form/Labeled'
@@ -17,6 +17,7 @@ import Results from './Search/Results'
 type StateProps = {
   text: string
   formula: string
+  modifier: SearchModifier
   parsedFormula: Formula<Property> | undefined
 }
 type DispatchProps = {
@@ -37,7 +38,7 @@ class Search extends React.PureComponent<Props> {
   }
 
   render() {
-    const { text, formula, parsedFormula, search } = this.props
+    const { text, formula, modifier, parsedFormula, search } = this.props
 
     // TODO: add widget to allow displaying extra traits inline
     return (
@@ -62,7 +63,7 @@ class Search extends React.PureComponent<Props> {
         </div>
 
         <div className="col-md-8">
-          <Results text={text} formula={parsedFormula} />
+          <Results text={text} formula={parsedFormula} modifier={modifier} />
         </div>
       </form >
     )
@@ -91,6 +92,7 @@ export default connect(
   (state: State): StateProps => ({
     text: state.search.text,
     formula: state.search.formula,
+    modifier: state.search.modifier,
     parsedFormula: S.searchFormula(state)
   }),
   (dispatch: Dispatch, props: Props): DispatchProps => ({

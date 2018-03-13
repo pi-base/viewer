@@ -58,7 +58,7 @@ xit('can create a space', async () => {
   await reset()
 
   await dispatch(A.createSpace({
-    uid: '123', name: 'S', description: 'New Space'
+    uid: '123', name: 'S', description: 'New Space', references: []
   }))
 
   const state: State = store.getState()
@@ -72,10 +72,10 @@ xit('can create a space', async () => {
 it('runs api calls without error', async () => {
   await reset()
 
-  const s1 = { uid: 's1', name: 'S', description: 'S' }
-  const s2 = { uid: 's2', name: 'T', description: 'T' }
-  const p1 = { uid: 'p1', name: 'P', description: 'P' }
-  const p2 = { uid: 'p2', name: 'Q', description: 'Q' }
+  const s1 = { uid: 's1', name: 'S', references: [], description: 'S' }
+  const s2 = { uid: 's2', name: 'T', references: [], description: 'T' }
+  const p1 = { uid: 'p1', name: 'P', references: [], description: 'P' }
+  const p2 = { uid: 'p2', name: 'Q', references: [], description: 'Q' }
 
   const t1 = {
     uid: '',
@@ -99,11 +99,12 @@ it('runs api calls without error', async () => {
     uid: 't1',
     if: atom(p1.uid, true),
     then: atom(p2.uid, true),
+    references: [],
     description: ''
   }
 
-  await dispatch(A.createSpace(s1))
-  await dispatch(A.createSpace(s2))
+  await dispatch(A.createSpace({ ...s1, references: [] }))
+  await dispatch(A.createSpace({ ...s2, references: [] }))
 
   await dispatch(A.createProperty(p1))
   await dispatch(A.createProperty(p2))

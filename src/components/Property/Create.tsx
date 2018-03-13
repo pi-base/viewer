@@ -55,7 +55,7 @@ const build = (state: State, values: Values) => {
   const errors: Errors = {}
   if (!values.name) { errors.name = 'Required' }
 
-  const result: Property = values
+  const result: Property = { ...values, references: [] }
   return { result, errors }
 }
 

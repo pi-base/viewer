@@ -8,6 +8,7 @@ import * as T from '../../types'
 import Counterexamples from './Counterexamples'
 import Detail from './Detail'
 import NotFound from '../NotFound'
+import References from '../References'
 import Tex from '../Tex'
 
 type StateProps = {
@@ -22,6 +23,7 @@ const Theorem = ({ theorem }: Props) => {
   return (
     <div>
       <Detail theorem={theorem} />
+      <References references={theorem.references} />
       <hr />
 
       <div className="row">
