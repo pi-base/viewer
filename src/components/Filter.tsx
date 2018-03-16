@@ -33,9 +33,8 @@ class Filter extends React.Component<Props, State> {
 
   onChange(q: string) {
     this.setState({ q })
-    if (!q) { return this.props.onChange([]) }
-
-    this.props.onChange(this.finder.search(q))
+    const filtered = q ? this.finder.search(q) : this.finder.all()
+    this.props.onChange(filtered)
   }
 
   render() {

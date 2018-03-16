@@ -23,6 +23,10 @@ export class Finder<T extends Record> {
     })
   }
 
+  all(): T[] {
+    return Array.from(this.records.values())
+  }
+
   find(q: string): T | undefined {
     return this.search(q, 1)[0]
   }
@@ -40,6 +44,7 @@ export class Finder<T extends Record> {
       ids = ids.slice(0, limit)
     }
 
-    return ids.map(id => this.records.get(id)!)
+    const records = ids.map(id => this.records.get(id)!)
+    return records
   }
 }

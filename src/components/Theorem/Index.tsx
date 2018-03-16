@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { State as StoreState } from '../../reducers'
 import * as S from '../../selectors'
 import { Theorem } from '../../types'
+import { by } from '../../utils'
 
 import Filter from '../Filter'
 import EditLink from '../Form/EditLink'
@@ -74,6 +75,6 @@ class Theorems extends React.Component<Props, State> {
 
 export default connect<StateProps, {}, {}>(
   (state: StoreState): StateProps => ({
-    theorems: Array.from(state.theorems.values())
+    theorems: Array.from(state.theorems.values()).sort(by('uid')).reverse()
   })
 )(Theorems)

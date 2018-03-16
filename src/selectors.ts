@@ -25,9 +25,12 @@ export const prover = createSelector(
 )
 
 export const asserted = (state: State, sid: Id, pid: Id): boolean => {
-  const p = state.proofs.get(`${sid}|${pid}`)
+  const p = state.proofs.get(traitId({ space: sid, property: pid }))
   return p ? p.type === 'asserted' : false
 }
+
+export const traitId = ({ space, property }: { space: Id, property: Id }): Id =>
+  `${space}|${property}`
 
 export const spaceTraits = (state: State, space: Space): Trait[] => {
   const values = state.traits.get(space.uid)
@@ -39,8 +42,8 @@ export const spaceTraits = (state: State, space: Space): Trait[] => {
       space: space,
       property: state.properties.get(pid)!,
       value: value,
+      uid: traitId({ space: space.uid, property: pid }),
       // FIXME:
-      uid: '',
       description: '',
       deduced: !asserted(state, space.uid, pid)
     })

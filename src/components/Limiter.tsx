@@ -19,7 +19,7 @@ function Limiter({ limit, found, total, onClick }: Props) {
     icon = 'chevron-up'
     text = 'Collapse'
   } else {
-    return <span/>
+    return <span />
   }
 
   return (
@@ -28,7 +28,7 @@ function Limiter({ limit, found, total, onClick }: Props) {
         className="btn btn-default btn-sm pull-right"
         onClick={onClick}
       >
-        <Icon type={icon}/>
+        <Icon type={icon} />
         {' ' + text}
       </button>
     </div>

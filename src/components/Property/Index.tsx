@@ -71,6 +71,6 @@ const Index = ({ properties }: StateProps) => {
 
 export default connect(
   (state: State) => ({
-    properties: Array.from(state.properties.values()).sort(by('name'))
+    properties: Array.from(state.properties.values()).sort(by('uid')).reverse()
   })
 )(Index)

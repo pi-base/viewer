@@ -103,7 +103,7 @@ export function evaluate(f: Formula<T.Id>, traits: Map<T.Id, boolean>): boolean 
         if (sv === false) { // definitely false
           result = false // TODO: break early
         }
-        if (sv === undefined) { // maybe false
+        if (result && sv === undefined) { // maybe false
           result = undefined
         }
       })
@@ -115,7 +115,7 @@ export function evaluate(f: Formula<T.Id>, traits: Map<T.Id, boolean>): boolean 
         if (sv === true) { // definitely true
           result = true // TODO: break early
         }
-        if (sv === undefined) { // maybe true
+        if (result === false && sv === undefined) { // maybe true
           result = undefined
         }
       })
