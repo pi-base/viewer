@@ -124,15 +124,20 @@ class TraitPager extends React.Component<Props, State> {
             {visible.map(trait =>
               <TraitItem key={trait.property.uid} trait={trait} />
             )}
+            <tr>
+              <td />
+              <td>
+                <Limiter
+                  limit={this.state.limit || 10}
+                  found={visible.length}
+                  total={results.length}
+                  onClick={() => this.toggleShowAll()}
+                />
+              </td>
+            </tr>
           </tbody>
         </table>
 
-        <Limiter
-          limit={this.state.limit || 10}
-          found={visible.length}
-          total={results.length}
-          onClick={() => this.toggleShowAll()}
-        />
       </Tex>
     )
   }
