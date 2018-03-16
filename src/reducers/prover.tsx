@@ -56,7 +56,7 @@ const checkProofs = (state: StoreState, spaces: Space[]): StoreState => {
 
   spaces.forEach(space => {
     const applyQ: UQueue<Theorem> = new UQueue(state.theorems.values())
-    const recordProof = (propertyId: Id, proof: Deduction) => {
+    const recordProof = (propertyId: Id, value: boolean, proof: Deduction) => {
       const key = `${space.uid}|${propertyId}`
       if (!proofs.has(key)) {
         proofs.set(key, { ...proof, type: 'deduced' })

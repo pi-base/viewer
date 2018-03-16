@@ -59,7 +59,7 @@ interface ForceOptions {
   theorem: { uid: T.Id | 'given' }
   support: Set<T.Id> // list of property ids
   traits: Map<T.Id, boolean> // propertyId => value
-  recordProof: (property: T.Id, proof: Evidence) => void
+  recordProof: (property: T.Id, value: boolean, proof: Evidence) => void
 }
 function force(opts: ForceOptions) {
   const { formula, theorem, support, traits, recordProof } = opts
@@ -119,7 +119,7 @@ function force(opts: ForceOptions) {
       }
     } else {
       traits.set(property, formula.value)
-      recordProof(property, {
+      recordProof(property, formula.value, {
         theorem: theorem.uid,
         properties: Array.from(support)
       })
@@ -130,7 +130,7 @@ function force(opts: ForceOptions) {
 interface ApplyOptions {
   theorem: T.Theorem
   traits: Map<T.Id, boolean>
-  recordProof: (property: T.Id, proof: Evidence) => void
+  recordProof: (property: T.Id, value: boolean, proof: Evidence) => void
 }
 export function apply(opts: ApplyOptions) {
   const { theorem, traits, recordProof } = opts
@@ -175,7 +175,7 @@ export function disprove(theorems: T.Theorem[], formula: Formula): (Proof | unde
   let checkQ: T.Theorem[] = []
   let proofs = new Map()
 
-  const recordProof = (property: T.Id, proof: Evidence) => {
+  const recordProof = (property: T.Id, value: boolean, proof: Evidence) => {
     if (!proofs.get(property)) {
       proofs.set(property, proof)
       const q = theoremsByProp[property] || []
