@@ -10,7 +10,7 @@ export const reducer = (state: State, action: Action): State => {
 
   switch (action.type) {
     case 'LOAD_VIEWER':
-      next = new Map()
+      next = new Map(state)
       action.viewer.viewer.properties.forEach(p => {
         next.set(p.uid, {
           uid: p.uid,
@@ -19,7 +19,7 @@ export const reducer = (state: State, action: Action): State => {
           references: p.references
         })
       })
-      return new Map([...state, ...next])
+      return next
 
     case 'CHANGE_BRANCH':
       return new Map()

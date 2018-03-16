@@ -15,11 +15,6 @@ query Viewer($version: String) {
           uid
         }
         value
-        references {
-          type
-          ref
-          name
-        }
         description
       }
     }

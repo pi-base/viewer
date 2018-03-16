@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
+import { Helmet } from 'react-helmet'
 
 import { State } from '../../reducers'
 import * as S from '../../selectors'
@@ -32,6 +33,10 @@ const Property = ({ property, match }: Props) => {
 
   return (
     <div>
+      <Helmet>
+        <title>{property.name} | π-Base</title>
+      </Helmet>
+
       <Switch>
         <Route
           path={match.url + '/edit'}

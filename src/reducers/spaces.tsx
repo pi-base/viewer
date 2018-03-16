@@ -17,16 +17,16 @@ export const reducer = (
       return new Map()
 
     case 'LOAD_VIEWER':
-      const spaces = new Map()
+      const next = new Map(state)
       action.viewer.viewer.spaces.forEach(s => {
-        spaces.set(s.uid, {
+        next.set(s.uid, {
           uid: s.uid,
           name: s.name,
           description: s.description,
-          references: s.references
+          references: s.references as T.Citation[] // TODO: check `type` against enum
         })
       })
-      return new Map([...state, ...spaces])
+      return new Map(next)
 
     default:
       return state

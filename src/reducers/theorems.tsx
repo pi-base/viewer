@@ -14,7 +14,7 @@ export const reducer = (
 
   switch (action.type) {
     case 'LOAD_VIEWER':
-      next = new Map()
+      next = new Map(state)
       action.viewer.viewer.theorems.forEach(t => {
         next.set(t.uid, {
           uid: t.uid,
@@ -24,7 +24,7 @@ export const reducer = (
           description: t.description
         })
       })
-      return new Map([...state, ...next])
+      return next
 
     case 'CHANGE_BRANCH':
       return new Map()

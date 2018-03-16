@@ -23,7 +23,7 @@ export const reducer = (
     case 'CHANGE_BRANCH':
       return { ...state, active: action.branch }
     case 'UPDATE_BRANCH':
-      branches = new Map([...state.branches])
+      branches = new Map(state.branches)
       const branch = branches.get(action.branch)
       if (branch) { branch.sha = action.sha }
       return { ...state, branches }

@@ -6,7 +6,7 @@ export type State = Map<Id, Map<Id, boolean>>
 const clone = (state: State): State => {
   const next = new Map()
   state.forEach((props, sid) => {
-    next.set(sid, new Map([...props]))
+    next.set(sid, new Map(props))
   })
   return next
 }
