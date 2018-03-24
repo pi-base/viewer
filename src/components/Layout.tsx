@@ -20,14 +20,17 @@ class Layout extends React.PureComponent<StateProps> {
     return (
       <div>
         <Navbar />
-        {
-          this.props.booted || this.props.location.pathname === '/'
-          ?
-          this.props.children
-          :
-          <div className="container">Loading...</div>
+
+        <div className="container">
+          {this.props.booted || this.props.location.pathname === '/'
+            ? this.props.children
+            : 'Loading...'}
+        </div>
+
+        {process.env.NODE_ENV === 'development'
+          ? <Footer />
+          : ''
         }
-        <Footer />
       </div>
     )
   }

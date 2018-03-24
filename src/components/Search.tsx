@@ -7,8 +7,9 @@ import { Link } from 'react-router-dom'
 
 import * as A from '../actions'
 import * as S from '../selectors'
-import { Dispatch, Formula, Property, State } from '../types'
+import { Dispatch, Formula, Property, State, SearchModifier } from '../types'
 
+import EditLink from './Form/EditLink'
 import { Wrapped } from './Form/Labeled'
 import FormulaInput from './Formula/Input'
 import Results from './Search/Results'
@@ -16,6 +17,7 @@ import Results from './Search/Results'
 type StateProps = {
   text: string
   formula: string
+  modifier: SearchModifier
   parsedFormula: Formula<Property> | undefined
 }
 type DispatchProps = {
@@ -36,7 +38,7 @@ class Search extends React.PureComponent<Props> {
   }
 
   render() {
-    const { text, formula, parsedFormula, search } = this.props
+    const { text, formula, modifier, parsedFormula, search } = this.props
 
     // TODO: add widget to allow displaying extra traits inline
     return (
@@ -56,16 +58,16 @@ class Search extends React.PureComponent<Props> {
               onChange={value => search({ formula: value })}
             />
 
-            <Link to="/spaces/new" className="btn btn-default">
-              New Space
-            </Link>
-          </div>
+          <EditLink to="/spaces/new" className="btn btn-default">
+            New Space
+          </EditLink>
+        </div>
 
-          <div className="col-md-8">
-            <Results text={text} formula={parsedFormula} />
-          </div>
-        </form>
-      </div>
+        <div className="col-md-8">
+          <Results text={text} formula={parsedFormula} modifier={modifier} />
+        </div>
+      </form >
+    </div>
     )
   }
 }
@@ -92,6 +94,7 @@ export default connect(
   (state: State): StateProps => ({
     text: state.search.text,
     formula: state.search.formula,
+    modifier: state.search.modifier,
     parsedFormula: S.searchFormula(state)
   }),
   (dispatch: Dispatch, props: Props): DispatchProps => ({

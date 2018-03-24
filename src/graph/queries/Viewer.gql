@@ -4,24 +4,44 @@ query Viewer($version: String) {
     spaces {
       uid
       name
+      references {
+        type
+        ref
+        name
+      }
       description
       traits {
         property {
           uid
         }
         value
+        references {
+          type
+          ref
+          name
+        }
         description
       }
     }
     properties {
       uid
       name
+      references {
+        type
+        ref
+        name
+      }
       description
     }
     theorems {
       uid
       if
       then
+      references {
+        type
+        ref
+        name
+      }
       description
     }
   }

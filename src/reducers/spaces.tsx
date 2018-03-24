@@ -22,7 +22,8 @@ export const reducer = (
         spaces.set(s.uid, {
           uid: s.uid,
           name: s.name,
-          description: s.description
+          description: s.description,
+          references: s.references
         })
       })
       return new Map([...state, ...spaces])

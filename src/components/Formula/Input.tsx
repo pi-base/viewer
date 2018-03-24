@@ -64,7 +64,7 @@ class FormulaInput extends React.Component<Props, State> {
     })
   }
 
-  handleKeyDown(e: any) {
+  handleKeyDown(e: React.KeyboardEvent<HTMLElement>) {
     switch (e.which) {
       case UP:
         e.preventDefault()

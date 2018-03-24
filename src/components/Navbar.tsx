@@ -1,10 +1,13 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { Link, NavLink } from 'react-router-dom'
+
+import * as S from '../selectors'
 
 import UserTab from './Layout/UserTab'
 
-const Navbar = () => (
-  <nav className="navbar navbar-default navbar-static-top">
+const Navbar = ({ editing }) => (
+  <nav className={`navbar navbar-${editing ? 'inverse' : 'default'} navbar-static-top`}>
     <div className="container">
       <Link to="/" className="navbar-brand">pi-Base</Link>
       <ul className="nav navbar-nav">
@@ -20,4 +23,8 @@ const Navbar = () => (
   </nav>
 )
 
-export default Navbar
+export default connect(
+  (state) => ({
+    editing: S.editing(state)
+  })
+)(Navbar)

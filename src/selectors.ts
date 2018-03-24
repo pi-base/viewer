@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 
-import { Formula, Id, Proof, Property, Space, Table, Theorem, Trait } from './types'
+import { Formula, Id, Proof, Property, SearchModifier, Space, Table, Theorem, Trait } from './types'
 import { State } from './reducers'
 
 import * as F from './models/Formula'
@@ -78,24 +78,36 @@ export const getTrait = (state: State, space: Space, propertyId: Id): Trait | un
   }
 }
 
+type SearchOptions = {
+  formula?: Formula<Id>
+  modifier?: SearchModifier
+  text?: string
+}
+
 export const search = (
   state: State,
-  formula?: Formula<Id>,
-  text?: string,
+  options: SearchOptions
 ): Space[] => {
   let spaces: Space[]
 
-  if (text) {
-    spaces = spaceFinder(state).search(text)
+  if (options.text) {
+    spaces = spaceFinder(state).search(options.text)
   } else {
     spaces = Array.from(state.spaces.values())
   }
 
-  if (formula) {
+  if (options.formula) {
+    const matcher = {
+      'true': (value) => value === true,
+      'false': (value) => value === false,
+      'unknown': (value) => value === undefined,
+      'not_false': (value) => value !== false
+    }[options.modifier || 'true']
+
     spaces = spaces.filter(s => {
       const ts = state.traits.get(s.uid)
       if (!ts) { return false }
-      return F.evaluate(formula, ts) === true
+      return matcher(F.evaluate(options.formula!, ts))
     })
   }
 
@@ -141,7 +153,7 @@ export const counterexamples = (state: State, theorem: Theorem): Space[] => {
     theorem.if,
     F.negate(theorem.then)
   )
-  return search(state, formula)
+  return search(state, { formula })
 }
 
 export const theoremProperties = (state: State, theorem: Theorem): Property[] => {

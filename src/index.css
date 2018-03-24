@@ -1,7 +1,10 @@
 body {
-  margin: 0;
   padding: 0 0 60px;
   font-family: sans-serif;
+}
+
+.navbar.editing {
+  background-color: #00f;
 }
 
 .search article {
@@ -24,4 +27,13 @@ body {
   background-size: cover;
   -o-background-size: cover;
   margin-bottom: 50px;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  margin: 0;
+  padding: 0;
 }

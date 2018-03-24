@@ -1,4 +1,4 @@
-import { DocumentNode } from 'graphql'
+import { DocumentNode, FieldNode, OperationDefinitionNode } from 'graphql'
 import { v4 as uuid } from 'uuid'
 
 import * as F from './models/Formula'
@@ -78,9 +78,10 @@ type QueryParams = {
   graph: G.Client
   dispatch: T.Dispatch
   q: DocumentNode
-  // tslint:disable-next-line no-any
+  // tslint:disable no-any
   context?: any
   variables?: any
+  // tslint:enable no-any
 }
 export function query<Response>({ graph, dispatch, q, context, variables }: QueryParams): Promise<Response> {
   const id = uuid()
@@ -154,7 +155,7 @@ export const login = (token: T.Token): Async<T.User> =>
         branches: data.me.branches.map(b => ({
           name: b.name,
           sha: b.sha,
-          access: b.access as any
+          access: (b.access === 'admin' ? 'admin' : 'read' as T.BranchAccess)
         }))
       }
       dispatch(action)
@@ -181,9 +182,21 @@ export const resetBranch = (branch: T.BranchName, to: T.Sha): Async<void> =>
     })
   }
 
+export const submitBranch = (branch: T.BranchName): Async<void> =>
+  (dispatch, _, { graph }) => {
+    return graph.mutate({
+      mutation: G.submitBranch,
+      variables: {
+        input: { branch }
+      }
+    }).then(() => {
+      // Linter is too mad
+    })
+  }
+
 type PatchParams<V> = {
   before: Action
-  mutation: any
+  mutation: DocumentNode
   variables: V & { patch?: G.PatchInput }
   field?: string
 }
@@ -200,7 +213,8 @@ function patch<V>({ before, mutation, variables, field }: PatchParams<V>) {
     //   ...
     // }
     if (!field) {
-      field = mutation.definitions[0].selectionSet.selections[0].name.value
+      const selection = (mutation.definitions[0] as OperationDefinitionNode).selectionSet.selections[0]
+      field = (selection as FieldNode).name.value
     }
 
     variables.patch = p

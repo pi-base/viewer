@@ -7,6 +7,8 @@ import * as G from './graph'
 import rootReducer, { State } from './reducers'
 import { TokenStorage } from './types'
 
+const inDevelopment = process.env.NODE_ENV === 'development'
+
 // tslint:disable-next-line no-any
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -16,12 +18,15 @@ export const localToken = {
 }
 
 const makeMiddleware = ({ graph, token }: { graph: G.Client, token: TokenStorage }) => {
-  const logger = createLogger({ collapsed: true })
-
-  return [
-    thunk.withExtraArgument({ graph, token }),
-    logger
+  const middleware = [
+    thunk.withExtraArgument({ graph, token })
   ]
+
+  if (inDevelopment) {
+    middleware.push(createLogger({ collapsed: true }))
+  }
+
+  return middleware
 }
 
 const loadFromLocalStorage = persistState(null, {
@@ -55,12 +60,16 @@ const loadFromLocalStorage = persistState(null, {
 })
 
 export function makeStore({ graph, token }: { graph: G.Client, token: TokenStorage }): Store<State> {
-  const middleware = makeMiddleware({ graph, token })
+  const enhancers = [
+    applyMiddleware(...makeMiddleware({ graph, token }))
+  ]
+
+  if (inDevelopment) {
+    enhancers.push(loadFromLocalStorage)
+  }
+
   return createStore<State>(
     rootReducer,
-    composeEnhancers(
-      applyMiddleware(...middleware),
-      loadFromLocalStorage
-    )
+    composeEnhancers(...enhancers)
   )
 }

@@ -1,6 +1,7 @@
 type Space {
   uid: ID!
   name: String!
+  references: [Citation]!
   description: String!
   traits: [Trait!]!
 }
@@ -8,12 +9,14 @@ type Space {
 type Property {
   uid: ID!
   name: String!
+  references: [Citation]!
   description: String!
 }
 
 type Trait {
   property: Property!
   value: Boolean!
+  references: [Citation]!
   description: String!
 }
 
@@ -21,7 +24,14 @@ type Theorem {
   uid: ID!
   if: String!
   then: String!
+  references: [Citation]!
   description: String!
+}
+
+type Citation {
+  type: String!
+  ref: String!
+  name: String!
 }
 
 type Branch {
@@ -47,14 +57,21 @@ type ResetBranchResponse {
   sha: String!
 }
 
+type SubmitBranchResponse {
+  branch: String!
+  url: String!
+}
+
 # Inputs
 
 input CreateSpaceInput {
+  uid: String
   name: String!
   description: String!
 }
 
 input CreatePropertyInput {
+  uid: String
   name: String!
   description: String!
 }
@@ -66,6 +83,7 @@ input AssertTraitInput {
 }
 
 input AssertTheoremInput {
+  uid: String
   antecedent: String!
   consequent: String!
   description: String!
@@ -74,6 +92,10 @@ input AssertTheoremInput {
 input ResetBranchInput {
   branch: String!
   to: String!
+}
+
+input SubmitBranchInput {
+  branch: String!
 }
 
 input UpdateSpaceInput {
@@ -119,6 +141,7 @@ type Mutation {
   assertTrait(patch: PatchInput!, trait: AssertTraitInput!): Viewer!
   assertTheorem(patch: PatchInput!, theorem: AssertTheoremInput!): Viewer!
   resetBranch(input: ResetBranchInput!): ResetBranchResponse!
+  submitBranch(input: SubmitBranchInput!): SubmitBranchResponse!
 }
 
 schema {

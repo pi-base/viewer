@@ -7,13 +7,13 @@ import * as S from '../../selectors'
 import { Theorem } from '../../types'
 
 import Filter from '../Filter'
+import EditLink from '../Form/EditLink'
 import Implication from '../Implication'
 import Preview from '../Preview'
 import Tex from '../Tex'
 
 type StateProps = {
   theorems: Theorem[]
-  editing: boolean
 }
 type Props = StateProps
 
@@ -40,11 +40,8 @@ class Theorems extends React.Component<Props, State> {
     const visible = this.state.theorems.slice(0, this.state.limit)
     return (
       <div className="container">
-        <section className="theorems">
-          {this.props.editing
-            ? <Link to="/theorems/new" className="btn btn-default">New</Link>
-            : ''
-          }
+      <section className="theorems">
+        <EditLink to="/theorems/new" className="btn btn-default">New</EditLink>
 
           <Filter
             collection={this.props.theorems}
@@ -79,7 +76,6 @@ class Theorems extends React.Component<Props, State> {
 
 export default connect<StateProps, {}, {}>(
   (state: StoreState): StateProps => ({
-    theorems: Array.from(state.theorems.values()),
-    editing: S.editing(state)
+    theorems: Array.from(state.theorems.values())
   })
 )(Theorems)

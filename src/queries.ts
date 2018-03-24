@@ -12,7 +12,7 @@ const getFragment = (str: string) => {
   if (!str) {
     return ''
   }
-  const parts = str.split(/[~+&|\(\)]/)
+  const parts = str.split(/[~+&|\(\)!?]/)
   return parts[parts.length - 1].trim()
 }
 

@@ -59,7 +59,7 @@ const build = (state: State, values: Values) => {
   const errors: Errors = {}
   if (!values.name) { errors.name = 'Required' }
 
-  const result: Space = values
+  const result: Space = { ...values, references: [] }
   return { result, errors }
 }
 

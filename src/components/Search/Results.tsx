@@ -16,6 +16,7 @@ import TraitTable from '../Trait/Table'
 type OwnProps = {
   text: string | undefined
   formula: T.Formula<T.Property> | undefined
+  modifier: T.SearchModifier
 }
 type StateProps = {
   results: T.Space[]
@@ -83,11 +84,11 @@ function Results({ text, formula, results, prover }: Props) {
 
 export default connect<StateProps, {}, OwnProps>(
   (state: State, ownProps: OwnProps): StateProps => ({
-    results: S.search(
-      state,
-      ownProps.formula ? F.mapProperty(p => p.uid, ownProps.formula) : undefined,
-      ownProps.text
-    ),
+    results: S.search(state, {
+      formula: ownProps.formula ? F.mapProperty(p => p.uid, ownProps.formula) : undefined,
+      text: ownProps.text,
+      modifier: ownProps.modifier
+    }),
     prover: S.prover(state)
   })
 )(Results)

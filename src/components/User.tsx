@@ -19,6 +19,7 @@ const User = ({ user }: Props) => {
     return (
       <div className="container">
         <h1>{user.name}</h1>
+        <h2>Active Branches</h2>
         <Branches />
       </div>
     )

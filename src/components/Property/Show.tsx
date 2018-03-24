@@ -10,6 +10,7 @@ import Detail from './Detail'
 import Edit from './Edit'
 import EditLink from '../Form/EditLink'
 import NotFound from '../NotFound'
+import References from '../References'
 import RelatedTheorems from './RelatedTheorems'
 
 type StateProps = {
@@ -22,6 +23,7 @@ const Preview = ({ property, match }) => (
   <div>
     <EditLink to={match.url + '/edit'} />
     <Detail property={property} />
+    <References references={property.references} />
   </div>
 )
 
