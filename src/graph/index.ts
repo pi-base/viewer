@@ -21,6 +21,7 @@ export const updateProperty = require('./queries/UpdateProperty.gql')
 export const updateSpace = require('./queries/UpdateSpace.gql')
 export const updateTheorem = require('./queries/UpdateTheorem.gql')
 export const updateTrait = require('./queries/UpdateTrait.gql')
+export const throwError = require('./queries/ThrowError.gql')
 
 export type Client = ApolloClient<{}>
 
@@ -49,6 +50,16 @@ export function makeClient(opts: ClientOptions): Client {
     return forward!(operation)
   })
 
+  const errorLink = new ApolloLink((operation, forward) => {
+    const observable = forward!(operation)
+    observable.subscribe({
+      error: (err) => {
+        window.piBase.showError('Server error')
+      }
+    })
+    return observable
+  })
+
   const httpLink = new HttpLink({
     uri: `${base}/graphql`,
     credentials: 'same-origin',
@@ -57,6 +68,6 @@ export function makeClient(opts: ClientOptions): Client {
 
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: concat(authMiddleware, httpLink)
+    link: concat(errorLink, concat(authMiddleware, httpLink))
   })
 }

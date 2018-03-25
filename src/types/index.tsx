@@ -18,6 +18,16 @@ export type Config = {
   readonly setToken: (token: Token) => void
 }
 
+export type PiBase = {
+  debug: () => void
+  refreshRedux: () => void
+  clearStorage: () => void
+  clientError: () => void
+  serverError: () => void
+  // tslint:disable-next-line no-any
+  showError: (e: any) => void
+}
+
 export type TokenStorage = {
   get: () => string | null
   set: (token: string) => void

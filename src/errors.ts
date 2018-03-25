@@ -1,9 +1,6 @@
 // tslint:disable no-console
 
-declare var window: {
-  // tslint:disable-next-line no-any
-  Rollbar: any
-}
+import { User } from './types'
 
 if (window && window.Rollbar) {
   const app = process.env.REACT_APP_GIT_VERSION
@@ -26,6 +23,12 @@ if (window && window.Rollbar) {
       }
     }
   })
+
+  window.Rollbar.setUser = (user: User) => {
+    window.Rollbar.options.payload.person = {
+      username: user.name
+    }
+  }
 }
 
 const error = (...e) => {

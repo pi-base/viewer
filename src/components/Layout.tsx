@@ -12,25 +12,25 @@ import Footer from './Footer'
 
 interface StateProps {
   booted: boolean
+  debug: boolean
   location: { pathname: string }
 }
 
 class Layout extends React.PureComponent<StateProps> {
   render() {
+    const { booted, debug, location } = this.props
+
     return (
       <div>
         <Navbar />
 
         <div className="container">
-          {this.props.booted || this.props.location.pathname === '/'
+          {booted || location.pathname === '/'
             ? this.props.children
             : 'Loading...'}
         </div>
 
-        {process.env.NODE_ENV === 'development'
-          ? <Footer />
-          : ''
-        }
+        {debug ? <Footer /> : ''}
       </div>
     )
   }
@@ -40,6 +40,7 @@ class Layout extends React.PureComponent<StateProps> {
 // see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
 export default withRouter(connect<{}, StateProps>(
   (state: State) => ({
-    booted: state.spaces.size > 0
+    booted: state.spaces.size > 0,
+    debug: state.debug
   })
 )(Layout))

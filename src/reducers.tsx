@@ -13,6 +13,7 @@ import * as user from './reducers/user'
 import * as version from './reducers/version'
 
 export type State = {
+  debug: boolean
   proofs: prover.State
   properties: properties.State
   search: search.State
@@ -23,7 +24,13 @@ export type State = {
   version: version.State
 }
 
+const debugReducer = (debug: boolean | undefined, action: Action): boolean => {
+  if (debug === undefined) { debug = process.env.NODE_ENV === 'development' }
+  return action.type === 'TOGGLE_DEBUG' ? !debug : debug
+}
+
 const combined = combineReducers<State>({
+  debug: debugReducer,
   proofs: (s) => s || prover.initial,
   properties: properties.reducer,
   search: (s) => s || search.initial,

@@ -41,7 +41,7 @@ class UQueue<P> {
 }
 
 const checkProofs = (state: StoreState, spaces: Space[]): StoreState => {
-  const traits = new Map()
+  const traits = new Map(state.traits)
   const proofs = new Map(state.proofs)
 
   // FIXME: unify this and Logic.disprove

@@ -1,25 +1,22 @@
 import * as React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
-// N.B. this does _not_ clear the login token out of localStorage
-const refreshRedux = (e) => {
+const action = (name: string, ...args) => (e) => {
   e.preventDefault()
-  localStorage.removeItem('redux')
-  location.reload()
-}
-
-const clearStorage = (e) => {
-  e.preventDefault()
-  localStorage.clear()
-  location.reload()
+  if (!window.piBase) { return }
+  window.piBase[name](...args)
 }
 
 const Footer = () => (
   <nav className="navbar navbar-inverse footer">
     <div className="container">
       <ul className="nav navbar-nav">
-        <li><a href="#" onClick={refreshRedux}>Refresh redux</a></li>
-        <li><a href="#" onClick={clearStorage}>Clear localStorage</a></li>
+        <li><a href="#" onClick={action('refreshRedux')}>Refresh redux</a></li>
+        <li><a href="#" onClick={action('clearStorage')}>Clear localStorage</a></li>
+      </ul>
+      <ul className="nav navbar-nav pull-right">
+        <li><a href="#" onClick={action('clientError')}>Client error</a></li>
+        <li><a href="#" onClick={action('serverError')}>Server error</a></li>
       </ul>
     </div>
   </nav>

@@ -18,6 +18,7 @@ export type Login = { type: 'LOGIN', token: T.Token, user: T.User, branches: T.B
 export type Logout = { type: 'LOGOUT' }
 export type Search = { type: 'SEARCH', text?: string, formula?: string }
 export type UpdateBranch = { type: 'UPDATE_BRANCH', branch: T.BranchName, sha: T.Sha }
+export type ToggleDebug = { type: 'TOGGLE_DEBUG' }
 
 // tslint:disable no-any
 export type QueryError = { type: 'QUERY_ERROR', id: string, error: any }
@@ -43,6 +44,9 @@ export type Action
   | QuerySuccess
   | Search
   | UpdateBranch
+  | ToggleDebug
+
+export const toggleDebug = (): Action => ({ type: 'TOGGLE_DEBUG' })
 
 export const addProperty = (property: T.Property): Action => ({
   type: 'ADD_PROPERTY', property
@@ -118,6 +122,15 @@ const fetchViewer = (): Async<void> =>
 
 export const boot = () => fetchViewer()
 
+export const serverError = (): Async<void> =>
+  (_dispatch, _getState, { graph }) =>
+    graph.mutate({
+      mutation: G.throwError,
+      variables: {
+        input: { mesage: '' }
+      }
+    }).then(() => undefined)
+
 export const changeBranch = (branch: T.BranchName): Async<void> =>
   (dispatch, getState, { graph }) => {
     dispatch({ type: 'CHANGE_BRANCH', branch })
@@ -151,7 +164,7 @@ export const login = (token: T.Token): Async<T.User> =>
       const action: Login = {
         type: 'LOGIN',
         token,
-        user: { name: data.me.name },
+        user,
         branches: data.me.branches.map(b => ({
           name: b.name,
           sha: b.sha,

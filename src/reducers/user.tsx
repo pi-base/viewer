@@ -15,6 +15,10 @@ export const reducer = (
 
   switch (action.type) {
     case 'LOGIN':
+      if (window.Rollbar) {
+        window.Rollbar.setUser(action.user)
+      }
+
       return {
         name: action.user.name,
         token: action.token
