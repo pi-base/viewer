@@ -12,13 +12,15 @@ export type AddSpace = { type: 'ADD_SPACE', space: T.Space }
 export type AssertTheorem = { type: 'ASSERT_THEOREM', theorem: T.Theorem }
 export type AssertTrait = { type: 'ASSERT_TRAIT', trait: T.Trait }
 export type CheckProofs = { type: 'CHECK_PROOFS', spaces?: T.Space[] }
-export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: T.BranchName }
+export type ChangeBranch = { type: 'CHANGE_BRANCH', branch: T.BranchName | undefined }
 export type LoadViewer = { type: 'LOAD_VIEWER', viewer: G.ViewerQuery }
 export type Login = { type: 'LOGIN', token: T.Token, user: T.User, branches: T.Branch[] }
 export type Logout = { type: 'LOGOUT' }
 export type Search = { type: 'SEARCH', text?: string, formula?: string }
 export type UpdateBranch = { type: 'UPDATE_BRANCH', branch: T.BranchName, sha: T.Sha }
 export type ToggleDebug = { type: 'TOGGLE_DEBUG' }
+export type SubmittingBranch = { type: 'SUBMITTING_BRANCH', branch: T.Branch }
+export type SubmittedBranch = { type: 'SUBMITTED_BRANCH', branch: T.Branch, url: string }
 
 // tslint:disable no-any
 export type QueryError = { type: 'QUERY_ERROR', id: string, error: any }
@@ -45,6 +47,8 @@ export type Action
   | Search
   | UpdateBranch
   | ToggleDebug
+  | SubmittingBranch
+  | SubmittedBranch
 
 export const toggleDebug = (): Action => ({ type: 'TOGGLE_DEBUG' })
 
@@ -131,7 +135,7 @@ export const serverError = (): Async<void> =>
       }
     }).then(() => undefined)
 
-export const changeBranch = (branch: T.BranchName): Async<void> =>
+export const changeBranch = (branch: T.BranchName | undefined): Async<void> =>
   (dispatch, getState, { graph }) => {
     dispatch({ type: 'CHANGE_BRANCH', branch })
     dispatch(fetchViewer())
@@ -168,7 +172,10 @@ export const login = (token: T.Token): Async<T.User> =>
         branches: data.me.branches.map(b => ({
           name: b.name,
           sha: b.sha,
-          access: (b.access === 'admin' ? 'admin' : 'read' as T.BranchAccess)
+          access: (b.access === 'admin' ? 'admin' : 'read' as T.BranchAccess),
+          active: false,
+          submitting: false,
+          pullRequestUrl: undefined
         }))
       }
       dispatch(action)
@@ -178,8 +185,10 @@ export const login = (token: T.Token): Async<T.User> =>
   }
 
 export const logout = (): Async<void> =>
-  (dispatch, _, { graph }) => {
+  (dispatch, _, { graph, token }) => {
+    token.clear()
     dispatch({ type: 'LOGOUT' })
+    dispatch(changeBranch(undefined))
     return Promise.resolve()
   }
 
@@ -197,13 +206,15 @@ export const resetBranch = (branch: T.BranchName, to: T.Sha): Async<void> =>
 
 export const submitBranch = (branch: T.BranchName): Async<void> =>
   (dispatch, _, { graph }) => {
+    dispatch({ type: 'SUBMITTING_BRANCH', branch })
     return graph.mutate({
       mutation: G.submitBranch,
       variables: {
         input: { branch }
       }
-    }).then(() => {
-      // Linter is too mad
+    }).then(response => {
+      const data = (response.data as G.SubmitBranchMutation).submitBranch
+      dispatch({ type: 'SUBMITTED_BRANCH', branch, url: data.url })
     })
   }
 

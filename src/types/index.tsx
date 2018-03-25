@@ -31,6 +31,7 @@ export type PiBase = {
 export type TokenStorage = {
   get: () => string | null
   set: (token: string) => void
+  clear: () => void
 }
 
 export type BranchAccess = 'read' | 'admin'
@@ -40,7 +41,10 @@ export type BranchName = string
 export type Branch = {
   name: BranchName,
   sha: Sha,
-  access: BranchAccess
+  access: BranchAccess,
+  active: boolean,
+  submitting: boolean,
+  pullRequestUrl: string | undefined
 }
 
 export type Id = string

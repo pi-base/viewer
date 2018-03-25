@@ -2,6 +2,7 @@ import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloLink, concat } from 'apollo-link'
+import { onError } from 'apollo-link-error'
 
 import { GRAPHQL_SERVER_URL } from '../constants'
 import { TokenStorage } from '../types'
@@ -50,24 +51,26 @@ export function makeClient(opts: ClientOptions): Client {
     return forward!(operation)
   })
 
-  const errorLink = new ApolloLink((operation, forward) => {
-    const observable = forward!(operation)
-    observable.subscribe({
-      error: (err) => {
-        window.piBase.showError('Server error')
-      }
-    })
-    return observable
-  })
-
   const httpLink = new HttpLink({
     uri: `${base}/graphql`,
     credentials: 'same-origin',
     fetch: opts.fetch || window.fetch
   })
 
+  const errorLink = onError(({ networkError }) => {
+    if (networkError) {
+      window.piBase.showError(networkError)
+    }
+  })
+
+  const link = ApolloLink.from([
+    errorLink,
+    authMiddleware,
+    httpLink
+  ])
+
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link: concat(errorLink, concat(authMiddleware, httpLink))
+    link
   })
 }

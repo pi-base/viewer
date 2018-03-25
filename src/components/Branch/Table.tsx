@@ -5,14 +5,35 @@ import * as A from '../../actions'
 import { Branch, State } from '../../types'
 import { by } from '../../utils'
 
+type BranchExtra = Branch & { active: boolean }
 type StateProps = {
-  branches: (Branch & { active: boolean })[]
+  branches: BranchExtra[]
 }
 type DispatchProps = {
   changeBranch: (branch: Branch) => void
   submitBranch: (branch: Branch) => void
 }
 type Props = StateProps & DispatchProps
+
+const BranchSubmit = ({ branch, submitBranch }: { branch: Branch, submitBranch: (b: Branch) => void }) => {
+  const { active, access, submitting, pullRequestUrl } = branch
+
+  if (access !== 'admin') { return null }
+
+  if (pullRequestUrl) {
+    return <a href={pullRequestUrl}>View pull request</a>
+  } else {
+    return (
+      <button
+        className="btn btn-primary btn-sm"
+        onClick={() => submitBranch(branch)}
+        disabled={submitting}
+      >
+        Submit for Review
+      </button>
+    )
+  }
+}
 
 const Branches = ({ branches, changeBranch, submitBranch }: Props) => {
   if (!branches) { return null }
@@ -37,10 +58,7 @@ const Branches = ({ branches, changeBranch, submitBranch }: Props) => {
             </td>
             <td>{branch.name}</td>
             <td>
-              {branch.active && branch.access === 'admin'
-                ? <a className="btn btn-primary btn-sm" onClick={() => submitBranch(branch)}>Submit for Review</a>
-                : null
-              }
+              <BranchSubmit branch={branch} submitBranch={submitBranch} />
             </td>
           </tr>
         ))}

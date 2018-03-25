@@ -23,28 +23,15 @@ if (window && window.Rollbar) {
       }
     }
   })
+}
 
-  window.Rollbar.setUser = (user: User) => {
-    window.Rollbar.options.payload.person = {
-      username: user.name
-    }
+export const setUser = (user: User) => {
+  window.Rollbar.options.payload.person = {
+    username: user.name
   }
 }
 
-const error = (...e) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Intercepted error', ...e)
-  } else {
-    window.Rollbar.error(...e)
-  }
-}
-
-export const info = (...e) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Info', ...e)
-  } else {
-    window.Rollbar.info(...e)
-  }
-}
+export const error = (...e) => window.Rollbar.error(...e)
+export const info = (...e) => window.Rollbar.info(...e)
 
 export default error

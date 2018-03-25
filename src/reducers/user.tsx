@@ -1,4 +1,5 @@
 import { Action } from '../actions'
+import { setUser } from '../errors'
 
 export type State = {
   name: string
@@ -15,9 +16,7 @@ export const reducer = (
 
   switch (action.type) {
     case 'LOGIN':
-      if (window.Rollbar) {
-        window.Rollbar.setUser(action.user)
-      }
+      setUser(action.user)
 
       return {
         name: action.user.name,

@@ -14,7 +14,8 @@ const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ||
 
 export const localToken = {
   get: () => localStorage.getItem('piBase.token'),
-  set: token => localStorage.setItem('piBase.token', token)
+  set: token => localStorage.setItem('piBase.token', token),
+  clear: () => localStorage.removeItem('piBase.token')
 }
 
 const makeMiddleware = ({ graph, token }: { graph: G.Client, token: TokenStorage }) => {
@@ -25,6 +26,8 @@ const makeMiddleware = ({ graph, token }: { graph: G.Client, token: TokenStorage
   if (inDevelopment) {
     middleware.push(createLogger({ collapsed: true }))
   }
+
+  // TODO: rollbar middleware?
 
   return middleware
 }

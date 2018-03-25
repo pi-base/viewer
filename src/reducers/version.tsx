@@ -11,6 +11,15 @@ export const initial = {
   branches: new Map()
 }
 
+const updateBranch = (state, name, updates) => {
+  const branches = new Map(state.branches)
+  let branch = branches.get(name)
+  if (branch) {
+    branches.set(name, { ...branch, ...updates })
+  }
+  return { ...state, branches }
+}
+
 export const reducer = (
   state: State | undefined,
   action: Action
@@ -23,10 +32,7 @@ export const reducer = (
     case 'CHANGE_BRANCH':
       return { ...state, active: action.branch }
     case 'UPDATE_BRANCH':
-      branches = new Map(state.branches)
-      const branch = branches.get(action.branch)
-      if (branch) { branch.sha = action.sha }
-      return { ...state, branches }
+      return updateBranch(state, action.branch, { sha: action.sha })
     case 'LOGIN':
       branches = new Map()
       action.branches.forEach(b => branches.set(b.name, b))
@@ -35,6 +41,15 @@ export const reducer = (
       return { ...state, branches, active }
     case 'PERSIST_SUCCESS':
       return state
+    case 'SUBMITTING_BRANCH':
+      return updateBranch(state, action.branch.name, {
+        submitting: true
+      })
+    case 'SUBMITTED_BRANCH':
+      return updateBranch(state, action.branch.name, {
+        submitting: false,
+        pullRequestUrl: action.url
+      })
     default:
       return state
   }

@@ -22,11 +22,12 @@ const initial = 'b91cbfb12122fc4fc5379f7a9f68cc42c487aa81'
 let userBranch = ''
 
 const token = (() => {
-  let t = '' // FIXME: need a better strategy for getting a working token in test
+  let t: string | null = '' // FIXME: need a better strategy for getting a working token in test
 
   return {
     get: () => t,
-    set: value => t = value
+    set: value => t = value,
+    clear: () => t = null
   }
 })()
 
