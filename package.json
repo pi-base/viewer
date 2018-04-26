@@ -67,6 +67,7 @@
     "@types/react-router-dom": "^4.2.3",
     "apollo-codegen": "^0.18.1",
     "babel-polyfill": "^6.22.0",
+    "graphiql": "^0.11.11",
     "graphql-cli": "^2.0.9",
     "graphql-config": "^1.1.0",
     "isomorphic-fetch": "^2.2.1",

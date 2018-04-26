@@ -24,6 +24,8 @@ export const updateTheorem = require('./queries/UpdateTheorem.gql')
 export const updateTrait = require('./queries/UpdateTrait.gql')
 export const throwError = require('./queries/ThrowError.gql')
 
+export const schema = require('./schema.gql')
+
 export type Client = ApolloClient<{}>
 
 export const loginUrl = ({ redirectTo }) =>
