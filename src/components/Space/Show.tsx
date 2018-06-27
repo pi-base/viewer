@@ -1,11 +1,9 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Route, RouteComponentProps, Switch } from 'react-router'
-import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 
 import * as T from '../../types'
-import * as Q from '../../queries'
 
 import { State } from '../../reducers'
 
@@ -36,9 +34,7 @@ const Space = (props: Props) => {
         <title>{space.name} | π-Base</title>
       </Helmet>
 
-      <Detail space={space} />
-
-      <References references={space.references} />
+      <Detail {...props} space={space} />
 
       <hr />
 

@@ -92,6 +92,13 @@
   version "16.0.41"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.0.41.tgz#72146737f4d439dc95a53315de4bfb43ac8542ca"
 
+"@types/redux-form@^7.3.0":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@types/redux-form/-/redux-form-7.3.0.tgz#0e5ec1a5414d7be2e9e3a0a17be678d79e21f846"
+  dependencies:
+    "@types/react" "*"
+    redux "^3.6.0"
+
 "@types/zen-observable@^0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.5.3.tgz#91b728599544efbb7386d8b6633693a3c2e7ade5"
@@ -5923,7 +5930,7 @@ redux-thunk@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
 
-redux@^3.7.2:
+redux@^3.6.0, redux@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   dependencies:

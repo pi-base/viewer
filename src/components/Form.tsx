@@ -8,7 +8,7 @@ const none = (errors) => !errors || Object.keys(errors).length === 0
 
 // tslint:disable no-any
 type Options<Result, Values> = {
-  build: (state: State, values: Values) => { result?: Result, errors?: any }
+  build: (state: State, values: Values, ownProps: any) => { result?: Result, errors?: any }
   initial?: (state: State, ownProps: any) => Values
   name: string
   fields: string[]
@@ -20,22 +20,24 @@ function form<Result, Values>(options: Options<Result, Values>) {
   const selector = formValueSelector(options.name)
 
   const validate = (values, props) => {
-    const { result, errors } = props.build(values)
+    const { errors } = props.build(values)
     if (!none(errors)) { return errors }
   }
 
   return component => connect(
     (state: State, ownProps) => ({
       initialValues: options.initial ? options.initial(state, ownProps) : {},
-      build: (values) => options.build(state, values),
+      build: (values) => options.build(state, values, ownProps),
       getResult: () => options.build(
         state,
-        selector(state, ...options.fields)
+        selector(state, ...options.fields),
+        ownProps
       ).result
     })
   )(
     reduxForm({
       form: options.name,
+      enableReinitialize: true,
       validate,
       // tslint:disable-next-line no-any
       onSubmit: (values: Values, dispatch: Dispatch, props: any) => {

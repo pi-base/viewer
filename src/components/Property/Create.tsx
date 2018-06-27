@@ -1,13 +1,12 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { Field, formValueSelector, reduxForm } from 'redux-form'
+import { Field } from 'redux-form'
 import uuid from 'uuid/v4'
 
 import { createProperty } from '../../actions'
 import { Id, Property, State } from '../../types'
 
 import Detail from './Detail'
-import { Text, Textarea } from '../Form/Labeled'
+import { Citations, Text, Textarea } from '../Form/Labeled'
 
 import form from '../Form'
 
@@ -37,6 +36,11 @@ const Create = props => {
             name="description"
             label="Description"
             component={Textarea}
+          />
+          <Field
+            name="references"
+            label="References"
+            component={Citations}
           />
           <button className="btn btn-default" type="submit" disabled={submitting}>
             Save

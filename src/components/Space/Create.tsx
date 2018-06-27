@@ -47,7 +47,7 @@ const Create = props => {
       </div>
 
       <div className="col-sm-6">
-        {space ? <Detail space={space} /> : ''}
+        {space ? <Detail {...props} space={space} /> : ''}
       </div>
     </div>
   )

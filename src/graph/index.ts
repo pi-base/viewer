@@ -45,7 +45,7 @@ export function makeClient(opts: ClientOptions): Client {
     if (token) {
       operation.setContext({
         headers: {
-          authorization: token
+          Authorization: `Bearer ${token}`
         }
       })
     }

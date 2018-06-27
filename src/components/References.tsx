@@ -10,9 +10,9 @@ const Reference = ({ reference }: { reference: Citation }) => {
   let url
   switch (reference.type) {
     case 'doi':
-      return <span>DOI <code>{reference.ref}</code></span>
+      return <span>DOI <code>{reference.ref}</code> - {reference.name}</span>
     case 'mr':
-      const code = reference.ref.replace('MR', '')
+      const code = (reference.ref || '').replace('MR', '')
       url = `https://mathscinet.ams.org/mathscinet-getitem?mr=${code}`
       return <a href={url} target="_blank">{reference.name}</a>
     default:
@@ -22,7 +22,7 @@ const Reference = ({ reference }: { reference: Citation }) => {
 }
 
 const References = ({ references }: Props) => {
-  if (references.length === 0) { return null }
+  if (!references || references.length === 0) { return null }
 
   return (
     <div>

@@ -11,8 +11,6 @@ import { by } from '../../utils'
 
 import Labeled, { Textarea } from '../Form/Labeled'
 
-import form from '../Form'
-
 type Values = {
   uid: string
   propertyId?: string
@@ -37,7 +35,7 @@ type DispatchProps = {
 }
 type Props = OwnProps & StateProps & DispatchProps & RouteComponentProps<{}>
 
-const validate = (values: Values): Errors | undefined => {
+const validate = (values: Values): Errors => {
   const errors: Errors = {}
   if (!values.propertyId) {
     errors.propertyId = 'Required'
@@ -65,10 +63,10 @@ const build = (props: Props, values: Values): Trait | undefined => {
   }
 }
 
-const PropertySelect = props => (
+const PropertySelect = list => props => (
   <Labeled {...props} Component="select">
     <option />
-    {props.properties.map(p => (
+    {list.sort(by('name')).map(p => (
       <option key={p.uid} value={p.uid}>{p.name}</option>
     ))}
   </Labeled>
@@ -88,8 +86,7 @@ const Create = props => {
       <Field
         name="propertyId"
         label="Property"
-        component={PropertySelect}
-        properties={unknownProperties.sort(by('name'))}
+        component={PropertySelect(unknownProperties)}
       />
       <Field name="value" label="Value" component={ValueSelect} />
       <Field name="description" label="Description" component={Textarea} />

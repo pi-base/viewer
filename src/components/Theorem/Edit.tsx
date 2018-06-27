@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Field } from 'redux-form'
 
-import { updateProperty } from '../../actions'
-import { Id, Property, State } from '../../types'
+import { updateTheorem } from '../../actions'
+import { Id, Theorem, State, Citation } from '../../types'
 
 import Detail from './Detail'
 import Citations from '../Citations'
@@ -12,8 +12,8 @@ import form from '../Form'
 
 type Values = {
   uid: Id
-  name: string
   description: string
+  references: Citation[]
 }
 type Errors = {
   name?: string
@@ -22,17 +22,12 @@ type Errors = {
 // FIXME: share form between create and edit
 const Edit = props => {
   const { handleSubmit, submitting, valid, getResult } = props
-  const property = getResult()
+  const theorem = getResult()
 
   return (
     <div className="row">
       <div className="col-sm-6">
         <form onSubmit={handleSubmit}>
-          <Field
-            name="name"
-            label="Name"
-            component={Text}
-          />
           <Field
             name="description"
             label="Description"
@@ -53,29 +48,28 @@ const Edit = props => {
       </div>
 
       <div className="col-sm-6">
-        {property ? <Detail property={property} /> : ''}
+        {theorem ? <Detail {...props} theorem={theorem} /> : ''}
       </div>
     </div>
   )
 }
 
-const build = (state: State, values: Values) => {
+const build = (state: State, values: Values, props: any) => {
   const errors: Errors = {}
-  if (!values.name) { errors.name = 'Required' }
 
-  const result: Property = { ...values, references: [] }
+  const result: Theorem = { ...props.theorem, ...values }
   return { result, errors }
 }
 
-const save = (dispatch, ownProps, property) => {
-  dispatch(updateProperty(property))
-  ownProps.history.push(`/properties/${property.uid}`)
+const save = (dispatch, ownProps, theorem) => {
+  dispatch(updateTheorem(theorem))
+  ownProps.history.push(`/theorems/${theorem.uid}`)
 }
 
-export default form<Property, Values>({
+export default form<Theorem, Values>({
   build,
-  initial: (_, { property }) => property,
-  name: 'updateProperty',
+  initial: (_, { space }) => space,
+  name: 'updateTheorem',
   fields: ['name', 'description'],
   save
 })(Edit)

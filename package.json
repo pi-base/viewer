@@ -2,6 +2,7 @@
   "name": "viewer",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://viewer.counterexamples.info",
   "dependencies": {
     "apollo-cache-inmemory": "1.1.2",
     "apollo-client": "2.2.3",
@@ -65,6 +66,7 @@
     "@types/react-dom": "^16.0.3",
     "@types/react-router": "^4.0.19",
     "@types/react-router-dom": "^4.2.3",
+    "@types/redux-form": "^7.3.0",
     "apollo-codegen": "^0.18.1",
     "babel-polyfill": "^6.22.0",
     "graphiql": "^0.11.11",
@@ -75,9 +77,10 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "npm run schema && node scripts/build.js",
+    "build": "yarn run schema && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "schema": "apollo-codegen introspect-schema src/graph/schema.gql --output schema.json && apollo-codegen generate src/graph/**/*.gql --schema schema.json --target ts --output src/graph/types.ts"
+    "schema": "apollo-codegen introspect-schema src/graph/schema.gql --output schema.json && apollo-codegen generate src/graph/**/*.gql --schema schema.json --target ts --output src/graph/types.ts",
+    "deploy": "yarn run build && cd build && scp -r . pibase:/app/viewer"
   },
   "jest": {
     "mapCoverage": true,

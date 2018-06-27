@@ -156,7 +156,7 @@ export const login = (token: T.Token): Async<T.User> =>
   (dispatch, _, extra) => {
     const context = {
       headers: {
-        authorization: token
+        Authorization: `Bearer ${token}`
       }
     }
     return query<G.MeQuery>({ graph: extra.graph, dispatch, q: G.me, context }).then(data => {

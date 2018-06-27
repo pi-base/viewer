@@ -18,7 +18,7 @@ import { activeBranch } from './selectors'
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
 
-const initial = 'b91cbfb12122fc4fc5379f7a9f68cc42c487aa81'
+const initial = 'd71e74370ea1d293197fdffd5f89c357ed45a273'
 let userBranch = ''
 
 const token = (() => {

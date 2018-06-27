@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import Citations_ from '../Citations'
 import FormulaInput from '../Formula/Input'
 
 export interface Props {
@@ -59,3 +60,4 @@ export default Labeled
 export const Formula = props => <Labeled {...props} Component={FormulaInput} />
 export const Text = props => <Labeled {...props} Component="input" type="text" />
 export const Textarea = props => <Labeled {...props} Component="input" type="textarea" />
+export const Citations = props => <Labeled {...props} Component={Citations_} />
