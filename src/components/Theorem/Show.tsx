@@ -1,43 +1,29 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { RouteComponentProps } from 'react-router'
-
-import { State } from '../../reducers'
 import * as T from '../../types'
 
 import Counterexamples from './Counterexamples'
 import Detail from './Detail'
-import NotFound from '../NotFound'
 import References from '../References'
-import Tex from '../Tex'
+import { RouteComponentProps } from 'react-router'
 
 type StateProps = {
   theorem: T.Theorem
 }
-type RouteProps = RouteComponentProps<{ id: string }>
-type Props = StateProps & RouteProps
+type Props = StateProps & RouteComponentProps<{ id: string }>
 
-const Theorem = ({ theorem }: Props) => {
-  if (!theorem) { return <NotFound /> }
+const Theorem: React.SFC<Props> = props => (
+  <div>
+    <Detail {...props} />
 
-  return (
-    <div>
-      <Detail theorem={theorem} />
-      <References references={theorem.references} />
-      <hr />
+    <hr />
 
-      <div className="row">
-        <div className="col-md-6">
-          <Counterexamples theorem={theorem} />
-        </div>
-        <div className="col-md-6" />
+    <div className="row">
+      <div className="col-md-6">
+        <Counterexamples theorem={props.theorem} />
       </div>
+      <div className="col-md-6" />
     </div>
-  )
-}
+  </div>
+)
 
-export default connect(
-  (state: State, ownProps: Props) => ({
-    theorem: state.theorems.get(ownProps.match.params.id)
-  })
-)(Theorem)
+export default Theorem

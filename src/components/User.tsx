@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Dispatch, connect } from 'react-redux'
-
-import Branches from './Branch/Table'
 
 import { Action, State, User } from '../types'
+
+import Branches from './Branch/Table'
+import { connect } from 'react-redux'
 
 type StateProps = {
   user: {
@@ -26,8 +26,8 @@ const User = ({ user }: Props) => {
   }
 }
 
-export default connect<StateProps>(
-  (state: State): StateProps => {
+export default connect<StateProps, {}, {}, State>(
+  state => {
     if (state.user === 'unauthenticated') {
       return { user: undefined }
     } else {

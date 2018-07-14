@@ -9,6 +9,11 @@ mutation UpdateTrait($patch: PatchInput!, $trait: UpdateTraitInput!) {
         }
         value
         description
+        references {
+          type
+          ref
+          name
+        }
       }
     }
   }

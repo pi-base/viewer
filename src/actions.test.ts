@@ -1,25 +1,19 @@
-import { applyMiddleware, compose, createStore, Store } from 'redux'
-import persistState from 'redux-localstorage'
-import { createLogger } from 'redux-logger'
-import thunk from 'redux-thunk'
-
-import { ApolloClient, WatchQueryOptions } from 'apollo-client'
-import { HttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
-import fetch from 'node-fetch'
-
 import * as A from './actions'
-import { atom } from './models/Formula'
 import * as G from './graph'
-import rootReducer, { State } from './reducers'
-import { makeStore } from './store'
 
+import { Action, Branch } from './types'
+
+import { State } from './reducers'
+import { ThunkDispatch } from 'redux-thunk'
 import { activeBranch } from './selectors'
+import { atom } from './models/Formula'
+import fetch from 'node-fetch'
+import { makeStore } from './store'
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000
 
 const initial = 'd71e74370ea1d293197fdffd5f89c357ed45a273'
-let userBranch = ''
+let userBranch: Branch = undefined!
 
 const token = (() => {
   let t: string | null = '' // FIXME: need a better strategy for getting a working token in test
@@ -43,17 +37,17 @@ const createUser = (name: string): Promise<string> => {
 }
 
 const store = makeStore({ graph, token })
-const dispatch = store.dispatch;
+const dispatch = (action) => store.dispatch(action)
 
 beforeAll(async () => {
   const t = await createUser('test')
-  userBranch = 'users/test'
+  userBranch = { name: 'users/test' } as Branch
   token.set(t)
   const user = await dispatch(A.login(t))
-  return dispatch(A.changeBranch(userBranch))
+  return dispatch(A.changeBranch(userBranch.name))
 })
 
-const reset = () => dispatch(A.resetBranch(userBranch, initial))
+const reset = () => dispatch(A.resetBranch(userBranch.name, initial))
 
 xit('can create a space', async () => {
   await reset()
@@ -84,7 +78,8 @@ it('runs api calls without error', async () => {
     property: p1,
     value: true,
     deduced: false,
-    description: ''
+    description: '',
+    references: []
   }
 
   const t2 = {
@@ -93,7 +88,8 @@ it('runs api calls without error', async () => {
     property: p2,
     value: false,
     deduced: false,
-    description: ''
+    description: '',
+    references: []
   }
 
   const i1 = {

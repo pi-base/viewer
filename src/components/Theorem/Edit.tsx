@@ -1,75 +1,42 @@
 import * as React from 'react'
-import { Field } from 'redux-form'
 
-import { updateTheorem } from '../../actions'
-import { Id, Theorem, State, Citation } from '../../types'
+import { Field, FieldArray } from 'redux-form'
+import { State, Theorem } from '../../types'
+import { checkProofs, updateTheorem } from '../../actions'
 
-import Detail from './Detail'
-import Citations from '../Citations'
-import { Text, Textarea } from '../Form/Labeled'
+import Citations from '../Form/Citations'
+import { Textarea } from '../Form/Labeled'
+import TheoremForm from './Form'
+import { connect } from 'react-redux'
 
-import form from '../Form'
+interface DispatchProps {
 
-type Values = {
-  uid: Id
-  description: string
-  references: Citation[]
 }
-type Errors = {
-  name?: string
+interface OwnProps {
+  theorem: Theorem
 }
 
-// FIXME: share form between create and edit
-const Edit = props => {
-  const { handleSubmit, submitting, valid, getResult } = props
-  const theorem = getResult()
+export const Fields = _ => (
+  <>
+    <Field
+      name="description"
+      label="Description"
+      component={Textarea}
+    />
+    <FieldArray name="references" component={Citations} />
+  </>
+)
 
-  return (
-    <div className="row">
-      <div className="col-sm-6">
-        <form onSubmit={handleSubmit}>
-          <Field
-            name="description"
-            label="Description"
-            component={Textarea}
-          />
-          <Field
-            name="references"
-            label="References"
-            component={Citations}
-          />
-          <div>
-            <h3>Citations</h3>
-          </div>
-          <button className="btn btn-default" type="submit" disabled={submitting}>
-            Save
-          </button>
-        </form>
-      </div>
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  save: result => {
+    dispatch(updateTheorem(result)).then(theorem => {
+      ownProps.history.push(`/theorems/${theorem.uid}`)
+      dispatch(checkProofs()) // TODO: only for this theorem
+    })
+  }
+})
 
-      <div className="col-sm-6">
-        {theorem ? <Detail {...props} theorem={theorem} /> : ''}
-      </div>
-    </div>
-  )
-}
-
-const build = (state: State, values: Values, props: any) => {
-  const errors: Errors = {}
-
-  const result: Theorem = { ...props.theorem, ...values }
-  return { result, errors }
-}
-
-const save = (dispatch, ownProps, theorem) => {
-  dispatch(updateTheorem(theorem))
-  ownProps.history.push(`/theorems/${theorem.uid}`)
-}
-
-export default form<Theorem, Values>({
-  build,
-  initial: (_, { space }) => space,
-  name: 'updateTheorem',
-  fields: ['name', 'description'],
-  save
-})(Edit)
+export default connect<{}, DispatchProps, OwnProps, State>(
+  null,
+  mapDispatchToProps
+)(props => <TheoremForm {...props} Fields={Fields} />)

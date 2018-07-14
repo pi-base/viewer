@@ -4,6 +4,11 @@ mutation CreateSpace($patch: PatchInput!, $space: CreateSpaceInput!) {
     spaces {
       uid
       name
+      references {
+        name
+        type
+        ref
+      }
     }
   }
 }

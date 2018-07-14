@@ -1,24 +1,24 @@
-import * as React from 'react'
-import { connect } from 'react-redux'
-
-import * as T from '../types'
 import * as F from '../models/Formula'
+import * as React from 'react'
+
+import { Id, Property, State, Theorem } from '../types'
 
 import Formula from './Formula'
 import Tex from './Tex'
+import { connect } from 'react-redux'
 
 interface OwnProps {
-  theorem: T.Theorem
+  theorem: Theorem
   link: boolean
 }
 interface StateProps {
-  properties: Map<T.Id, T.Property>
+  properties: Map<Id, Property>
 }
 type Props = OwnProps & StateProps
 
 function Implication({ theorem, properties, link }: Props) {
   // TODO: what happens when lookup fails?
-  const hydrate = (f) => F.mapProperty<string, T.Property>(
+  const hydrate = (f) => F.mapProperty<string, Property>(
     uid => properties.get(uid)!,
     f
   )
@@ -32,7 +32,7 @@ function Implication({ theorem, properties, link }: Props) {
   )
 }
 
-export default connect<OwnProps, StateProps>(
+export default connect<StateProps, {}, OwnProps, State>(
   (state) => ({
     properties: state.properties
   })

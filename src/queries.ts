@@ -1,6 +1,9 @@
-import { Finder } from './models/Finder'
 import * as F from './models/Formula'
-import { Id, Property, Theorem } from './types'
+
+import { Id, Property, State, Theorem } from './types'
+
+import { Finder } from './models/Finder'
+import { PatchInput } from './graph'
 import { union } from './utils'
 
 // Utilities
@@ -42,4 +45,14 @@ export function relatedTheorems(
   return theorems.filter(t => {
     return theoremProperties(t).has(prop.uid)
   })
+}
+
+export const getPatch = (state: State): PatchInput | undefined => {
+  const active = state.version.active
+  if (!active) { return }
+  const branch = state.version.branches.get(active)!
+  return {
+    branch: branch.name,
+    sha: branch.sha
+  }
 }

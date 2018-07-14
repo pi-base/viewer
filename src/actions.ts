@@ -1,11 +1,12 @@
-import { DocumentNode, FieldNode, OperationDefinitionNode } from 'graphql'
-import { v4 as uuid } from 'uuid'
-
 import * as F from './models/Formula'
 import * as G from './graph'
 import * as T from './types'
-import { Dispatch } from 'redux'
+
+import { DocumentNode, FieldNode, OperationDefinitionNode } from 'graphql'
+
 import { ThunkAction } from 'redux-thunk'
+import { getPatch } from './queries'
+import uuid from 'uuid/v4'
 
 export type AddProperty = { type: 'ADD_PROPERTY', property: T.Property }
 export type AddSpace = { type: 'ADD_SPACE', space: T.Space }
@@ -80,7 +81,19 @@ export const search = ({ text, formula }: { text?: string, formula?: string }): 
   return { type: 'SEARCH', text, formula }
 }
 
-type Async<R> = ThunkAction<Promise<R>, T.State, { graph: G.Client, token: T.TokenStorage }>
+const submittingBranch = (branch: T.Branch): Action => ({
+  type: 'SUBMITTING_BRANCH', branch
+})
+const submittedBranch = ({ branch, url }: { branch: T.Branch, url: string }): Action => ({
+  type: 'SUBMITTED_BRANCH', branch, url
+})
+
+type Async<R> = ThunkAction<
+  Promise<R>,
+  T.State,
+  { graph: G.Client, token: T.TokenStorage },
+  Action
+  >
 
 type QueryParams = {
   graph: G.Client
@@ -142,16 +155,6 @@ export const changeBranch = (branch: T.BranchName | undefined): Async<void> =>
     return Promise.resolve()
   }
 
-const getPatch = (state: T.State): G.PatchInput | undefined => {
-  const active = state.version.active
-  if (!active) { return }
-  const branch = state.version.branches.get(active)!
-  return {
-    branch: branch.name,
-    sha: branch.sha
-  }
-}
-
 export const login = (token: T.Token): Async<T.User> =>
   (dispatch, _, extra) => {
     const context = {
@@ -204,7 +207,7 @@ export const resetBranch = (branch: T.BranchName, to: T.Sha): Async<void> =>
     })
   }
 
-export const submitBranch = (branch: T.BranchName): Async<void> =>
+export const submitBranch = (branch: T.Branch): Async<void> =>
   (dispatch, _, { graph }) => {
     dispatch({ type: 'SUBMITTING_BRANCH', branch })
     return graph.mutate({
@@ -218,18 +221,15 @@ export const submitBranch = (branch: T.BranchName): Async<void> =>
     })
   }
 
-type PatchParams<V> = {
-  before: Action
+type PatchParams<Variables = {}> = {
   mutation: DocumentNode
-  variables: V & { patch?: G.PatchInput }
-  field?: string
+  variables: Variables & { patch?: G.PatchInput }
+  field?: string,
 }
-function patch<V>({ before, mutation, variables, field }: PatchParams<V>) {
+function patch<Variables, Response>({ mutation, variables, field }: PatchParams<Variables>): Async<Response> {
   return (dispatch, getState, { graph }) => {
     const p = getPatch(getState())
     if (!p) { return Promise.resolve() } // FIXME
-
-    dispatch(before)
 
     // Assume mutation looks like
     // <field> {
@@ -243,92 +243,130 @@ function patch<V>({ before, mutation, variables, field }: PatchParams<V>) {
 
     variables.patch = p
     return graph.mutate({ mutation, variables }).then(response => {
-      const version = response.data![field!].version
+      const data = response.data!
+      const version = data[field!].version
       dispatch({ type: 'UPDATE_BRANCH', branch: p.branch, sha: version })
-      return response
+      // tslint:disable-next-line no-any
+      return data as any
     })
   }
 }
 
-export const assertTrait = (trait: T.Trait): Async<void> =>
-  patch<{ trait: G.AssertTraitInput }>({
-    before: addTrait(trait),
+interface PutParams<Object, Input, Response> {
+  mutation: DocumentNode
+  variables: Input
+  build: (response: Response) => Object
+  save: (result: Object) => Action
+}
+const put = <Object, Input, Response>({ mutation, variables, build, save }: PutParams<Object, Input, Response>) =>
+  (dispatch, getState, extra) => {
+    return patch<Input, Response>({
+      mutation,
+      variables
+    })(dispatch, getState, extra).then(response => {
+      const result = build(response)
+      dispatch(save(result))
+      return result
+    })
+  }
+
+export const assertTrait = (trait: T.Trait): Async<T.Trait> =>
+  put<T.Trait, { trait: G.AssertTraitInput }, G.AssertTraitMutation>({
     mutation: G.assertTrait,
     variables: {
       trait: {
         spaceId: trait.space.uid,
         propertyId: trait.property.uid,
         value: trait.value,
-        description: trait.description || ''
+        description: trait.description || '',
+        references: [] // FIXME
       }
-    }
+    },
+    build: _ => trait,
+    save: addTrait
   })
 
-const serializeFormula = (f: F.Formula<string>) => JSON.stringify(F.toJSON(f))
+const serializeFormula = (f: F.Formula<string>): string => JSON.stringify(F.toJSON(f))
 
-export const assertTheorem = (theorem: T.Theorem): Async<void> =>
-  patch<{ theorem: G.AssertTheoremInput }>({
-    before: addTheorem(theorem),
+export const assertTheorem = (theorem: T.Theorem): Async<T.Theorem> =>
+  put<T.Theorem, { theorem: G.AssertTheoremInput }, G.AssertTheoremMutation>({
     mutation: G.assertTheorem,
     variables: {
       theorem: {
         uid: theorem.uid,
         antecedent: serializeFormula(theorem.if),
         consequent: serializeFormula(theorem.then),
-        description: theorem.description
+        description: theorem.description,
+        references: theorem.references
       }
-    }
+    },
+    build: response => {
+      const uid = response.assertTheorem.theorems[0].uid
+      return { uid, ...theorem }
+    },
+    save: addTheorem
   })
 
-export const createSpace = (space: T.Space): Async<void> =>
-  patch<{ space: G.CreateSpaceInput }>({
-    before: addSpace(space),
+export const createSpace = (space: T.Space): Async<T.Space> =>
+  put<T.Space, { space: G.CreateSpaceInput }, G.CreateSpaceMutation>({
     mutation: G.createSpace,
-    variables: { space }
+    variables: { space },
+    build: response => ({ uid: response.createSpace.spaces[0].uid, ...space }),
+    save: addSpace
   })
 
-export const createProperty = (property: T.Property): Async<void> =>
-  patch<{ property: G.CreatePropertyInput }>({
-    before: addProperty(property),
+export const createProperty = (property: T.Property): Async<T.Property> =>
+  put<T.Property, { property: G.CreatePropertyInput }, G.CreatePropertyMutation>({
     mutation: G.createProperty,
-    variables: { property }
+    variables: { property },
+    build: response => {
+      const uid = response.createProperty.properties[0].uid
+      return { uid, ...property }
+    },
+    save: addProperty
   })
 
-export const updateSpace = (space: T.Space): Async<void> =>
-  patch<{ space: G.UpdateSpaceInput }>({
-    before: addSpace(space),
+export const updateSpace = (space: T.Space): Async<T.Space> =>
+  put<T.Space, { space: G.UpdateSpaceInput }, G.UpdateSpaceMutation>({
     mutation: G.updateSpace,
-    variables: { space }
+    variables: { space },
+    build: _ => space,
+    save: addSpace
   })
 
-export const updateProperty = (property: T.Property): Async<void> =>
-  patch<{ property: G.UpdatePropertyInput }>({
-    before: addProperty(property),
+export const updateProperty = (property: T.Property): Async<T.Property> =>
+  put<T.Property, { property: G.UpdatePropertyInput }, G.UpdatePropertyMutation>({
     mutation: G.updateProperty,
-    variables: { property }
+    variables: { property },
+    build: _ => property,
+    save: addProperty
   })
 
-export const updateTrait = (trait: T.Trait): Async<void> =>
-  patch<{ trait: G.UpdateTraitInput }>({
-    before: addTrait(trait),
+export const updateTrait = (trait: T.Trait): Async<T.Trait> =>
+  put<T.Trait, { trait: G.UpdateTraitInput }, G.UpdateTraitMutation>({
     mutation: G.updateTrait,
     variables: {
       trait: {
         spaceId: trait.space.uid,
         propertyId: trait.property.uid,
-        description: trait.description || ''
+        description: trait.description || '',
+        references: [] // FIXME
       }
-    }
+    },
+    build: _ => trait,
+    save: addTrait
   })
 
-export const updateTheorem = (theorem: T.Theorem): Async<void> =>
-  patch<{ theorem: G.UpdateTheoremInput }>({
-    before: addTheorem(theorem),
+export const updateTheorem = (theorem: T.Theorem): Async<T.Theorem> =>
+  put<T.Theorem, { theorem: G.UpdateTheoremInput }, G.UpdateTheoremMutation>({
     mutation: G.updateTheorem,
     variables: {
       theorem: {
         uid: theorem.uid,
-        description: theorem.description
+        description: theorem.description,
+        references: theorem.references
       }
-    }
+    },
+    build: _ => theorem,
+    save: addTheorem
   })

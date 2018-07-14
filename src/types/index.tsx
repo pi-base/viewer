@@ -1,9 +1,9 @@
-import { Store } from 'redux'
-import { Dispatch as _Dispatch } from 'react-redux'
 import { Action } from '../actions'
 import { Client } from '../graph'
 import { Formula } from '../models/Formula'
 import { State } from '../reducers'
+import { Store } from 'redux'
+import { ThunkDispatch } from 'redux-thunk'
 
 export { Action } from '../actions'
 export { Finder } from '../models/Finder'
@@ -50,7 +50,7 @@ export type Branch = {
 export type Id = string
 export type Token = string
 
-export type Dispatch = _Dispatch<Action>
+export type Dispatch = ThunkDispatch<State, any, Action>
 
 export type PropertyId = Id
 
@@ -90,7 +90,8 @@ export interface Trait {
   readonly property: Property
   readonly value: boolean
   readonly deduced: boolean
-  readonly description?: string
+  readonly description: string
+  readonly references: Citation[]
 }
 
 export type Theorem = {

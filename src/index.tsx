@@ -1,23 +1,23 @@
 import 'babel-polyfill'
+import './index.css'
+import './errors'
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import { boot, login, toggleDebug, serverError } from './actions'
-import { makeClient } from './graph'
-import { makeStore, localToken } from './store'
+import { boot, login, serverError, toggleDebug } from './actions'
+import { localToken, makeStore } from './store'
+
 import { PiBase } from './types'
-
 import makeApp from './components/App'
-
-import './index.css'
-import './errors'
+import { makeClient } from './graph'
 
 const graph = makeClient({ token: localToken })
 const store = makeStore({ graph, token: localToken })
 
 const state = store.getState()
-if (state.spaces.size === 0) { store.dispatch(boot()) }
+const dispatch = (action) => store.dispatch(action) // async or not
+if (state.spaces.size === 0) { dispatch(boot()) }
 
 declare global {
   interface Window {
@@ -32,7 +32,7 @@ declare global {
 if (window) {
   window.piBase = {
     debug: () => {
-      store.dispatch(toggleDebug())
+      dispatch(toggleDebug())
     },
 
     showError: (e) => {
@@ -61,7 +61,7 @@ if (window) {
     },
 
     serverError: () => {
-      store.dispatch(serverError())
+      dispatch(serverError())
     }
   }
 
@@ -76,7 +76,7 @@ if (window) {
 
 if (state.user === 'unauthenticated') {
   const token = localToken.get()
-  if (token) { store.dispatch(login(token)) }
+  if (token) { dispatch(login(token)) }
 }
 
 const App = makeApp({

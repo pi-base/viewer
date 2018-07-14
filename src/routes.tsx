@@ -5,22 +5,15 @@ import { Route, Switch } from 'react-router'
 import Home from './components/Home'
 import Login from './components/Login'
 import NotFound from './components/NotFound'
-
+import Properties from './components/Property/List'
+import Property from './components/Property'
 import PropertyCreate from './components/Property/Create'
-import PropertyEdit from './components/Property/Edit'
-import Properties from './components/Property/Index'
-import Property from './components/Property/Show'
-
-import SpaceCreate from './components/Space/Create'
-import SpaceEdit from './components/Space/Edit'
-import Space from './components/Space/Show'
-
-import TheoremCreate from './components/Theorem/Create'
-import TheoremEdit from './components/Theorem/Edit'
-import Theorems from './components/Theorem/Index'
-import Theorem from './components/Theorem/Show'
-
 import Search from './components/Search'
+import Space from './components/Space'
+import SpaceCreate from './components/Space/Create'
+import Theorem from './components/Theorem'
+import TheoremCreate from './components/Theorem/Create'
+import Theorems from './components/Theorem/List'
 import User from './components/User'
 
 const routes = (
@@ -31,17 +24,14 @@ const routes = (
     <Route path="/user" component={User} />
 
     <Route path="/spaces/new" component={SpaceCreate} />
-    <Route path="/spaces/:spaceId/edit" component={SpaceEdit} />
     <Route path="/spaces/:spaceId" component={Space} />
     <Route path="/spaces" component={Search} />
 
     <Route path="/theorems/new" component={TheoremCreate} />
-    <Route path="/theorems/:id/edit" component={TheoremEdit} />
     <Route path="/theorems/:id" component={Theorem} />
     <Route path="/theorems" component={Theorems} />
 
     <Route path="/properties/new" component={PropertyCreate} />
-    <Route path="/properties/:id/edit" component={PropertyEdit} />
     <Route path="/properties/:id" component={Property} />
     <Route path="/properties" component={Properties} />
 

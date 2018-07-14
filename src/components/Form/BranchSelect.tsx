@@ -1,9 +1,10 @@
-import * as React from 'react'
-import { connect } from 'react-redux'
-
-import { State } from '../../reducers'
 import * as A from '../../actions'
+import * as React from 'react'
+
+import { Branch, Dispatch, State, } from '../../types'
+
 import { activeBranch } from '../../selectors'
+import { connect } from 'react-redux'
 
 const BranchSelect = ({ branch, changeBranch }) => {
   if (branch === 'user') {
@@ -36,11 +37,14 @@ const BranchSelect = ({ branch, changeBranch }) => {
   }
 }
 
-export default connect(
-  (state: State) => ({
+type StateProps = { branch: Branch | undefined }
+type DispatchProps = { changeBranch: (name: string) => void }
+
+export default connect<StateProps, DispatchProps, {}, State>(
+  state => ({
     branch: activeBranch(state)
   }),
-  (dispatch) => ({
+  (dispatch: Dispatch) => ({
     changeBranch: (name) => dispatch(A.changeBranch(name))
   })
 )(BranchSelect)

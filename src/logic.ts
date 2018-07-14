@@ -1,9 +1,9 @@
-import * as I from 'immutable'
-
-import report from './errors'
 import * as F from './models/Formula'
+import * as I from 'immutable'
 import * as Q from './queries'
 import * as T from './types'
+
+import { TraitData } from './reducers/traits'
 import { union } from './utils'
 
 export type Proof = I.List<T.Theorem> | 'tautology'
@@ -21,7 +21,7 @@ export const converse = (theorem: T.Theorem): T.Theorem => ({
   then: theorem.if
 })
 
-function evaluate(f: Formula, traitMap: Map<string, { value: boolean }>) {
+const evaluate = (f: Formula, traitMap: Map<string, { value: boolean }>) => {
   let boolMap = new Map()
   traitMap.forEach((t, id) => boolMap.set(id, t.value))
   return F.evaluate(f, boolMap)
@@ -58,7 +58,7 @@ interface ForceOptions {
   formula: Formula,
   theorem: { uid: T.Id | 'given' }
   support: Set<T.Id> // list of property ids
-  traits: Map<T.Id, boolean> // propertyId => value
+  traits: Map<T.Id, TraitData> // propertyId => value
   recordProof: (property: T.Id, value: boolean, proof: Evidence) => void
 }
 function force(opts: ForceOptions) {
@@ -77,7 +77,7 @@ function force(opts: ForceOptions) {
     const reducer = (meta: OrMeta | undefined, sf: Formula) => {
       if (!meta) { return undefined }
 
-      const value = F.evaluate(sf, traits) // FIXME: should we need this conversion?
+      const value = evaluate(sf, traits) // FIXME: should we need this conversion?
       if (value === true) {
         return undefined // Can't force anything
       } else if (value === false) {
@@ -114,11 +114,16 @@ function force(opts: ForceOptions) {
     const property = formula.property
     const trait = traits.get(property)
     if (trait) {
-      if (trait !== formula.value) {
+      if (trait.value !== formula.value) {
         throw { theorem, properties: [property] }
       }
     } else {
-      traits.set(property, formula.value)
+      traits.set(property, {
+        value: formula.value,
+        deduced: true,
+        description: '',
+        references: []
+      })
       recordProof(property, formula.value, {
         theorem: theorem.uid,
         properties: Array.from(support)
@@ -129,15 +134,15 @@ function force(opts: ForceOptions) {
 
 interface ApplyOptions {
   theorem: T.Theorem
-  traits: Map<T.Id, boolean>
+  traits: Map<T.Id, TraitData>
   recordProof: (property: T.Id, value: boolean, proof: Evidence) => void
 }
 export function apply(opts: ApplyOptions) {
   const { theorem, traits, recordProof } = opts
   const a = theorem.if
   const c = theorem.then
-  const av = F.evaluate(a, traits)
-  const cv = F.evaluate(c, traits)
+  const av = evaluate(a, traits)
+  const cv = evaluate(c, traits)
 
   if (av === true && cv === false) {
     throw { theorem, properties: union(F.properties(a), F.properties(c)) }
@@ -161,7 +166,7 @@ export function apply(opts: ApplyOptions) {
 }
 
 export function disprove(theorems: T.Theorem[], formula: Formula): (Proof | undefined) {
-  let traits = new Map<string, boolean>()
+  let traits = new Map<string, TraitData>()
   let contradiction: Proof | undefined = undefined
 
   let theoremsByProp = {}

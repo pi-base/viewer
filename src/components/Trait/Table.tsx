@@ -1,12 +1,13 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-
 import * as Table from '../../models/Table'
-import { Id, Space, Property, State } from '../../types'
+
+import { Id, Property, Space, State } from '../../types'
 
 import Icon from '../Icon'
+import { Link } from 'react-router-dom'
 import Tex from '../Tex'
+import { connect } from 'react-redux'
+import { traitValues } from '../../selectors'
 
 type OwnProps = {
   spaces: Space[]
@@ -72,6 +73,6 @@ function TraitTable({ spaces, properties, traits }: Props) {
 
 export default connect<StateProps, {}, OwnProps>(
   (state: State) => ({
-    traits: state.traits
+    traits: traitValues(state)
   })
 )(TraitTable)

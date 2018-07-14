@@ -4,6 +4,11 @@ mutation UpdateTheorem($patch: PatchInput!, $theorem: UpdateTheoremInput!) {
     theorems {
       uid
       description
+      references {
+        type
+        ref
+        name
+      }
     }
   }
 }

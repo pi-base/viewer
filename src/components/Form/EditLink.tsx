@@ -1,16 +1,22 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-
 import * as S from '../../selectors'
 
-const EditLink = (props) => {
+import { Link, LinkProps } from 'react-router-dom'
+
+import { State } from '../../types'
+import { connect } from 'react-redux'
+
+type StateProps = { editing: boolean }
+type OwnProps = LinkProps
+type Props = StateProps & OwnProps
+
+const EditLink = (props: Props) => {
   const { editing, ...newProps } = props
   if (!editing) { return null }
   return <Link {...newProps} />
 }
 
-export default connect(
+export default connect<StateProps, {}, OwnProps, State>(
   (state) => ({
     editing: S.editing(state)
   }),

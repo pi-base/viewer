@@ -5,6 +5,11 @@ mutation UpdateSpace($patch: PatchInput!, $space: UpdateSpaceInput!) {
       uid
       name
       description
+      references {
+        type
+        ref
+        name
+      }
     }
   }
 }

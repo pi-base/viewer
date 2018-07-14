@@ -1,15 +1,17 @@
 import * as React from 'react'
-import { Dispatch, connect } from 'react-redux'
 
+import { Dispatch, State } from '../../types'
+
+import { connect } from 'react-redux'
 import { search } from '../../actions'
-import { Action, Formula, Id } from '../../types'
 
 type Example = { name: string, query: string }
 
 type DispatchProps = {
   search: (formula: string) => void
 }
-type Props = DispatchProps & React.HTMLProps<HTMLDivElement>
+type OwnProps = React.HTMLProps<HTMLDivElement>
+type Props = DispatchProps & OwnProps
 
 const examples: Example[] = [
   {
@@ -22,11 +24,11 @@ const examples: Example[] = [
   }
 ]
 
-const Example = (props: Example & DispatchProps) => (
-  <article key={props.query}>
-    <h5>{props.name}</h5>
-    <a onClick={() => props.search(props.query)}>
-      <pre>{props.query}</pre>
+const Example = ({ example, onClick }: { example: Example, onClick: () => void }) => (
+  <article>
+    <h5>{example.name}</h5>
+    <a onClick={onClick}>
+      <pre>{example.query}</pre>
     </a>
   </article>
 )
@@ -36,17 +38,17 @@ const Examples = (props: Props) => {
     <div className={props.className}>
       <p>Not sure where to start? Try one of the following searches</p>
       {examples.map(example =>
-        <Example key={example.name} {...example} search={props.search} />
+        <Example key={example.name} example={example} onClick={() => props.search(example.query)} />
       )}
     </div>
   )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   search: (formula) => dispatch(search({ text: '', formula }))
 })
 
-export default connect<{}, DispatchProps>(
-  () => ({}),
+export default connect<{}, DispatchProps, OwnProps, State>(
+  null,
   mapDispatchToProps
 )(Examples)

@@ -1,76 +1,38 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
+import { Route, RouteComponentProps, Switch } from 'react-router'
+
+import Edit from './Edit'
+import NotFound from '../NotFound'
+import { Property } from '../../types'
+import Show from './Show'
 import { State } from '../../reducers'
-import * as S from '../../selectors'
-import * as T from '../../types'
-import { by } from '../../utils'
+import Title from '../Title'
+import { connect } from 'react-redux'
 
-import EditLink from '../Form/EditLink'
-import List from '../List'
-import Preview from '../Preview'
-import Tex from '../Tex'
-
-interface Item {
-  uid: string
-  name: string
-  description: string
+type StateProps = {
+  property: Property | undefined
 }
+type Props = StateProps & RouteComponentProps<{ id: string }>
 
-interface Props {
-  object: Item
-}
+const Property: React.SFC<Props> = props => {
+  const { property } = props
 
-class Property extends React.Component<Props, { expanded: boolean }> {
-  constructor(props: Props) {
-    super(props)
-    this.state = { expanded: false }
-  }
+  if (!property) { return <NotFound {...props} /> }
 
-  toggle() {
-    this.setState({ expanded: !this.state.expanded })
-  }
-
-  render() {
-    const property = this.props.object
-
-    return (
-      <Tex className="row">
-        <div className="col-md-2">
-          <h4>
-            <Link to={`/properties/${property.uid}`}>
-              {property.name}
-            </Link>
-          </h4>
-        </div>
-        <div className="col-md-10">
-          <Preview text={property.description} />
-        </div>
-      </Tex>
-    )
-  }
-}
-
-interface StateProps {
-  properties: T.Property[]
-}
-const Index = ({ properties }: StateProps) => {
   return (
     <div>
-      <EditLink to="/properties/new" className="btn btn-default">New</EditLink>
-
-      <List
-        name="properties"
-        objects={properties}
-        component={Property}
-      />
+      <Title title={property.name} />
+      <Switch>
+        <Route path={props.match.url + '/edit'} render={ps => <Edit {...ps} property={property} />} />
+        <Route path={props.match.url} render={ps => <Show {...ps} property={property} />} />
+      </Switch>
     </div>
   )
 }
 
-export default connect(
-  (state: State) => ({
-    properties: Array.from(state.properties.values()).sort(by('uid')).reverse()
+export default connect<StateProps, {}, Props>(
+  (state: State, props: Props) => ({
+    property: state.properties.get(props.match.params.id)
   })
-)(Index)
+)(Property)

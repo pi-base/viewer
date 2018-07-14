@@ -1,12 +1,11 @@
 import * as React from 'react'
-import { withApollo } from 'react-apollo'
-import { connect } from 'react-redux'
-import { RouteComponentProps, withRouter } from 'react-router'
 
 import { ConfigProps, withConfig } from './Config'
+import { Dispatch, Token } from '../types'
 
+import { RouteComponentProps } from 'react-router'
+import { connect } from 'react-redux'
 import { login } from '../actions'
-import { Token } from '../types'
 
 type RouteProps = RouteComponentProps<{ token: string }>
 type DispatchProps = {
@@ -26,7 +25,7 @@ class Login extends React.PureComponent<Props> {
 
 export default withConfig(connect(
   () => ({}),
-  (dispatch, ownProps): DispatchProps => ({
+  (dispatch: Dispatch, ownProps: RouteProps): DispatchProps => ({
     login: (token: Token) => {
       return dispatch(login(token)).then(user => {
         const next = localStorage.getItem('piBase.returnTo') || '/'

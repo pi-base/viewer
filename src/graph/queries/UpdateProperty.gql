@@ -5,6 +5,11 @@ mutation UpdateProperty($patch: PatchInput!, $property: UpdatePropertyInput!) {
       uid
       name
       description
+      references {
+        type
+        ref
+        name
+      }
     }
   }
 }

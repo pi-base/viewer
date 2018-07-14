@@ -1,8 +1,9 @@
 import * as A from '../actions'
+import * as Logic from '../logic'
+import * as Q from '../queries'
+
 import { Id, Space, Theorem } from '../types'
 
-import * as Q from '../queries'
-import * as Logic from '../logic'
 import { State as StoreState } from '../reducers'
 
 type Deduction = { theorem: Id, properties: Id[] }

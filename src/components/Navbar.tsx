@@ -1,12 +1,16 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { Link, NavLink } from 'react-router-dom'
-
 import * as S from '../selectors'
 
-import UserTab from './Layout/UserTab'
+import { Link, NavLink } from 'react-router-dom'
 
-const Navbar = ({ editing }) => (
+import { State } from '../types'
+import UserTab from './Layout/UserTab'
+import { connect } from 'react-redux'
+
+type StateProps = { editing: boolean }
+type Props = StateProps
+
+const Navbar = ({ editing }: Props) => (
   <nav className={`navbar navbar-${editing ? 'inverse' : 'default'} navbar-static-top`}>
     <div className="container">
       <Link to="/" className="navbar-brand">π-Base</Link>
@@ -21,8 +25,8 @@ const Navbar = ({ editing }) => (
   </nav>
 )
 
-export default connect(
-  (state) => ({
+export default connect<StateProps, {}, {}, State>(
+  state => ({
     editing: S.editing(state)
   })
 )(Navbar)

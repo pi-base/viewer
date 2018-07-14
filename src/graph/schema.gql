@@ -18,6 +18,7 @@ type Trait {
   value: Boolean!
   references: [Citation!]!
   description: String!
+  deduced: Boolean!
 }
 
 type Theorem {
@@ -68,22 +69,32 @@ type ThrowErrorResponse {
 
 # Inputs
 
+input CitationInput {
+  type: String!
+  ref: String!
+  name: String!
+}
+
 input CreateSpaceInput {
   uid: String
   name: String!
   description: String!
+  references: [CitationInput]!
 }
 
 input CreatePropertyInput {
   uid: String
   name: String!
   description: String!
+  references: [CitationInput]!
 }
 
 input AssertTraitInput {
   spaceId: String!
   propertyId: String!
   value: Boolean!
+  description: String!
+  references: [CitationInput]!
 }
 
 input AssertTheoremInput {
@@ -91,6 +102,7 @@ input AssertTheoremInput {
   antecedent: String!
   consequent: String!
   description: String!
+  references: [CitationInput]!
 }
 
 input ResetBranchInput {
@@ -105,22 +117,26 @@ input SubmitBranchInput {
 input UpdateSpaceInput {
   uid: String!
   description: String!
+  references: [CitationInput]!
 }
 
 input UpdatePropertyInput {
   uid: String! 
   description: String!
+  references: [CitationInput]!
 }
 
 input UpdateTheoremInput {
   uid: String!
   description: String!
+  references: [CitationInput]!
 }
 
 input UpdateTraitInput {
   spaceId: String!
   propertyId: String!
   description: String!
+  references: [CitationInput]!
 }
 
 input PatchInput {

@@ -4,7 +4,8 @@ query Viewer($version: String) {
     spaces {
       uid
       name
-      references {
+      references { 
+        # TODO: these should be fragments
         type
         ref
         name
@@ -16,6 +17,12 @@ query Viewer($version: String) {
         }
         value
         description
+        deduced
+        references {
+          type
+          ref
+          name
+        }
       }
     }
     properties {

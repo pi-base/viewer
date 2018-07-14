@@ -1,54 +1,50 @@
+import * as F from '../models/Formula'
 import * as React from 'react'
-import { withRouter, RouteComponentProps } from 'react-router'
+import * as query from 'query-string'
 
-// import { State } from '../reducers'
-// import * as F from '../models/Formula'
-// import * as Q from '../queries'
-// import * as T from '../types'
+import { Formula, Property, Space, State } from '../types'
+import { RollbarProps, withRollbar } from '../errors'
+import { RouteComponentProps, withRouter } from 'react-router'
+import { propertyFinder, spaceFinder } from '../selectors'
 
-// import Id from '../models/Id'
+import Id from '../models/Id'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 
-// const tryConvertFormula = (q: string) => {
-//   if (!q) { return }
-// 
-//   try {
-//     const f = F.fromJSON(JSON.parse(q))
-//     return F.mapProperty(id => store.properties.find(Id('P', id))!, f)
-//   } catch (e) {
-//     return
-//   }
-// }
+interface StateProps {
+  findSpace: (id: string) => Space | undefined
+  convertFormula: (q: string) => Formula<Property> | undefined
+}
 
-type Props = RouteComponentProps<{}>
+type Props = StateProps & RouteComponentProps<{}> & RollbarProps
 
 class NotFound extends React.PureComponent<Props> {
   componentWillMount() {
-    console.log('FIXME: not found redirections and reporting')
-    // const path = this.props.router.location.pathname
+    const path = this.props.location.pathname
 
-    // // Redirect cached URLs
-    // if (path.match(/search/)) {
-    //   const q = this.props.router.location.query.q
-    //   let newPath = '/spaces'
-    //   if (q) {
-    //     const f = tryConvertFormula(q)
-    //     if (f) {
-    //       newPath += `?q=${encodeURIComponent(F.toString(f))}`
-    //     }
-    //   }
-    //   return this.props.router.push(newPath)
-    // }
+    // Redirect cached URLs
+    if (path.match(/search/)) {
+      const q = query.parse(this.props.location.search)
+      let newPath = '/spaces'
+      if (q) {
+        const f = this.props.convertFormula(q)
+        if (f) {
+          newPath += `?q=${encodeURIComponent(F.toString(f))}`
+        }
+      }
+      return this.props.history.push(newPath)
+    }
 
-    // let m = path.match(/spaces\/(\d+)/)
-    // if (m) {
-    //   const space = store.spaces.find(Id('S', m[1]))
-    //   if (space) {
-    //     return this.props.router.push(`/spaces/${space.uid}`)
-    //   }
-    // }
+    let m = path.match(/spaces\/(\d+)/)
+    if (m) {
+      const space = this.props.findSpace(Id('S', m[1]))
+      if (space) {
+        return this.props.history.push(`/spaces/${space.uid}`)
+      }
+    }
 
     // FIXME
-    // Redirect traits by id to their canonical URL
+    // // Redirect traits by id to their canonical URL
     // m = path.match(/traits\/(\d+)/)
     // if (m) {
     //   const trait = this.props.findTrait(Id('T', m[1]))
@@ -57,8 +53,7 @@ class NotFound extends React.PureComponent<Props> {
     //   }
     // }
 
-    // FIXME: report to Rollbar
-    // this.props.report(path)
+    this.props.report('404', { level: 'info', extra: { path } })
   }
 
   render() {
@@ -80,4 +75,24 @@ class NotFound extends React.PureComponent<Props> {
   }
 }
 
-export default withRouter<Props>(NotFound)
+const mapStateToProperties = (state: State) => ({
+  findSpace: spaceFinder(state).find,
+  convertFormula: (q: string) => {
+    if (!q) { return }
+
+    const finder = propertyFinder(state)
+
+    try {
+      const f = F.fromJSON(JSON.parse(q))
+      return F.mapProperty(id => finder.find(Id('P', id))!, f)
+    } catch (e) {
+      return
+    }
+  }
+})
+
+export default compose(
+  withRouter,
+  withRollbar,
+  connect(mapStateToProperties)
+)(NotFound)

@@ -1,11 +1,12 @@
-import { createSelector } from 'reselect'
+import * as F from './models/Formula'
 
 import { Formula, Id, Proof, Property, SearchModifier, Space, Table, Theorem, Trait } from './types'
-import { State } from './reducers'
 
-import * as F from './models/Formula'
 import { Finder } from './models/Finder'
 import { Prover } from './models/Prover'
+import { State } from './reducers'
+import { createSelector } from 'reselect'
+import memoizeOne from 'memoize-one'
 import { union } from './utils'
 
 export const propertyFinder = createSelector(
@@ -18,8 +19,23 @@ export const spaceFinder = createSelector(
   spaces => new Finder(Array.from(spaces))
 )
 
-export const prover = createSelector(
+export const traitValues = createSelector(
   (state: State) => state.traits,
+  traits => {
+    const result = new Map<Id, Map<Id, boolean>>()
+    traits.forEach((space, sid) => {
+      const map = new Map()
+      space.forEach((trait, pid) => {
+        map.set(pid, trait.value)
+      })
+      result.set(sid, map)
+    })
+    return result
+  }
+)
+
+export const prover = createSelector(
+  traitValues,
   (state: State) => state.theorems,
   (traits, theorems) => new Prover(traits, Array.from(theorems.values()))
 )
@@ -38,14 +54,14 @@ export const spaceTraits = (state: State, space: Space): Trait[] => {
 
   const result: Trait[] = []
   values.forEach((value, pid) => {
+    const uid = value.uid || traitId({ space: space.uid, property: pid })
     result.push({
+      ...value,
+      uid,
       space: space,
       property: state.properties.get(pid)!,
-      value: value,
-      uid: traitId({ space: space.uid, property: pid }),
-      // FIXME:
-      description: '',
-      deduced: !asserted(state, space.uid, pid)
+      description: value.description || '',
+      references: value.references || []
     })
   })
   return result
@@ -70,14 +86,14 @@ export const getTrait = (state: State, space: Space, propertyId: Id): Trait | un
   if (!property) { return undefined }
   const value = ts.get(propertyId)
   if (value === undefined) { return undefined }
+  const uid = value.uid || traitId({ space: space.uid, property: propertyId })
   return {
+    ...value,
+    uid,
     space,
     property,
-    value,
-    // FIXME:
-    uid: '',
-    description: '',
-    deduced: !asserted(state, space.uid, propertyId)
+    description: value.description || '',
+    references: value.references || []
   }
 }
 
@@ -87,12 +103,30 @@ type SearchOptions = {
   text?: string
 }
 
-export const search = (
+const formulaScan = memoizeOne(
+  (
+    spaces: Space[],
+    traits: State['traits'],
+    formula: Formula<string>,
+    matcher: (v: boolean | undefined) => boolean
+  ) => {
+    return spaces.filter(s => {
+      const ts = traits.get(s.uid)
+      if (!ts) { return false }
+      const map = new Map()
+      ts.forEach((t, id) => map.set(id, t.value))
+      return matcher(F.evaluate(formula, map))
+    })
+  }
+)
+
+const _search = (
   state: State,
   options: SearchOptions
 ): Space[] => {
   let spaces: Space[]
 
+  // FIXME: make sure these actually memoize
   if (options.text) {
     spaces = spaceFinder(state).search(options.text)
   } else {
@@ -107,15 +141,13 @@ export const search = (
       'not_false': (value) => value !== false
     }[options.modifier || 'true']
 
-    spaces = spaces.filter(s => {
-      const ts = state.traits.get(s.uid)
-      if (!ts) { return false }
-      return matcher(F.evaluate(options.formula!, ts))
-    })
+    return formulaScan(spaces, state.traits, options.formula, matcher)
   }
 
   return spaces
 }
+
+export const search = memoizeOne(_search)
 
 export const searchFormula = createSelector(
   (state: State) => state.search.formulaMemo,

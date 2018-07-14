@@ -1,7 +1,7 @@
 /* tslint:disable switch-default */
 import * as Parser from './formula/parser.js'
-
 import * as T from '../types'
+
 import { union } from '../utils'
 
 interface Atom<P> {

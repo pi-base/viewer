@@ -28,8 +28,8 @@ const References = ({ references }: Props) => {
     <div>
       <h3>References</h3>
       <ul>
-        {references.map(c =>
-          <li key={c.ref}><Reference reference={c} /></li>
+        {references.map((c, i) =>
+          <li key={i}><Reference reference={c} /></li>
         )}
       </ul>
     </div>

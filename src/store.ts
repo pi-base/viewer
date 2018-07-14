@@ -1,11 +1,12 @@
-import { applyMiddleware, compose, createStore, Store } from 'redux'
-import persistState from 'redux-localstorage'
-import { createLogger } from 'redux-logger'
-import thunk from 'redux-thunk'
-
 import * as G from './graph'
+
+import { Action, TokenStorage } from './types'
+import { Store, applyMiddleware, compose, createStore } from 'redux'
 import rootReducer, { State } from './reducers'
-import { TokenStorage } from './types'
+import thunk, { ThunkMiddleware } from 'redux-thunk'
+
+import { createLogger } from 'redux-logger'
+import persistState from 'redux-localstorage'
 
 const inDevelopment = process.env.NODE_ENV === 'development'
 
@@ -20,7 +21,7 @@ export const localToken = {
 
 const makeMiddleware = ({ graph, token }: { graph: G.Client, token: TokenStorage }) => {
   const middleware = [
-    thunk.withExtraArgument({ graph, token })
+    thunk.withExtraArgument({ graph, token }) as ThunkMiddleware<State, Action>
   ]
 
   if (inDevelopment) {
@@ -71,7 +72,7 @@ export function makeStore({ graph, token }: { graph: G.Client, token: TokenStora
     enhancers.push(loadFromLocalStorage)
   }
 
-  return createStore<State>(
+  return createStore<State, Action, {}, {}>(
     rootReducer,
     composeEnhancers(...enhancers)
   )

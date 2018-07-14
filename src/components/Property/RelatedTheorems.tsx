@@ -1,18 +1,18 @@
-import * as React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-
 import * as Q from '../../queries'
-import * as T from '../../types'
+import * as React from 'react'
+
+import { Property, State, Theorem } from '../../types'
 
 import Implication from '../Implication'
+import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 interface OwnProps {
-  property: T.Property
+  property: Property
 }
 interface StateProps {
-  theorems: T.Theorem[]
-  properties: T.Finder<T.Property>
+  theorems: Theorem[]
+  properties: Property[]
 }
 type Props = OwnProps & StateProps
 
@@ -22,7 +22,7 @@ function RelatedTheorems({ property, theorems, properties }: Props) {
   return (
     <div>
       <h4>Related Theorems</h4>
-      {related.map((t: T.Theorem) => (
+      {related.map((t: Theorem) => (
         <div key={t.uid}>
           <Link to={`/theorems/${t.uid}`}>
             <Implication theorem={t} link={false} />
@@ -34,8 +34,8 @@ function RelatedTheorems({ property, theorems, properties }: Props) {
   )
 }
 
-export default connect<OwnProps, StateProps, {}>(
-  (state: T.State) => ({
+export default connect<StateProps, {}, OwnProps, State>(
+  state => ({
     properties: Array.from(state.properties.values()),
     theorems: Array.from(state.theorems.values())
   })

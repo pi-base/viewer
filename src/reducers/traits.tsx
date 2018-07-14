@@ -1,7 +1,15 @@
-import { Action } from '../actions'
-import { Id } from '../types'
+import { Citation, Id } from '../types'
 
-export type State = Map<Id, Map<Id, boolean>>
+import { Action } from '../actions'
+
+export type TraitData = {
+  uid?: Id
+  value: boolean
+  deduced: boolean
+  description?: string
+  references?: Citation[]
+}
+export type State = Map<Id, Map<Id, TraitData>>
 
 const clone = (state: State): State => {
   const next = new Map()
@@ -26,11 +34,16 @@ export const reducer = (
       })
       action.viewer.viewer.spaces.forEach(s => {
         if (!next.has(s.uid)) {
-          next.set(s.uid, new Map())
+          next.set(s.uid, new Map<Id, TraitData>())
         }
         const props = next.get(s.uid)!
         s.traits.forEach(t => {
-          props.set(t.property.uid, t.value)
+          props.set(t.property.uid, {
+            value: t.value,
+            description: t.description || '',
+            deduced: t.deduced,
+            references: t.references as Citation[]
+          })
         })
       })
       return next
@@ -43,9 +56,17 @@ export const reducer = (
       if (!next.has(action.trait.space.uid)) {
         next.set(action.trait.space.uid, new Map())
       }
+      const data: TraitData = {
+        value: action.trait.value,
+        deduced: action.trait.deduced
+      }
+      if (action.trait.uid) { data.uid = action.trait.uid }
+      if (action.trait.description) { data.description = action.trait.description }
+      if (action.trait.references) { data.references = action.trait.references }
+
       next
         .get(action.trait.space.uid)!
-        .set(action.trait.property.uid, action.trait.value)
+        .set(action.trait.property.uid, data)
       return next
     default:
       return state

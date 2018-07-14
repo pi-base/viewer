@@ -1,22 +1,19 @@
 import * as React from 'react'
-import { withApollo } from 'react-apollo'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router'
-import { Dispatch } from 'redux'
 
-import { Action, boot } from '../actions'
-import { State } from '../reducers'
+import { RouteComponentProps, withRouter } from 'react-router'
 
-import Navbar from './Navbar'
 import Footer from './Footer'
+import Navbar from './Navbar'
+import { State } from '../reducers'
+import { connect } from 'react-redux'
 
 interface StateProps {
   booted: boolean
   debug: boolean
-  location: { pathname: string }
 }
+type Props = StateProps & RouteComponentProps<{}>
 
-class Layout extends React.PureComponent<StateProps> {
+class Layout extends React.PureComponent<Props> {
   render() {
     const { booted, debug, location } = this.props
 
@@ -38,8 +35,8 @@ class Layout extends React.PureComponent<StateProps> {
 
 // `withRouter` is required so that location changes will trigger a re-render
 // see https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/blocked-updates.md
-export default withRouter(connect<{}, StateProps>(
-  (state: State) => ({
+export default withRouter(connect<StateProps, {}, {}, State>(
+  state => ({
     booted: state.spaces.size > 0,
     debug: state.debug
   })

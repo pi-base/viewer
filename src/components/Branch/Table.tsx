@@ -1,9 +1,10 @@
-import * as React from 'react'
-import { Dispatch, connect } from 'react-redux'
-
 import * as A from '../../actions'
-import { Branch, State } from '../../types'
+import * as React from 'react'
+
+import { Branch, Dispatch, State } from '../../types'
+
 import { by } from '../../utils'
+import { connect } from 'react-redux'
 
 type BranchExtra = Branch & { active: boolean }
 type StateProps = {
@@ -67,8 +68,8 @@ const Branches = ({ branches, changeBranch, submitBranch }: Props) => {
   )
 }
 
-export default connect<StateProps, DispatchProps>(
-  (state: State): StateProps => {
+export default connect<StateProps, DispatchProps, {}, State>(
+  state => {
     if (state.user === 'unauthenticated') {
       return { branches: [] }
     } else {
@@ -81,8 +82,8 @@ export default connect<StateProps, DispatchProps>(
       }
     }
   },
-  (dispatch, ownProps): DispatchProps => ({
+  (dispatch: Dispatch) => ({
     changeBranch: (branch) => dispatch(A.changeBranch(branch.name)),
-    submitBranch: (branch) => dispatch(A.submitBranch(branch.name))
+    submitBranch: (branch) => dispatch(A.submitBranch(branch))
   })
 )(Branches)

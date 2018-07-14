@@ -1,86 +1,65 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
+
 import { Route, RouteComponentProps, Switch } from 'react-router'
-import { Helmet } from 'react-helmet'
-
-import * as T from '../../types'
-
-import { State } from '../../reducers'
 
 import Detail from './Detail'
 import EditLink from '../Form/EditLink'
-import NotFound from '../NotFound'
-import References from '../References'
-import TraitCreate from '../Trait/Create'
-import TraitPager from '../Trait/Pager'
+import { Space } from '../../types'
 import Trait from '../Trait/Show'
+import TraitCreate from '../Trait/Create'
+import TraitEdit from '../Trait/Edit'
+import TraitPager from '../Trait/Pager'
 
 interface OwnProps {
-  children: JSX.Element
+  space: Space
 }
-type StateProps = {
-  space: T.Space | undefined
-}
-type Props = OwnProps & StateProps & RouteComponentProps<{ spaceId: string }>
+type Props = OwnProps & RouteComponentProps<{ propertyId: string }>
 
-const Space = (props: Props) => {
-  const { space } = props
-
-  if (!space) { return <NotFound /> }
-
-  return (
-    <div>
-      <Helmet>
-        <title>{space.name} | π-Base</title>
-      </Helmet>
-
-      <Detail {...props} space={space} />
-
-      <hr />
-
-      <div className="row">
-        <div className="col-md-4">
-          <h3>
-            Properties
-            {' '}
-            <EditLink
-              to={props.match.url + '/properties/new'}
-              className="btn btn-default btn-sm"
-            >
-              New
-            </EditLink>
-          </h3>
-          <TraitPager space={space} />
-        </div>
-        <div className="col-md-8">
-          <Switch>
-            <Route
-              path={props.match.url + '/properties/new'}
-              render={ps => <TraitCreate {...ps} space={space} />}
-            />
-            <Route
-              path={props.match.url + '/properties/:propertyId'}
-              render={ps => <Trait {...ps} space={space} />}
-            />
-            <Route
-              render={ps =>
-                <EditLink
-                  to={props.match.url + '/properties/new'}
-                  className="btn btn-default"
-                >
-                  New
-                </EditLink>
-              }
-            />
-          </Switch>
-        </div>
-      </div>
+const Traits = (props: Props) => (
+  <div className="row">
+    <div className="col-md-4">
+      <h3>
+        Properties
+        {' '}
+        <EditLink
+          to={`/spaces/${props.space.uid}/properties/new`}
+          className="btn btn-default btn-sm"
+        >
+          New
+        </EditLink>
+      </h3>
+      <TraitPager {...props} />
     </div>
-  )
-}
+    <div className="col-md-8">
+      {props.match.params.propertyId && <Trait {...props} />}
+    </div>
+  </div>
+)
 
-export default connect<StateProps, {}, Props>(
-  (state: State, props: Props) => ({
-    space: state.spaces.get(props.match.params.spaceId)
-  })
-)(Space)
+const Show: React.SFC<Props> = props => (
+  <div>
+    <Detail {...props} />
+
+    <hr />
+
+    <Switch>
+      <Route
+        path={props.match.url + '/properties/new'}
+        render={ps => <TraitCreate {...ps} space={props.space} />}
+      />
+      <Route
+        path={props.match.url + '/properties/:propertyId/edit'}
+        render={ps => <TraitEdit {...ps} space={props.space} />}
+      />
+      <Route
+        path={props.match.url + '/properties/:propertyId'}
+        render={ps => <Traits {...ps} space={props.space} />}
+      />
+      <Route
+        render={ps => <Traits {...ps} space={props.space} />}
+      />
+    </Switch>
+  </div>
+)
+
+export default Show

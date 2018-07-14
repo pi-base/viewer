@@ -1,8 +1,4 @@
-import { combineReducers } from 'redux'
 import * as form from 'redux-form'
-
-import { Action } from './types'
-
 import * as properties from './reducers/properties'
 import * as prover from './reducers/prover'
 import * as search from './reducers/search'
@@ -11,6 +7,9 @@ import * as theorems from './reducers/theorems'
 import * as traits from './reducers/traits'
 import * as user from './reducers/user'
 import * as version from './reducers/version'
+
+import { Action } from './types'
+import { combineReducers } from 'redux'
 
 export type State = {
   debug: boolean
@@ -22,6 +21,7 @@ export type State = {
   traits: traits.State
   user: user.State
   version: version.State
+  form: form.FormStateMap
 }
 
 const debugReducer = (debug: boolean | undefined, action: Action): boolean => {
@@ -39,7 +39,7 @@ const combined = combineReducers<State>({
   theorems: theorems.reducer,
   user: user.reducer,
   version: version.reducer,
-  form: form.reducer
+  form: (state, action) => form.reducer(state!, action)
 })
 
 const reducer = (state: State, action: Action): State => {

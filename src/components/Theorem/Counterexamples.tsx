@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import * as S from '../../selectors'
 
 import { Property, Prover, Space, State, Theorem } from '../../types'
 
-import Implication from '../Implication'
-import TraitTable from '../Trait/Table'
-import { converse } from '../../logic'
 import { Finder } from '../../models/Finder'
-import * as S from '../../selectors'
+import Implication from '../Implication'
+import { Link } from 'react-router-dom'
+import TraitTable from '../Trait/Table'
+import { connect } from 'react-redux'
+import { converse } from '../../logic'
 
 type OwnProps = {
   theorem: Theorem
@@ -53,7 +53,7 @@ const Counterexamples = ({ theorem, properties, counterexamples, prover }: Props
             {proof.map(thrm => (
               <tr key={thrm!.uid}>
                 <td>
-                  <Implication theorem={thrm} link={false} />
+                  <Implication theorem={thrm!} link={false} />
                 </td>
                 <td>
                   <Link to={`/theorems/${thrm!.uid}`}>{thrm!.uid}</Link>
