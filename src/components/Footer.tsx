@@ -16,7 +16,6 @@ const Footer = () => (
       </ul>
       <ul className="nav navbar-nav pull-right">
         <li><a href="#" onClick={action('clientError')}>Client error</a></li>
-        <li><a href="#" onClick={action('serverError')}>Server error</a></li>
       </ul>
     </div>
   </nav>

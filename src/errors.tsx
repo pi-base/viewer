@@ -30,9 +30,11 @@ if (window && window.Rollbar) {
 }
 
 export const setUser = (user: User) => {
-  window.Rollbar.options.payload.person = {
-    username: user.name
-  }
+  window.Rollbar.configure({
+    payload: {
+      username: user.name
+    }
+  })
 }
 
 export const error = (...e) => window.Rollbar.error(...e)

@@ -5,7 +5,7 @@ import './errors'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-import { boot, login, serverError, toggleDebug } from './actions'
+import { boot, login, toggleDebug } from './actions'
 import { localToken, makeStore } from './store'
 
 import { PiBase } from './types'
@@ -58,10 +58,6 @@ if (window) {
     clientError: () => {
       // tslint:disable-next-line no-any
       ('' as any).floop('')
-    },
-
-    serverError: () => {
-      dispatch(serverError())
     }
   }
 

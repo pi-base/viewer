@@ -23,9 +23,7 @@ export type PiBase = {
   refreshRedux: () => void
   clearStorage: () => void
   clientError: () => void
-  serverError: () => void
-  // tslint:disable-next-line no-any
-  showError: (e: any) => void
+  showError: (e?: Object) => void
 }
 
 export type TokenStorage = {

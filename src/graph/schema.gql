@@ -63,10 +63,6 @@ type SubmitBranchResponse {
   url: String!
 }
 
-type ThrowErrorResponse {
-  message: String!
-}
-
 # Inputs
 
 input CitationInput {
@@ -144,10 +140,6 @@ input PatchInput {
   sha: String!
 }
 
-input ThrowErrorInput {
-  message: String!
-}
-
 # Root types
 
 type Query {
@@ -166,7 +158,6 @@ type Mutation {
   assertTheorem(patch: PatchInput!, theorem: AssertTheoremInput!): Viewer!
   resetBranch(input: ResetBranchInput!): ResetBranchResponse!
   submitBranch(input: SubmitBranchInput!): SubmitBranchResponse!
-  throwError(input: ThrowErrorInput!): ThrowErrorResponse!
 }
 
 schema {

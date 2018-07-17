@@ -139,15 +139,6 @@ const fetchViewer = (): Async<void> =>
 
 export const boot = () => fetchViewer()
 
-export const serverError = (): Async<void> =>
-  (_dispatch, _getState, { graph }) =>
-    graph.mutate({
-      mutation: G.throwError,
-      variables: {
-        input: { mesage: '' }
-      }
-    }).then(() => undefined)
-
 export const changeBranch = (branch: T.BranchName | undefined): Async<void> =>
   (dispatch, getState, { graph }) => {
     dispatch({ type: 'CHANGE_BRANCH', branch })
@@ -210,13 +201,14 @@ export const resetBranch = (branch: T.BranchName, to: T.Sha): Async<void> =>
 export const submitBranch = (branch: T.Branch): Async<void> =>
   (dispatch, _, { graph }) => {
     dispatch({ type: 'SUBMITTING_BRANCH', branch })
-    return graph.mutate({
+    const input: G.SubmitBranchInput = {
+      branch: branch.name
+    }
+    return graph.mutate<G.SubmitBranchMutation>({
       mutation: G.submitBranch,
-      variables: {
-        input: { branch }
-      }
+      variables: { input }
     }).then(response => {
-      const data = (response.data as G.SubmitBranchMutation).submitBranch
+      const data = response.data!.submitBranch
       dispatch({ type: 'SUBMITTED_BRANCH', branch, url: data.url })
     })
   }
@@ -278,8 +270,8 @@ export const assertTrait = (trait: T.Trait): Async<T.Trait> =>
         spaceId: trait.space.uid,
         propertyId: trait.property.uid,
         value: trait.value,
-        description: trait.description || '',
-        references: [] // FIXME
+        description: trait.description,
+        references: trait.references
       }
     },
     build: _ => trait,
@@ -349,8 +341,8 @@ export const updateTrait = (trait: T.Trait): Async<T.Trait> =>
       trait: {
         spaceId: trait.space.uid,
         propertyId: trait.property.uid,
-        description: trait.description || '',
-        references: [] // FIXME
+        description: trait.description,
+        references: trait.references
       }
     },
     build: _ => trait,

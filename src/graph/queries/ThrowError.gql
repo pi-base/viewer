@@ -1,5 +1,0 @@
-mutation ThrowError($input: ThrowErrorInput!) {
-  throwError(input: $input) {
-    message
-  }
-}

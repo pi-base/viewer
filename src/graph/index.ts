@@ -1,11 +1,11 @@
+import { ApolloLink, concat } from 'apollo-link'
+
 import { ApolloClient } from 'apollo-client'
+import { GRAPHQL_SERVER_URL } from '../constants'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { ApolloLink, concat } from 'apollo-link'
-import { onError } from 'apollo-link-error'
-
-import { GRAPHQL_SERVER_URL } from '../constants'
 import { TokenStorage } from '../types'
+import { onError } from 'apollo-link-error'
 
 export * from './types'
 
@@ -22,7 +22,6 @@ export const updateProperty = require('./queries/UpdateProperty.gql')
 export const updateSpace = require('./queries/UpdateSpace.gql')
 export const updateTheorem = require('./queries/UpdateTheorem.gql')
 export const updateTrait = require('./queries/UpdateTrait.gql')
-export const throwError = require('./queries/ThrowError.gql')
 
 export const schema = require('./schema.gql')
 
@@ -56,7 +55,11 @@ export function makeClient(opts: ClientOptions): Client {
   const httpLink = new HttpLink({
     uri: `${base}/graphql`,
     credentials: 'same-origin',
-    fetch: opts.fetch || window.fetch
+    fetch: opts.fetch || window.fetch,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
   })
 
   const errorLink = onError(({ networkError }) => {
