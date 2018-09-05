@@ -1,4 +1,5 @@
 import { Branch, BranchName } from '../types'
+
 import { Action } from '../actions'
 
 export type State = {
@@ -37,7 +38,7 @@ export const reducer = (
       branches = new Map()
       action.branches.forEach(b => branches.set(b.name, b))
       // TODO: this should check that the SHA matches the loaded data
-      let active = action.branches.find(b => b.access === 'read')!.name
+      let active = state.active || action.branches.find(b => b.access === 'read')!.name
       return { ...state, branches, active }
     case 'PERSIST_SUCCESS':
       return state

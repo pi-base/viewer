@@ -22,6 +22,7 @@ export const reducer = (
         next.set(s.uid, {
           uid: s.uid,
           name: s.name,
+          aliases: s.aliases,
           description: s.description,
           references: s.references as T.Citation[] // TODO: check `type` against enum
         })

@@ -2,9 +2,11 @@ mutation CreateSpace($patch: PatchInput!, $space: CreateSpaceInput!) {
   createSpace(patch: $patch, space: $space) {
     version
     spaces {
+      __typename
       uid
       name
       references {
+        __typename
         name
         type
         ref

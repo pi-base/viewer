@@ -5,7 +5,7 @@ export interface Props {
 }
 
 function Aliases({ aliases }: Props) {
-  if (!aliases) { return null }
+  if (!aliases || aliases.length === 0) { return null }
 
   return <small> or {aliases.join(', ')}</small>
 }

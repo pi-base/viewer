@@ -15,6 +15,7 @@ export const reducer = (state: State, action: Action): State => {
         next.set(p.uid, {
           uid: p.uid,
           name: p.name,
+          aliases: p.aliases,
           description: p.description,
           references: p.references
         })

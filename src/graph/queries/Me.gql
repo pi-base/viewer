@@ -1,7 +1,9 @@
 query Me {
   me {
+    __typename
     name
     branches {
+      __typename
       name
       sha
       access

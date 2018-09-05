@@ -1,15 +1,19 @@
 import * as React from 'react'
 
-import { markdown } from 'pi-base-core'
+import CitationDisplay from './CitationDisplay'
+import Tex from './Tex'
+import parser from './Markdown/parser'
 
-const rawMarkup = (text: string) => {
-  return { __html: markdown(text) }
-}
+const parse = parser({
+  components: {
+    citation: CitationDisplay,
+    inlineMath: ({ formula }) => (<Tex component="span">${formula}$</Tex>)
+  }
+})
 
-const Markdown = ({ text }: { text: string }) => {
-  if (!text) { return <div className="markdown"/> }
-
-  return <div className="markdown" dangerouslySetInnerHTML={rawMarkup(text)}/>
+const Markdown = ({ text }) => {
+  if (!text) { return null }
+  return parse.processSync(text).contents
 }
 
 export default Markdown

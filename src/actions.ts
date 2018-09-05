@@ -201,7 +201,7 @@ export const resetBranch = (branch: T.BranchName, to: T.Sha): Async<void> =>
 export const submitBranch = (branch: T.Branch): Async<void> =>
   (dispatch, _, { graph }) => {
     dispatch({ type: 'SUBMITTING_BRANCH', branch })
-    const input: G.SubmitBranchInput = {
+    const input: G.BranchInput = {
       branch: branch.name
     }
     return graph.mutate<G.SubmitBranchMutation>({
@@ -285,7 +285,6 @@ export const assertTheorem = (theorem: T.Theorem): Async<T.Theorem> =>
     mutation: G.assertTheorem,
     variables: {
       theorem: {
-        uid: theorem.uid,
         antecedent: serializeFormula(theorem.if),
         consequent: serializeFormula(theorem.then),
         description: theorem.description,

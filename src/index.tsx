@@ -67,7 +67,6 @@ if (window) {
     window.piBase.showError(e)
     err(e)
   }
-
 }
 
 if (state.user === 'unauthenticated') {

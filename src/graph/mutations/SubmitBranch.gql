@@ -1,4 +1,4 @@
-mutation SubmitBranch($input: SubmitBranchInput!) {
+mutation SubmitBranch($input: BranchInput!) {
   submitBranch(input: $input) {
     branch
     url

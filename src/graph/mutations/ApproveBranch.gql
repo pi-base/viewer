@@ -1,0 +1,5 @@
+mutation ApproveBranch($input: BranchInput!) {
+  approveBranch(input: $input) {
+    version
+  }
+}

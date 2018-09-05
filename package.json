@@ -24,7 +24,6 @@
     "jest": "20.0.4",
     "memoize-one": "^4.0.0",
     "object-assign": "4.1.1",
-    "pi-base-core": "0.0.2",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
     "promise": "8.0.1",
@@ -39,10 +38,12 @@
     "react-router-dom": "^4.2.2",
     "redux": "^4.0.0",
     "redux-form": "^7.2.0",
-    "redux-localstorage": "^0.4.1",
     "redux-logger": "^3.0.6",
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.3.0",
+    "rehype-react": "^3.0.3",
+    "remark": "^9.0.0",
+    "remark-rehype": "^3.0.1",
     "reselect": "^3.0.1",
     "source-map-loader": "^0.2.1",
     "style-loader": "0.18.2",
@@ -53,6 +54,7 @@
     "tslint-loader": "^3.5.3",
     "tslint-react": "^3.0.0",
     "typescript": "2.9.2",
+    "unified": "^7.0.0",
     "url-loader": "0.5.9",
     "uuid": "^3.1.0",
     "webpack": "3.5.1",
@@ -81,11 +83,12 @@
     "jest-transform-graphql": "^2.1.0"
   },
   "scripts": {
-    "start": "node scripts/start.js",
     "build": "yarn run schema && node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
+    "deploy": "yarn run build && aws --profile pibase s3 sync build s3://pi-base/deploy/viewer",
     "schema": "apollo-codegen introspect-schema src/graph/schema.gql --output schema.json && apollo-codegen generate src/graph/**/*.gql --schema schema.json --target ts --output src/graph/types.ts",
-    "deploy": "yarn run build && cd build && scp -r . pibase:/app/viewer"
+    "start": "node scripts/start.js",
+    "test": "node scripts/test.js --env=jsdom",
+    "watch": "node scripts/watchSchema.js"
   },
   "jest": {
     "mapCoverage": true,

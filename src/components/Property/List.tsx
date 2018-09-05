@@ -1,20 +1,20 @@
 import * as React from 'react'
-import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-
-import { State } from '../../reducers'
-import * as S from '../../selectors'
 import * as T from '../../types'
-import { by } from '../../utils'
 
+import Aliases from '../Aliases'
 import EditLink from '../Form/EditLink'
+import { Link } from 'react-router-dom'
 import List from '../List'
 import Preview from '../Preview'
+import { State } from '../../reducers'
 import Tex from '../Tex'
+import { by } from '../../utils'
+import { connect } from 'react-redux'
 
 interface Item {
   uid: string
   name: string
+  aliases: string[]
   description: string
 }
 
@@ -41,6 +41,7 @@ class Property extends React.Component<Props, { expanded: boolean }> {
           <h4>
             <Link to={`/properties/${property.uid}`}>
               {property.name}
+              <Aliases aliases={property.aliases} />
             </Link>
           </h4>
         </div>
@@ -71,6 +72,6 @@ const Index = ({ properties }: StateProps) => {
 
 export default connect(
   (state: State) => ({
-    properties: Array.from(state.properties.values()).sort(by('uid')).reverse()
+    properties: Array.from(state.properties.values()).sort(by('name'))
   })
 )(Index)

@@ -6,7 +6,7 @@ type Props = {
   references: Citation[]
 }
 
-const Reference = ({ reference }: { reference: Citation }) => {
+export const Reference = ({ reference }: { reference: Citation }) => {
   let url
   switch (reference.type) {
     case 'doi':

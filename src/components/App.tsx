@@ -1,23 +1,19 @@
 import * as React from 'react'
-import { ApolloProvider } from 'react-apollo'
-import { Provider } from 'react-redux'
+
 import { Route, Switch } from 'react-router'
+
+import { ApolloProvider } from 'react-apollo'
 import { BrowserRouter } from 'react-router-dom'
-
-import { ApolloClient } from 'apollo-client'
-import { Store } from 'redux'
-
-import { Config } from './Config'
-import Layout from './Layout'
-
 import { Client } from '../graph'
-import routes from '../routes'
-import { State } from '../reducers'
-
 import GraphExplorer from '../components/GraphExplorer'
+import Layout from './Layout'
+import { Provider } from 'react-redux'
+import { State } from '../reducers'
+import { Store } from 'redux'
+import routes from '../routes'
 
 const makeApp = ({ graph, store }: { graph: Client, store: Store<State> }) => () => {
-  const layout = props => <Layout>{routes}</Layout>
+  const layout = _ => <Layout>{routes}</Layout>
 
   return (
     <ApolloProvider client={graph}>
