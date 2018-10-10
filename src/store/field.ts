@@ -7,22 +7,26 @@ export interface Field<V> {
 export const local = <V>(key: string): Field<V> => {
   key = `piBase.${key}`
   return {
-    get: () => {
+    get() {
       const val = localStorage.getItem(key)
       if (!val) { return null }
-      return JSON.parse(val)
+      try {
+        return JSON.parse(val)
+      } catch (_) {
+        return null
+      }
     },
-    set: val => localStorage.setItem(key, JSON.stringify(val)),
-    clear: () => localStorage.removeItem(key)
+    set(val) { localStorage.setItem(key, JSON.stringify(val)) },
+    clear() { localStorage.removeItem(key) }
   }
 }
 
 export const memory = <V>(key: string): Field<V> => {
   let value: V | null = null
   return {
-    get: () => value,
-    set: v => value = v,
-    clear: () => value = null
+    get() { return value },
+    set(v) { value = v },
+    clear() { value = null }
   }
 }
 

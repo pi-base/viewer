@@ -8,7 +8,7 @@ export type State = {
 }
 
 export const initial = {
-  active: undefined,
+  active: 'master',
   branches: new Map()
 }
 
@@ -38,7 +38,7 @@ export const reducer = (
       branches = new Map()
       action.branches.forEach(b => branches.set(b.name, b))
       // TODO: this should check that the SHA matches the loaded data
-      let active = state.active || action.branches.find(b => b.access === 'read')!.name
+      let active = state.active || initial.active
       return { ...state, branches, active }
     case 'PERSIST_SUCCESS':
       return state

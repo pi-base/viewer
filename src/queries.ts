@@ -51,8 +51,5 @@ export const getPatch = (state: State): PatchInput | undefined => {
   const active = state.version.active
   if (!active) { return }
   const branch = state.version.branches.get(active)!
-  return {
-    branch: branch.name,
-    sha: branch.sha
-  }
+  return branch ? { branch: branch.name, sha: branch.sha } : undefined
 }
