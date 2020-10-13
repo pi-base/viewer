@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { Container as SpaceLink } from '../Spaces/Link'
-import { Container as PropertyLink } from '../Properties/Link'
-import { Container as TheoremLink } from '../Theorems/Link'
-import { useStore } from '../../models'
+import Space from '../Spaces/Link'
+import Property from '../Properties/Link'
+import Theorem from '../Theorems/Link'
 import { TaggedRef } from '@pi-base/core/lib/Ref'
 import * as Id from './Id'
 
@@ -83,29 +82,24 @@ export default function Citation({ citation }: { citation: string }) {
 
 function InternalLinkError({ to }: { to: string }) {
   return (
-    <span>
-      Could not parse
-      <code>{` [${to}]`}</code>
-    </span>
+    <>
+      Parse error:
+      <code>{` {${to}}`}</code>
+    </>
   )
 }
 
-// TODO:
-// * implement these.
-// * handle "failed to find" errors
-// * tests
 export function InternalLink({ to }: { to: string }) {
-  const store = useStore()
   const tagged = Id.tag(to)
   if (!tagged) { return <InternalLinkError to={to} /> }
 
   switch (tagged.kind) {
     case 'space':
-      return <SpaceLink store={store} id={tagged.id} />
+      return <Space id={tagged.id} />
     case 'property':
-      return <PropertyLink store={store} id={tagged.id} />
+      return <Property id={tagged.id} />
     case 'theorem':
-      return <TheoremLink store={store} id={tagged.id} />
+      return <Theorem id={tagged.id} />
     default:
       return null
   }

@@ -1,11 +1,18 @@
 import React from 'react'
 
+import Link from '../Shared/Link'
 import Name from './Name'
-import * as Id from '../Shared/Id'
 import * as Store from '../../models/Store/state'
+import { Theorem } from '../../models'
 
-export function Container({ store, id }: { store: Store.Store, id: number }) {
-  const theorem = Store.theorem(store, Id.expand('T', id)) // FIXME
-
-  return theorem ? <Name theorem={theorem} link="theorem" /> : null
+export default function ({ id }: { id: number }) {
+  return (
+    <Link<Theorem>
+      id={id}
+      find={Store.theorem}
+      path={(uid: string) => `/theorems/${uid}`}
+      contents={(theorem: Theorem) => <Name theorem={theorem} link="none" />}
+      kind="Theorem"
+    />
+  )
 }

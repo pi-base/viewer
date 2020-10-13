@@ -4,7 +4,7 @@ import { Col, Form, Row } from 'react-bootstrap'
 import Display from './Shared/Display'
 
 export default function Preview() {
-  const [body, setBody] = useState('* [S100]\n* [P100]\n* [T100]\n* {{doi:1234}}')
+  const [body, setBody] = useState('')
 
   return (
     <Row>
