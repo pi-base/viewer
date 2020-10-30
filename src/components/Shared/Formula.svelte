@@ -1,25 +1,16 @@
 <script lang="ts">
-  import { Link } from 'svelte-routing'
   import type * as F from '@pi-base/core/lib/Formula'
-  import Typeset from './Typeset.svelte'
   import type { Property } from '../../types'
 
+  import Atom from './Formula/Atom.svelte'
+  import Compound from './Formula/Compound.svelte'
+
   export let value: F.Formula<Property>
+  export let link = true
 </script>
 
 {#if value.kind === 'atom'}
-  {value.value ? '' : '¬'}
-  <Link to="/properties/{value.property.uid}">
-    <Typeset body={value.property.name} />
-  </Link>
-{:else if value.kind === 'and'}
-  {#each value.subs as f, i}
-    <svelte:self value={f} />
-    {i === value.subs.length - 1 ? '' : '∧'}
-  {/each}
+  <Atom {value} {link} />
 {:else}
-  {#each value.subs as f, i}
-    <svelte:self value={f} />
-    {i === value.subs.length - 1 ? '' : '∨'}
-  {/each}
+  <Compound {value} {link} />
 {/if}
