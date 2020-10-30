@@ -7,12 +7,19 @@ import * as F from '@pi-base/core/lib/Formula'
 export function hydrate(
   theorem: BTheorem,
   properties: Collection<Property, string>,
-): Theorem {
+): Theorem | undefined {
   const { when, then, ...rest } = theorem
 
-  // TODO: handle lookup failure
-  const ant = F.mapProperty((p) => properties.find(p) as Property, when)
-  const con = F.mapProperty((p) => properties.find(p) as Property, then)
+  const ant = F.compact(
+    F.mapProperty((p) => properties.find(p) || undefined, when),
+  )
+  const con = F.compact(
+    F.mapProperty((p) => properties.find(p) || undefined, then),
+  )
+  if (!ant || !con) {
+    return undefined
+  }
+
   const name = `${F.render(ant, (p) => p.name)} ⇒ ${F.render(
     con,
     (p) => p.name,
