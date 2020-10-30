@@ -1,5 +1,6 @@
 import { getContext, setContext } from 'svelte'
 import { Readable, derived, get, writable } from 'svelte/store'
+import type { Theorem as BTheorem } from '@pi-base/core'
 
 import type { Source } from './types'
 import * as Gateway from './gateway'
@@ -68,7 +69,10 @@ export function initialize(
     spaces: collect(data, (d) => d.spaces),
     theorems: collect(data, (d) => {
       const ps = indexByUid(d.properties)
-      return d.theorems.map((t) => hydrate(t, ps))
+      return d.theorems.reduce((ts: Theorem[], t: BTheorem) => {
+        const hydrated = hydrate(t, ps)
+        return hydrated ? [...ts, hydrated] : ts
+      }, [])
     }),
     sha: derived(data, (d) => d?.sha),
   }
