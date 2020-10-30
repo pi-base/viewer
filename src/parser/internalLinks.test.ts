@@ -6,7 +6,17 @@ import internalLinks from './internalLinks'
 
 describe('with ambient data', () => {
   function ix<T extends { uid: string }>(...items: T[]): Collection<T> {
-    return index(items, (i) => parseInt(i.uid.slice(1)))
+    return index(
+      items,
+      (i) => parseInt(i.uid.slice(1)),
+      (n: number | string) => {
+        if (typeof n === 'number') {
+          return n
+        } else {
+          return parseInt(n.slice(1))
+        }
+      },
+    )
   }
 
   const properties: Collection<Property> = ix(

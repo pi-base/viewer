@@ -1,13 +1,15 @@
 import { Readable, derived } from 'svelte/store'
+import { idToInt } from '../util'
 
 export type Collection<V, K = number> = {
   all: V[]
   find(id: K): V | null
 }
 
-export function index<V, K = number>(
+export function index<V, K, I extends K>(
   items: V[],
   key: (item: V) => K,
+  normalize: (input: I) => K,
 ): Collection<V, K> {
   const index = new Map(items.map((item) => [key(item), item]))
 
@@ -15,10 +17,26 @@ export function index<V, K = number>(
     get all() {
       return Array.from(index.values())
     },
-    find(id: K) {
-      return index.get(id) || null
+    find(id: I) {
+      return index.get(normalize(id)) || null
     },
   }
+}
+
+export function indexByUid<T extends { uid: string }>(
+  items: T[],
+): Collection<T, number | string> {
+  return index(
+    items,
+    (i) => idToInt(i.uid),
+    (input: number | string) => {
+      if (typeof input === 'string') {
+        return idToInt(input)
+      } else {
+        return input
+      }
+    },
+  )
 }
 
 export function collect<S, T extends { uid: string }>(
@@ -26,8 +44,6 @@ export function collect<S, T extends { uid: string }>(
   project: (data: S) => T[],
 ): Readable<Collection<T>> {
   return derived(remote, ($remote) =>
-    index($remote ? project($remote) : [], (record) =>
-      parseInt(record.uid.slice(1)),
-    ),
+    indexByUid($remote ? project($remote) : []),
   )
 }
