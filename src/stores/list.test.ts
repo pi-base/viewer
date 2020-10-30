@@ -11,11 +11,7 @@ const items: Item[] = [
   { name: 'Three', value: 3 },
 ]
 
-const collection = index(
-  items,
-  (i) => i.value,
-  (n) => n,
-)
+const collection = index(items, (i) => i.value)
 
 let store: Store<{ name: string; value: number }>
 
