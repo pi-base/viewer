@@ -1,5 +1,4 @@
 [![build-test](https://github.com/pi-base/viewer/workflows/build-test/badge.svg)](https://github.com/pi-base/viewer/actions?query=branch%3Amaster)
-[![Coverage Status](https://coveralls.io/repos/github/pi-base/viewer/badge.svg?branch=master)](https://coveralls.io/github/pi-base/viewer?branch=master)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5ab6c28f-813b-4322-9f52-92306d4c2284/deploy-status)](https://app.netlify.com/sites/upbeat-agnesi-0591dd/deploys)
 
 # π-Base
