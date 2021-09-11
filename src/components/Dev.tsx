@@ -185,6 +185,7 @@ export default function Dev({
     <>
       <Row>
         <Col>
+          <h3>Data Bundle</h3>
           <Fetch store={store} dispatch={dispatch} handler={handler} />
         </Col>
         <Col>
@@ -193,9 +194,11 @@ export default function Dev({
       </Row>
       <Row>
         <Col>
+          <h3>Build</h3>
           <BuildMetadata />
         </Col>
         <Col>
+          <h3>Errors</h3>
           <Errors />
         </Col>
       </Row>
