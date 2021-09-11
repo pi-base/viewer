@@ -1,5 +1,4 @@
 import { createContext, useContext } from 'react'
-import { compact, unique } from './util'
 import * as Sentry from '@sentry/browser'
 import * as Build from './build'
 
@@ -51,20 +50,10 @@ export function inMemory() {
 }
 
 export function sentry(dsn: string) {
-  const release = Build.commitRef || 'dev'
-
-  const environment =
-    Build.deployUrl === Build.deployPrimeUrl ? 'production' : 'deploy-preview'
-
-  const allowUrls = unique(
-    compact(['pi-base.org', Build.deployPrimeUrl, Build.deployUrl])
-  )
-
   Sentry.init({
     dsn,
-    release,
-    environment,
-    allowUrls,
+    release: Build.commitRef,
+    environment: Build.context,
   })
 
   return {

@@ -126,16 +126,8 @@ function BuildMetadata() {
           <td>{Build.commitRef}</td>
         </tr>
         <tr>
-          <th>Deploy Url</th>
-          <td>
-            <a href={Build.deployUrl}>{Build.deployUrl}</a>
-          </td>
-        </tr>
-        <tr>
-          <th>Deploy Prime Url</th>
-          <td>
-            <a href={Build.deployPrimeUrl}>{Build.deployPrimeUrl}</a>
-          </td>
+          <th>Context</th>
+          <td>{Build.context}</td>
         </tr>
       </tbody>
     </Table>
