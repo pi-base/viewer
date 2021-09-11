@@ -1,0 +1,5 @@
+[[redirects]]
+  # Allow the frontend to handle all routing
+  from = "/*"
+  to = "/index.html"
+  status = 200
