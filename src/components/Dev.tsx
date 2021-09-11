@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Col, Form, Row, Spinner, Table } from 'react-bootstrap'
 import Moment from 'react-moment'
+import * as Sentry from '@sentry/browser'
 
 import { Dispatch, hardReset, refresh } from '../actions'
 import { Handler } from '../errors'
@@ -149,8 +150,8 @@ class DebugError extends Error {
 }
 
 function debugError() {
-  throw new DebugError(
-    'Intentionally triggered error to test Sentry integration'
+  Sentry.captureException(
+    new DebugError('Intentionally triggered error to test Sentry integration')
   )
 }
 
