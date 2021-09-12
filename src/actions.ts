@@ -9,14 +9,14 @@ import { defaultHost } from './models/Store'
 
 export { save } from './models/Store'
 
-export type Action
-  = { action: 'loaded', value: Store }
-  | { action: 'check.started', count: number }
-  | { action: 'check', space: Space }
+export type Action =
+  | { action: 'loaded'; value: Store }
+  | { action: 'check.started'; count: number }
+  | { action: 'check'; space: Space }
   | { action: 'check.done' }
-  | { action: 'fetch.started', branch: string, host: string }
+  | { action: 'fetch.started'; branch: string; host: string }
   | { action: 'fetch.done' }
-  | { action: 'fetch.error', error: Error }
+  | { action: 'fetch.error'; error: Error }
 
 export type Dispatch = React.Dispatch<Action>
 
@@ -41,19 +41,19 @@ export async function boot(
     branch: loaded?.remote?.branch || 'master',
     host: loaded?.remote?.host || defaultHost,
     store: loaded,
-    handler
+    handler,
   })
 }
 
 async function pause(): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), 0)
   })
 }
 
 export async function check({
   dispatch,
-  store
+  store,
 }: {
   dispatch: React.Dispatch<Action>
   store: Store
@@ -69,33 +69,37 @@ export async function check({
   dispatch({ action: 'check.done' })
 }
 
-export async function refresh(
-  {
-    branch,
-    dispatch,
-    host,
-    store,
-    handler
-  }: {
-    branch: string
-    dispatch: React.Dispatch<Action>
-    host: string
-    store: Store | undefined
-    handler: Handler
-  }
-) {
+export async function refresh({
+  branch,
+  dispatch,
+  host,
+  store,
+  handler,
+}: {
+  branch: string
+  dispatch: React.Dispatch<Action>
+  host: string
+  store: Store | undefined
+  handler: Handler
+}) {
   dispatch({ action: 'fetch.started', branch, host })
 
   try {
     const next = await sync(store, { branch, host })
     dispatch({ action: 'fetch.done' })
-    if (!next) { return } // Bundle was unchanged
+    if (!next) {
+      return
+    } // Bundle was unchanged
 
     dispatch({ action: 'loaded', value: next })
     await check({ store: next, dispatch })
   } catch (error) {
     handler.error(error)
-    dispatch({ action: 'fetch.error', error })
+    if (error instanceof Error) {
+      dispatch({ action: 'fetch.error', error })
+    } else {
+      dispatch({ action: 'fetch.error', error: new Error(`${error}`) })
+    }
   }
 }
 
@@ -112,10 +116,12 @@ async function sync(
   const fetched = await bundle.fetch({
     branch,
     host,
-    etag: store?.etag || undefined
+    etag: store?.etag || undefined,
   })
 
-  if (!fetched) { return }
+  if (!fetched) {
+    return
+  }
 
   return {
     bundle: fetched.bundle,
@@ -124,10 +130,10 @@ async function sync(
       branch,
       host,
       state: 'done',
-      fetched: new Date()
+      fetched: new Date(),
     },
     checked: new Set(),
-    error: null
+    error: null,
   }
 }
 
