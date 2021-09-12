@@ -16,11 +16,23 @@ export function debounce<T>(f: (t: T) => void, wait = 1000) {
   }
 }
 
-export function replaceEnd(haystack: string, needle: string, replacement: string): string {
+export function replaceEnd(
+  haystack: string,
+  needle: string,
+  replacement: string
+): string {
   const n = haystack.lastIndexOf(needle)
   if (n >= 0) {
     return haystack.substring(0, n) + replacement
   } else {
     return haystack
   }
+}
+
+export function compact<T>(array: (T | undefined)[]): T[] {
+  return array.filter((t) => t !== undefined) as T[]
+}
+
+export function unique<T>(array: T[]): T[] {
+  return Array.from(new Set(array))
 }
