@@ -66,8 +66,7 @@ export function status(store: Store): Status {
   }
 }
 
-export const defaultHost =
-  process.env.REACT_APP_BUNDLE_HOST || bundleDefaultHost
+export const defaultHost = bundleDefaultHost
 
 export const initial: Store = {
   bundle: B.deserialize({
@@ -236,16 +235,14 @@ export function spacesMatching(
 }
 
 export function search(store: Store, search: Search): SearchResults {
-  const byText = search.text
-    ? searchSpaces(store, search.text)
-    : spaces(store)
+  const byText = search.text ? searchSpaces(store, search.text) : spaces(store)
 
   return search.formula
     ? spacesMatching(
-      store,
-      F.mapProperty((p) => p.uid, search.formula),
-      byText
-    )
+        store,
+        F.mapProperty((p) => p.uid, search.formula),
+        byText
+      )
     : { kind: 'spaces', spaces: byText }
 }
 
