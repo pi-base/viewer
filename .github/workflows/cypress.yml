@@ -1,20 +1,8 @@
 name: test
 on:
-  push:
+  pull_request:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Cached install
-        uses: bahmutov/npm-install@v1
-      - name: Test
-        run: yarn test --coverage
-      - uses: codecov/codecov-action@v2
-        with:
-          fail_ci_if_error: true
-
   cypress:
     runs-on: ubuntu-latest
     steps:
