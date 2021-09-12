@@ -4,7 +4,7 @@ describe('Smoke test', () => {
 
     cy.contains('Spaces').click()
     cy.contains('~metrizable').click()
-    cy.contains('Lexicographic unit square').click()
+    cy.contains('Lexicographic unit square', { timeout: 30000 }).click()
     cy.contains('order topology')
   })
 
@@ -33,7 +33,7 @@ describe('Smoke test', () => {
     cy.visit('/dev')
 
     cy.get('.toast').should('be.visible')
-    cy.get('.toast', { timeout: 10000 }).should('not.exist')
+    cy.get('.toast', { timeout: 30000 }).should('not.exist')
 
     // HACK: we probably want to update this to use test-id selectors, but for
     // now want a regression test that can run against current prod without
