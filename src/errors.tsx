@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 import * as Sentry from '@sentry/browser'
+import * as Build from './build'
 
 export type Level = 'info' | 'error'
 
@@ -8,7 +9,7 @@ export interface Handler {
 }
 
 const noOp: Handler = {
-  error() { }
+  error() {},
 }
 
 export const Context = createContext<Handler>(noOp)
@@ -16,7 +17,9 @@ export const Provider = Context.Provider
 
 export function useErrorHandler() {
   const handler = useContext(Context)
-  if (handler === null) { throw new Error('Store cannot be null, please add a context provider') }
+  if (handler === null) {
+    throw new Error('Store cannot be null, please add a context provider')
+  }
   return handler
 }
 
@@ -24,12 +27,12 @@ export function log() {
   return {
     error(e: any, meta: Object = {}) {
       console.error({ error: e, meta })
-    }
+    },
   }
 }
 
 export function inMemory() {
-  const errors: { error: any, meta: Object }[] = []
+  const errors: { error: any; meta: Object }[] = []
 
   return {
     error(e: any, meta: Object = {}) {
@@ -42,23 +45,25 @@ export function inMemory() {
 
     get errors() {
       return errors
-    }
+    },
   }
 }
 
 export function sentry(dsn: string) {
-  const release = `pi-base@${process.env.REACT_APP_RELEASE || 'dev'}`
-
-  Sentry.init({ dsn, release })
+  Sentry.init({
+    dsn,
+    release: Build.commitRef,
+    environment: Build.context,
+  })
 
   return {
     error(e: any, meta: Object = {}) {
-      Sentry.withScope(scope => {
+      Sentry.withScope((scope) => {
         Object.entries(meta).forEach(([key, value]) => {
           scope.setExtra(key, value)
         })
         Sentry.captureException(e)
       })
-    }
+    },
   }
 }
