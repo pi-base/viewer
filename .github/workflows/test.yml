@@ -6,9 +6,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Cached install
-        uses: bahmutov/npm-install@v1.1.0
+        uses: bahmutov/npm-install@v1
       - name: Test
         run: yarn test --coverage
       - uses: codecov/codecov-action@v2
