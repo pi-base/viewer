@@ -1,5 +1,6 @@
 [![build-test](https://github.com/pi-base/viewer/workflows/build-test/badge.svg)](https://github.com/pi-base/viewer/actions?query=branch%3Amaster)
 [![codecov](https://codecov.io/gh/pi-base/viewer/branch/master/graph/badge.svg?token=zJeVgy9LyJ)](https://codecov.io/gh/pi-base/viewer)
+[![viewer](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/7u7evp/main&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/7u7evp/runs)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5ab6c28f-813b-4322-9f52-92306d4c2284/deploy-status)](https://app.netlify.com/sites/upbeat-agnesi-0591dd/deploys)
 
 # π-Base

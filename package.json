@@ -33,7 +33,10 @@
     "eject": "react-scripts eject",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:run:stage": "cypress run --config baseUrl=https://counterexamples.info"
+    "cy:run:dev": "cypress run --config baseUrl=http://localhost:3000",
+    "cy:run:stage": "cypress run --config baseUrl=https://counterexamples.info",
+    "dev": "netlify dev",
+    "dev:live": "netlify dev --live"
   },
   "eslintConfig": {
     "extends": "react-app"
