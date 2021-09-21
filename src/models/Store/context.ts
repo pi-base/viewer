@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react'
 
 import { Store, initial } from './state'
 
-const StoreContext = createContext<Store>(initial)
+export const StoreContext = createContext<Store>(initial)
 export const Provider = StoreContext.Provider
 
 export function useStore() {
