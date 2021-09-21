@@ -1,14 +1,10 @@
 import { Property, Space, Theorem, Trait } from './models'
 
+export const property = (property: Property) => `/properties/${property.uid}`
 
-export const property = (property: Property) =>
-  `/properties/${property.uid}`
+export const space = (space: Space) => `/spaces/${space.uid}`
 
-export const space = (space: Space) =>
-  `/spaces/${space.uid}`
-
-export const theorem = (theorem: Theorem) =>
-  `/theorems/${theorem.uid}`
+export const theorem = (theorem: Theorem) => `/theorems/${theorem.uid}`
 
 export const trait = (trait: Trait) => {
   const { space, property } = trait
@@ -22,13 +18,12 @@ export function contributeExample() {
   return `${dataRepo}/new/master`
 }
 
-export function viewerIssues({
-  body,
-  title
-}: {
-  body: string
-  title: string
-}) {
+export function resolveId(id: string) {
+  // TODO
+  return `/theorems/${id}`
+}
+
+export function viewerIssues({ body, title }: { body: string; title: string }) {
   return `${viewerRepo}/issues/new?title=${title}&body=${body}`
 }
 
@@ -43,5 +38,5 @@ export default {
   space,
   theorem,
   trait,
-  viewerIssues
+  viewerIssues,
 }

@@ -4,9 +4,10 @@ import { Route, Switch, useRouteMatch } from 'react-router'
 import { useStore } from '../../models'
 import { Store, default as S } from '../../models/Store'
 import Detail from './Detail'
-import List from './List'
 import Name from './Name'
 import RouteLookup from '../Shared/RouteLookup'
+import { Svelte } from '../Svelte'
+import List from './List.svelte'
 
 export { Name }
 
@@ -17,7 +18,7 @@ function find(store: Store, { id }: { id: string }) {
 
 function Index() {
   const theorems = S.theorems(useStore())
-  return <List theorems={theorems} />
+  return <Svelte component={List} props={{ theorems }} />
 }
 
 export default function () {
