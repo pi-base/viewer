@@ -21,8 +21,16 @@ export function contributeExample() {
 }
 
 export function resolveId(id: string) {
-  // TODO
-  return `/theorems/${id}`
+  switch (id.toLowerCase()[0]) {
+    case 't':
+    case 'i':
+      return `/theorems/${id}`
+    case 'p':
+      return `/properties/${id}`
+    default:
+      // TODO
+      throw new Error(`Could not resolve id=${id}`)
+  }
 }
 
 export function viewerIssues({ body, title }: { body: string; title: string }) {
