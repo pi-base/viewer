@@ -3,13 +3,15 @@ import React from 'react'
 import { Space, useStore } from '../../models'
 import { theoremsWithCounterexample } from '../../models/Store'
 import { Title as Inline } from '../Shared/Display'
-import SummaryList from '../Theorems/SummaryList'
+import SummaryList from '../Theorems/SummaryList.svelte'
+import { Svelte } from '../Svelte'
 
-const NoCounterexamples = ({ space }: { space: Space }) =>
+const NoCounterexamples = ({ space }: { space: Space }) => (
   <>
     <Inline body={space.name} />
     {' is not a counterexample for any recorded theorems'}
   </>
+)
 
 export default function Theorems({ space }: { space: Space }) {
   const store = useStore()
@@ -24,10 +26,10 @@ export default function Theorems({ space }: { space: Space }) {
           {theorems.length}
           {' theorems:'}
         </p>
-        <SummaryList theorems={theorems} />
+        <Svelte component={SummaryList} props={{ theorems }} />
       </>
     )
   } else {
-    return (<NoCounterexamples space={space} />)
+    return <NoCounterexamples space={space} />
   }
 }

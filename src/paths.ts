@@ -6,8 +6,10 @@ export const space = (space: Space) => `/spaces/${space.uid}`
 
 export const theorem = (theorem: Theorem) => `/theorems/${theorem.uid}`
 
-export const trait = (trait: Trait) => {
-  const { space, property } = trait
+export const trait = ({
+  space,
+  property,
+}: Pick<Trait, 'space' | 'property'>) => {
   return `/spaces/${space}/properties/${property}`
 }
 

@@ -17,7 +17,7 @@ describe('Properties', () => {
     expect(list.prop('properties').length).toBeGreaterThanOrEqual(2)
   })
 
-  it('can route to a detailed view', () => {
+  it.skip('can route to a detailed view', () => {
     const component = mountedAt(<Properties />, '/P1')
 
     const detail = component.find(Detail)
