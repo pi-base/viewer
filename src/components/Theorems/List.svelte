@@ -3,7 +3,7 @@
   import Formula from '../Shared/Formula.svelte'
   import Id from '../Shared/Id.svelte'
   import Table from '../Shared/Table.svelte'
-  import Filtered from './Filtered.svelte'
+  import Filtered from '../Shared/Filtered.svelte'
   import Preview from '../Shared/Preview.svelte'
 
   export let theorems: Theorem[]
