@@ -1,29 +1,24 @@
 import React from 'react'
-import { Route, Switch, useRouteMatch } from 'react-router'
 
 import { useStore } from '../../models'
-import { Store, default as S } from '../../models/Store'
-import Detail from './Detail'
-import List from './List'
-import RouteLookup from '../Shared/RouteLookup'
+import { default as S } from '../../models/Store'
+import Detail from './Detail.svelte'
+import List from './List.svelte'
+import { Svelte } from '../Svelte'
 
-function find(store: Store, { id }: { id: string }) {
-  const property = S.property(store, id)
-  return property && { property }
+export type Tab = 'theorems' | 'spaces' | 'references'
+
+export function Property({ id, tab = 'theorems' }: { id: string; tab?: Tab }) {
+  const property = S.property(useStore(), id)
+  if (property) {
+    return <Svelte component={Detail} props={{ property, tab }} />
+  } else {
+    // TODO
+    return null
+  }
 }
 
-function Index() {
+export function Properties() {
   const properties = S.properties(useStore())
-  return <List properties={properties} />
-}
-
-export default function Properties() {
-  const { path } = useRouteMatch()
-
-  return (
-    <Switch>
-      <RouteLookup path={`${path}/:id`} lookup={find} component={Detail} />
-      <Route path={path} exact component={Index} />
-    </Switch>
-  )
+  return <Svelte component={List} props={{ properties }} />
 }

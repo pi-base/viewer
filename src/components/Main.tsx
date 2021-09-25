@@ -6,13 +6,41 @@ import Dev from './Dev'
 import Home from './Home'
 import NotFound from './Shared/NotFound'
 import Preview from './Preview'
-import Properties from './Properties'
+import { Property, Properties } from './Properties'
 import Spaces from './Spaces'
 import { Theorem, Theorems } from './Theorems'
 import Traits from './Traits'
 
 import { Dispatch } from '../actions'
 import { Handler } from '../errors'
+
+function tabs({
+  render,
+  root,
+  tabs,
+  initial,
+}: {
+  render(props: any): JSX.Element // FIXME
+  root: string
+  tabs: string[]
+  initial: string
+}) {
+  return tabs
+    .map((tab) => (
+      <Route
+        key={tab}
+        path={`${root}/${tab}`}
+        render={(props) => render({ ...props, tab })}
+      />
+    ))
+    .concat(
+      <Route
+        key="default"
+        path={root}
+        render={(props) => render({ ...props, tab: initial })}
+      />
+    )
+}
 
 export default React.memo(function Main({
   dispatch,
@@ -29,24 +57,25 @@ export default React.memo(function Main({
           component={Traits}
         />
         <Route path="/spaces" component={Spaces} />
+
+        {tabs({
+          root: '/properties/:id',
+          tabs: ['theorems', 'spaces', 'references'],
+          initial: 'theorems',
+          render: ({ match, tab }) => (
+            <Property id={match.params.id} tab={tab} />
+          ),
+        })}
         <Route path="/properties" component={Properties} />
 
-        <Route
-          path="/theorems/:id/converse"
-          render={({ match: { params } }) => (
-            <Theorem id={params.id} tab="converse" />
-          )}
-        />
-        <Route
-          path="/theorems/:id/references"
-          render={({ match: { params } }) => (
-            <Theorem id={params.id} tab="references" />
-          )}
-        />
-        <Route
-          path="/theorems/:id"
-          render={({ match: { params } }) => <Theorem id={params.id} />}
-        />
+        {tabs({
+          root: '/theorems/:id',
+          tabs: ['converse', 'references'],
+          initial: 'converse',
+          render: ({ match, tab }) => (
+            <Theorem id={match.params.id} tab={tab} />
+          ),
+        })}
         <Route path="/theorems" component={Theorems} />
 
         <Route path="/dev/preview" component={Preview} />
