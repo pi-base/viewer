@@ -9,16 +9,17 @@ import * as Error from './errors'
 import { useChange } from './hooks'
 import { Dispatch, Reducer, reducer, initial } from './reducers'
 import { Provider, status } from './models/Store'
-import Nav from './components/Nav'
+import Nav from './components/Nav.svelte'
 import Main from './components/Main'
 import StatusBar from './components/StatusBar'
 import { debounce } from './util'
+import { Svelte } from './components/Svelte'
 
 const debouncedSave = debounce(save)
 
 export default function App({
   errorHandler = Error.log(),
-  startup = boot
+  startup = boot,
 }: {
   errorHandler?: Error.Handler
   startup?: (dispatch: Dispatch, errorHandler: Error.Handler) => Promise<void>
@@ -39,9 +40,9 @@ export default function App({
         <QueryParamProvider ReactRouterRoute={Route}>
           <Provider value={store}>
             <StatusBar status={status(store)} />
-            <Nav branch={store.remote.branch} />
+            <Svelte component={Nav} props={{ branch: store.remote.branch }} />
             <Main dispatch={dispatch} handler={errorHandler} />
-          </Provider >
+          </Provider>
         </QueryParamProvider>
       </Router>
     </Error.Provider>

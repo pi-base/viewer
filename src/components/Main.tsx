@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap'
 import { Switch, Route } from 'react-router-dom'
 
 import Dev from './Dev'
-import Home from './Home'
+import Home from './Home.svelte'
 import NotFound from './Shared/NotFound'
 import Preview from './Preview'
 import { Property, Properties } from './Properties'
@@ -13,6 +13,7 @@ import Traits from './Traits'
 
 import { Dispatch } from '../actions'
 import { Handler } from '../errors'
+import { Svelte } from './Svelte'
 
 function tabs({
   render,
@@ -40,6 +41,10 @@ function tabs({
         render={(props) => render({ ...props, tab: initial })}
       />
     )
+}
+
+function svelte(component: any) {
+  return (props: any) => <Svelte component={component} props={props} />
 }
 
 export default React.memo(function Main({
@@ -89,7 +94,7 @@ export default React.memo(function Main({
         <Route path="/dev">
           <Dev dispatch={dispatch} handler={handler} />
         </Route>
-        <Route path="/" exact component={Home} />
+        <Route path="/" exact render={svelte(Home)} />
         <Route component={NotFound} />
       </Switch>
     </Container>
