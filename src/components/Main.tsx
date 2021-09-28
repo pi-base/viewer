@@ -2,10 +2,10 @@ import React from 'react'
 import { Container } from 'react-bootstrap'
 import { Switch, Route } from 'react-router-dom'
 
-import Dev from './Dev'
+import Dev from './Dev.svelte'
 import Home from './Home.svelte'
 import NotFound from './Shared/NotFound'
-import Preview from './Preview'
+import Preview from './Preview.svelte'
 import { Property, Properties } from './Properties'
 import { Space, Spaces } from './Spaces'
 import { Theorem, Theorems } from './Theorems'
@@ -90,9 +90,9 @@ export default React.memo(function Main({
         })}
         <Route path="/theorems" component={Theorems} />
 
-        <Route path="/dev/preview" component={Preview} />
+        <Route path="/dev/preview" component={svelte(Preview)} />
         <Route path="/dev">
-          <Dev dispatch={dispatch} handler={handler} />
+          <Svelte component={Dev} props={{ dispatch, handler }} />
         </Route>
         <Route path="/" exact render={svelte(Home)} />
         <Route component={NotFound} />
