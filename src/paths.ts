@@ -27,6 +27,8 @@ export function resolveId(id: string) {
       return `/theorems/${id}`
     case 'p':
       return `/properties/${id}`
+    case 's':
+      return `/spaces/${id}`
     default:
       // TODO
       throw new Error(`Could not resolve id=${id}`)

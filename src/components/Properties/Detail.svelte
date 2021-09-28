@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Property } from '../../models'
   import * as paths from '../../paths'
-  import { Aliases, References, Tab, Tabs, Tex } from '../Shared'
+  import { References, Tab, Tabs, Tex, Title } from '../Shared/index'
   import Theorems from './Theorems.svelte'
   import Traits from './Traits.svelte'
 
@@ -9,12 +9,7 @@
   export let tab: 'theorems' | 'spaces' | 'references' = 'theorems'
 </script>
 
-<h1>
-  <Tex body={property.name} />
-  {#if property.aliases}
-    <Aliases names={property.aliases} />
-  {/if}
-</h1>
+<Title {...property} />
 
 <Tex body={property.description} />
 <p />

@@ -4,7 +4,7 @@ import { Col, Row } from 'react-bootstrap'
 import { Space, useStore } from '../../models'
 import { Proof, default as S } from '../../models/Store'
 import Theorems from '../Theorems/SummaryList.svelte'
-import Traits from '../Spaces/Traits'
+import Traits from '../Spaces/TraitsForProperties.svelte'
 import { Svelte } from '../Svelte'
 
 export default function ({ space, proof }: { space: Space; proof: Proof }) {
@@ -21,7 +21,7 @@ export default function ({ space, proof }: { space: Space; proof: Proof }) {
       <Row>
         <Col xs="6">
           <h5>Properties</h5>
-          <Traits space={space} properties={properties} filter={false} />
+          <Svelte component={Traits} props={{ space, properties }} />
         </Col>
         <Col xs="6">
           <h5>Theorems</h5>

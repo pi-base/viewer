@@ -1,13 +1,4 @@
 describe('Smoke test', () => {
-  it('Can search and find spaces', () => {
-    cy.visit('/')
-
-    cy.contains('Spaces').click()
-    cy.contains('~metrizable').click()
-    cy.contains('Lexicographic unit square', { timeout: 30000 }).click()
-    cy.contains('order topology')
-  })
-
   it('Can explore implications between theorems', () => {
     cy.visit('/')
 

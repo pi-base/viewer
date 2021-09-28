@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { Property, Store, Theorem } from '../../models'
+import { Property, Space, Store, Theorem } from '../../models'
 import Inline from '../Shared/Inline'
 import Link from '../Shared/Link'
-import Space from '../Spaces/Link'
 import Name from '../Theorems/Name'
 import { TaggedRef } from '@pi-base/core/lib/Ref'
 import * as Id from './Id'
@@ -103,7 +102,15 @@ export function InternalLink({ to }: { to: string }) {
 
   switch (tagged.kind) {
     case 'space':
-      return <Space id={tagged.id} />
+      return (
+        <Link<Space>
+          id={tagged.id}
+          find={Store.space}
+          path={(uid: string) => `/spaces/${uid}`}
+          contents={(space: Space) => <Inline body={space.name} />}
+          kind="Space"
+        />
+      )
     case 'property':
       return (
         <Link<Property>
