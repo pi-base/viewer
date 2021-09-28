@@ -7,7 +7,7 @@ import Home from './Home'
 import NotFound from './Shared/NotFound'
 import Preview from './Preview'
 import { Property, Properties } from './Properties'
-import Spaces from './Spaces'
+import { Space, Spaces } from './Spaces'
 import { Theorem, Theorems } from './Theorems'
 import Traits from './Traits'
 
@@ -56,6 +56,13 @@ export default React.memo(function Main({
           path="/spaces/:spaceId/properties/:propertyId"
           component={Traits}
         />
+
+        {tabs({
+          root: '/spaces/:id',
+          tabs: ['theorems', 'properties', 'references'],
+          initial: 'theorems',
+          render: ({ match, tab }) => <Space id={match.params.id} tab={tab} />,
+        })}
         <Route path="/spaces" component={Spaces} />
 
         {tabs({

@@ -1,23 +1,23 @@
 import React from 'react'
-import { Route, Switch, useRouteMatch } from 'react-router'
 
-import { Store, default as S } from '../../models/Store'
-import Detail from './Detail'
-import RouteLookup from '../Shared/RouteLookup'
-import Search from './Search'
+import { useStore } from '../../models'
+import { default as S } from '../../models/Store'
+import SvelteDetail from './Detail.svelte'
+import Search from './Search.svelte'
+import { Svelte } from '../Svelte'
 
-function find(store: Store, { id }: { id: string }) {
-  const space = S.space(store, id)
-  return space && { space }
+export type Tab = 'theorems' | 'properties' | 'references'
+
+export function Space({ id, tab = 'theorems' }: { id: string; tab?: Tab }) {
+  const space = S.space(useStore(), id)
+  if (space) {
+    return <Svelte component={SvelteDetail} props={{ space, tab }} />
+  } else {
+    // TODO
+    return null
+  }
 }
 
-export default function Spaces() {
-  const { path } = useRouteMatch()
-
-  return (
-    <Switch>
-      <RouteLookup path={`${path}/:id`} lookup={find} component={Detail} />
-      <Route path={path} exact component={Search} />
-    </Switch>
-  )
+export function Spaces() {
+  return <Svelte component={Search} props={{}} />
 }

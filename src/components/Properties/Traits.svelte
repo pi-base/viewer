@@ -4,7 +4,7 @@
   import { traitsForProperty } from '../../models/Store'
   import { getStore } from '../Svelte'
   import { Check } from '../Icons'
-  import { Filtered, Table, Tex } from '../Shared'
+  import { Filtered, Table, Tex } from '../Shared/index'
   import { Weights } from '../../stores/filter'
   import Value from '../Traits/Value.svelte'
 
