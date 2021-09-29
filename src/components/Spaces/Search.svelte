@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { getStore } from '../Svelte'
-  import { syncOnMount } from '../../stores/query'
+  import { getStore } from '../../context'
   import { searchStore } from '../../stores/search'
 
   import Controls from './Search/Controls.svelte'
@@ -9,13 +8,10 @@
 
   const store = getStore()
 
-  const { text, formula, query } = searchStore(store)
-
-  syncOnMount('formula', formula)
-  syncOnMount('text', text)
+  const { text, formula, query } = searchStore($store)
 </script>
 
 <Layout>
   <Controls slot="controls" {text} {formula} />
-  <Results slot="results" {query} setSearch={formula.set} {store} />
+  <Results slot="results" {query} setSearch={formula.set} store={$store} />
 </Layout>

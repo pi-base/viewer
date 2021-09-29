@@ -1,4 +1,3 @@
-import React from 'react'
 import produce from 'immer'
 
 import { check } from '@pi-base/core'
@@ -8,8 +7,8 @@ import { Store, initial as initialStore, theoremIndex } from './models/Store'
 
 export const initial = initialStore
 
-export type Dispatch = React.Dispatch<Action>
-export type Reducer = React.Reducer<Store, Action>
+export type Dispatch = (action: Action) => void
+export type Reducer = (store: Store, action: Action) => Store
 
 export const reducer: Reducer = produce((state: Store, action: Action) => {
   switch (action.action) {
@@ -32,13 +31,11 @@ export const reducer: Reducer = produce((state: Store, action: Action) => {
       return
 
     case 'check':
-      if (state.checked.has(action.space.uid)) { return }
+      if (state.checked.has(action.space.uid)) {
+        return
+      }
 
-      const result = check(
-        state.bundle,
-        action.space,
-        theoremIndex(state)
-      )
+      const result = check(state.bundle, action.space, theoremIndex(state))
 
       switch (result.kind) {
         case 'bundle':
@@ -47,7 +44,11 @@ export const reducer: Reducer = produce((state: Store, action: Action) => {
           return
         case 'contradiction':
           state.bundle = initial.bundle
-          state.error = `Found contradiction in space=${action.space.uid}: properties=${result.contradiction.properties.join(',')} theorems=${result.contradiction.theorems.join(',')}`
+          state.error = `Found contradiction in space=${
+            action.space.uid
+          }: properties=${result.contradiction.properties.join(
+            ','
+          )} theorems=${result.contradiction.theorems.join(',')}`
           return
       }
   }

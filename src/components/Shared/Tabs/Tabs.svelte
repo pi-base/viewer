@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Link } from 'svelte-routing'
   import { onMount } from 'svelte'
   import { tabStore } from '../../../stores/tabs'
 
@@ -15,11 +16,12 @@
 
 <nav class="nav nav-tabs">
   {#each Object.entries(registered) as [key, title]}
-    <a
-      href={`${root}/${key}`}
-      class="nav-item nav-link"
-      class:active={key === tabs.active}>{title}</a
+    <Link
+      to={`${root}/${key}`}
+      class={`nav-item nav-link ${key === tabs.active ? 'active' : ''}`}
     >
+      {title}
+    </Link>
   {/each}
 </nav>
 

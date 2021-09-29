@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Link } from 'svelte-routing'
   import * as paths from '../paths'
 </script>
 
@@ -7,19 +8,19 @@
     <h1>π-Base</h1>
     <p>a community database of topological counterexamples</p>
     <p>
-      ➜ Search by property, such as <a
-        href="/spaces?q=compact%20%2B%20connected%20%2B%20t_2%20%2B%20~metrizable"
-        >non-metric continua</a
+      ➜ Search by property, such as <Link
+        to="/spaces?q=compact%20%2B%20connected%20%2B%20t_2%20%2B%20~metrizable"
+        >non-metric continua</Link
       >
     </p>
     <p>
-      ➜ Find spaces by name, such as <a href="/spaces?text=compactification"
-        >compactifications</a
+      ➜ Find spaces by name, such as <Link to="/spaces?text=compactification"
+        >compactifications</Link
       >
     </p>
     <p>
-      ➜ View counterexamples to the converse of a theorem, such as <a
-        href="/theorems/T000112">T₅ ⇒ T₄</a
+      ➜ View counterexamples to the converse of a theorem, such as <Link
+        to="/theorems/T000112">T₅ ⇒ T₄</Link
       >
     </p>
   </div>

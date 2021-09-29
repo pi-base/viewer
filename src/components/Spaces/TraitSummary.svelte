@@ -1,16 +1,17 @@
 <script lang="ts">
+  import { Link } from 'svelte-routing'
   import { Property, Space, Trait } from '../../models'
   import * as paths from '../../paths'
-  import { getStore } from '../Svelte'
+  import { getStore } from '../../context'
   import { Check } from '../Icons'
-  import { Table, Tex } from '../Shared/index'
+  import { Table, Tex } from '../Shared'
   import Value from '../Traits/Value.svelte'
 
   export let space: Space
   export let traits: { property: Property; trait: Trait }[]
 
   // TODO: move into Traits folder?
-  $: store = getStore()
+  const store = getStore()
 </script>
 
 <Table collection={traits} key={(t) => t.property.uid}>
@@ -22,15 +23,15 @@
 
   <tr slot="row" let:object={{ property, trait }}>
     <td>
-      <a href={paths.property(property)}>
+      <Link to={paths.property(property)}>
         <Tex body={property.name} />
-      </a>
+      </Link>
     </td>
     <td>
-      <a href={paths.trait(trait)}>
+      <Link to={paths.trait(trait)}>
         <!-- TODO: don't need to refetch these -->
-        <Value {store} {space} {property} />
-      </a>
+        <Value store={$store} {space} {property} />
+      </Link>
     </td>
     <td>
       {#if trait.proof}

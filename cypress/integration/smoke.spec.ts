@@ -29,10 +29,10 @@ describe('Smoke test', () => {
     // HACK: we probably want to update this to use test-id selectors, but for
     // now want a regression test that can run against current prod without
     // making any changes there
-    cy.get('.row:first > .col:nth-child(2) > .table tr').should($rows => {
+    cy.get('.row:first > :nth-child(2) table').should($rows => {
       const text = $rows.text()
 
-      const match = text.match(/Checked(?<checked>\d+)Traits(?<traits>\d+)/i)
+      const match = text.match(/Checked\s*(?<checked>\d+)\s*Traits\s*(?<traits>\d+)/i)
       const groups = match?.groups || {}
 
       expect(Number(groups.checked)).to.be.greaterThan(135)

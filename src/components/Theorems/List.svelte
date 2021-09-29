@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Theorem } from '../../models'
-  import { Filtered } from '../Shared/index'
+  import { Filtered } from '../Shared'
   import SummaryList from './SummaryList.svelte'
 
   export let theorems: Theorem[]

@@ -1,15 +1,15 @@
 <script lang="ts">
   import { Property, Space, Trait } from '../../models'
   import { traitsForSpace } from '../../models/Store'
-  import { getStore } from '../Svelte'
-  import { Filtered } from '../Shared/index'
+  import { getStore } from '../../context'
+  import { Filtered } from '../Shared'
   import { Weights } from '../../stores/filter'
   import List from './TraitSummary.svelte'
 
   export let space: Space
 
-  $: store = getStore()
-  $: traits = Array.from(traitsForSpace(store, space).values())
+  const store = getStore()
+  $: traits = Array.from(traitsForSpace($store, space).values())
 
   const weights: Weights<{ property: Property; trait: Trait }> = {
     // The weights generic type doesn't know how to handle

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Writable } from 'svelte/store'
-  import { getStore } from '../Svelte'
+  import { getStore } from '../../context'
   import { suggestionStore } from '../../stores/suggestions'
   import { searchProperties } from '../../models/Store/state'
   import Suggestions from './FormulaInput/Suggestions.svelte'
@@ -10,8 +10,8 @@
   export let placeholder: string | undefined = undefined
 
   const store = getStore()
-  const suggestions = suggestionStore(value, (term) =>
-    searchProperties(store, term)
+  $: suggestions = suggestionStore(value, (term) =>
+    searchProperties($store, term)
       .slice(0, 10)
       .map((p) => p.name)
   )

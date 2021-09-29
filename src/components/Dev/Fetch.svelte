@@ -2,7 +2,7 @@
   import { Dispatch, refresh } from '../../actions'
   import { Handler } from '../../errors'
   import { Store, status } from '../../models/Store'
-  import { Spinner } from '../Icons/index'
+  import { Spinner } from '../Icons'
 
   export let store: Store
   export let dispatch: Dispatch

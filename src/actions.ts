@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { bundle } from '@pi-base/core'
 import { Space } from './models'
 import { Handler } from './errors'
@@ -18,10 +16,10 @@ export type Action =
   | { action: 'fetch.done' }
   | { action: 'fetch.error'; error: Error }
 
-export type Dispatch = React.Dispatch<Action>
+export type Dispatch = (action: Action) => void
 
 export async function boot(
-  dispatch: React.Dispatch<Action>,
+  dispatch: Dispatch,
   handler: Handler,
   loader = load
 ) {
@@ -55,7 +53,7 @@ export async function check({
   dispatch,
   store,
 }: {
-  dispatch: React.Dispatch<Action>
+  dispatch: Dispatch
   store: Store
 }) {
   const spaces = uncheckedSpaces(store)
@@ -77,7 +75,7 @@ export async function refresh({
   handler,
 }: {
   branch: string
-  dispatch: React.Dispatch<Action>
+  dispatch: Dispatch
   host: string
   store: Store | undefined
   handler: Handler

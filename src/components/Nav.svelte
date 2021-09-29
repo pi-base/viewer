@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Link } from 'svelte-routing'
   import paths from '../paths'
   import { MAIN_BRANCH } from '../models/Store'
   import DevLink from './Nav/DevLink.svelte'
@@ -16,7 +17,7 @@
 
 <nav class={`navbar navbar-expand navbar-${bg} bg-${bg}`}>
   <div class="container">
-    <span class="navbar-brand"><a href="/">π-Base</a></span><button
+    <span class="navbar-brand"><Link to="/">π-Base</Link></span><button
       aria-controls="navbar-nav"
       type="button"
       aria-label="Toggle navigation"
@@ -25,13 +26,13 @@
     >
     <div class="navbar-collapse collapse" id="navbar-nav">
       <div class="navbar-nav">
-        <a class="nav-link" href="/spaces">Spaces</a>
-        <a class="nav-link" href="/properties">Properties</a>
-        <a class="nav-link" href="/theorems">Theorems</a>
+        <Link class="nav-link" to="/spaces">Spaces</Link>
+        <Link class="nav-link" to="/properties">Properties</Link>
+        <Link class="nav-link" to="/theorems">Theorems</Link>
       </div>
       <div class="ml-auto navbar-nav">
         {#if showDevLink}<DevLink {branch} />{/if}
-        <a class="nav-link" href={paths.contributingGuide()}>Contribute</a>
+        <Link class="nav-link" to={paths.contributingGuide()}>Contribute</Link>
       </div>
     </div>
   </div>

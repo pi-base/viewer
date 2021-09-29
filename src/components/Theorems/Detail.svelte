@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Theorem } from '../../models'
-  import { Tabs, Tab } from '../Shared/Tabs/index'
+  import { Tabs, Tab } from '../Shared/Tabs'
   import Formula from '../Shared/Formula.svelte'
   import Tex from '../Shared/Tex.svelte'
   import * as paths from '../../paths'
