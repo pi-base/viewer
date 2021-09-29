@@ -2,11 +2,12 @@
   import { Property } from '../../models'
   import { theoremsWithProperty } from '../../models/Store'
   import Theorems from '../Theorems/SummaryList.svelte'
-  import { getStore } from '../Svelte'
+  import { getStore } from '../../context'
 
   export let property: Property
 
-  $: theorems = theoremsWithProperty(getStore(), property)
+  const store = getStore()
+  $: theorems = theoremsWithProperty($store, property)
 </script>
 
 <Theorems {theorems} />

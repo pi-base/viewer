@@ -9,7 +9,7 @@ it('navigates through links', () => {
   cy.url().should('match', /\/theorems\/T000001\/references$/)
   cy.contains('Counterexamples in Topology')
 
-  cy.contains('References').click()
+  cy.contains('Converse').click()
   cy.url().should('match', /\/theorems\/T000001\/converse$/)
 })
 
@@ -24,7 +24,7 @@ it('displays converses that hold', () => {
   cy.contains('31')
 })
 
-it.only('displays cases where the converse is not provable', () => {
+it('displays cases where the converse is not provable', () => {
   cy.visit('/theorems/T000067/converse')
   cy.contains('Could not find any counterexamples to the converse')
 })

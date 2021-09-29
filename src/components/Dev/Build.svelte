@@ -1,20 +1,20 @@
 <script lang="ts">
-  import * as Build from '../../build'
+  import { branch, commitRef, context } from '../../build'
 </script>
 
 <table class="table">
   <tbody>
     <tr>
       <th>Branch</th>
-      <td>{Build.branch}</td>
+      <td>{branch}</td>
     </tr>
     <tr>
       <th>Commit</th>
-      <td>{Build.commitRef}</td>
+      <td>{commitRef}</td>
     </tr>
     <tr>
       <th>Context</th>
-      <td>{Build.context}</td>
+      <td>{context}</td>
     </tr>
   </tbody>
 </table>

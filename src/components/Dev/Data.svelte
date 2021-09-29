@@ -9,7 +9,7 @@
   <tbody>
     <tr>
       <th>Checked</th>
-      <td>{store.checked.size}</td>
+      <td data-test-id="store-checked-size">{store.checked.size}</td>
     </tr>
     <tr>
       <th>Traits</th>

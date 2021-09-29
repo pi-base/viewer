@@ -10,7 +10,7 @@ it('can apply the given suggestions', () => {
 it('uses suggestions to search by properties', () => {
   runProofs()
 
-  cy.get('[name="formula"]').type('norm')
+  cy.get('[name="q"]').type('norm')
   cy.get('.suggestions').contains('Perfectly normal').click()
 
   cy.get('h5').should('have.text',

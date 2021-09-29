@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Link } from 'svelte-routing'
   import { Property, Space } from '../../models'
   import { default as S, Store } from '../../models/Store'
   import * as Icons from '../Icons'
@@ -16,7 +17,7 @@
   }
 </script>
 
-<a href={paths.trait({ space: space.uid, property: property.uid })}>
+<Link to={paths.trait({ space: space.uid, property: property.uid })}>
   {#if value === false}
     <Icons.X />
   {:else if value === undefined}
@@ -24,4 +25,4 @@
   {:else}
     <Icons.Check />
   {/if}
-</a>
+</Link>

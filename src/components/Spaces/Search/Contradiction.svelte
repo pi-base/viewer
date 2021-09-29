@@ -3,7 +3,7 @@
   import { mapProperty } from '@pi-base/core/lib/Formula'
 
   import { Property, Theorem } from '../../../models'
-  import { Formula } from '../../Shared/index'
+  import { Formula } from '../../Shared'
   import TheoremSummary from '../../Theorems/SummaryList.svelte'
 
   export let formula: F<Property>

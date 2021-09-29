@@ -1,17 +1,18 @@
 <script lang="ts">
+  import { Link } from 'svelte-routing'
   import { Property, Space, Trait } from '../../models'
   import * as paths from '../../paths'
   import { traitsForProperty } from '../../models/Store'
-  import { getStore } from '../Svelte'
+  import { getStore } from '../../context'
   import { Check } from '../Icons'
-  import { Filtered, Table, Tex } from '../Shared/index'
+  import { Filtered, Table, Tex } from '../Shared'
   import { Weights } from '../../stores/filter'
   import Value from '../Traits/Value.svelte'
 
   export let property: Property
 
-  $: store = getStore()
-  $: traits = Array.from(traitsForProperty(store, property).values())
+  const store = getStore()
+  $: traits = Array.from(traitsForProperty($store, property).values())
 
   const weights: Weights<{ space: Space; trait: Trait }> = {
     // The weights generic type doesn't know how to handle
@@ -33,15 +34,15 @@
 
     <tr slot="row" let:object={{ space, trait }}>
       <td>
-        <a href={paths.space(space)}>
+        <Link to={paths.space(space)}>
           <Tex body={space.name} />
-        </a>
+        </Link>
       </td>
       <td>
-        <a href={paths.trait(trait)}>
+        <Link to={paths.trait(trait)}>
           <!-- TODO: don't need to refetch these -->
-          <Value {store} {space} {property} />
-        </a>
+          <Value store={$store} {space} {property} />
+        </Link>
       </td>
       <td>
         {#if trait.proof}

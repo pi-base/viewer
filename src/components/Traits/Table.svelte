@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { Link } from 'svelte-routing'
   import { Property, Space } from '../../models'
-  import { getStore } from '../Svelte'
+  import { getStore } from '../../context'
   import Tex from '../Shared/Tex.svelte'
   import Value from './Value.svelte'
   import * as paths from '../../paths'
@@ -17,9 +18,9 @@
       <th />
       {#each properties as property (property.uid)}
         <th>
-          <a href={paths.property(property)}>
+          <Link to={paths.property(property)}>
             <Tex body={property.name} />
-          </a>
+          </Link>
         </th>
       {/each}
     </tr>
@@ -28,13 +29,13 @@
     {#each spaces as space (space.uid)}
       <tr>
         <td>
-          <a href={paths.space(space)}>
+          <Link to={paths.space(space)}>
             <Tex body={space.name} />
-          </a>
+          </Link>
         </td>
         {#each properties as property (property.uid)}
           <td>
-            <Value {store} {space} {property} />
+            <Value store={$store} {space} {property} />
           </td>
         {/each}
       </tr>
