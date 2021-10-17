@@ -2,6 +2,7 @@
   "name": "viewer",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@babel/core": "7.9.0",
     "@pi-base/core": "^0.0.11",
