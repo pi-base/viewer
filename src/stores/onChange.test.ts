@@ -1,3 +1,4 @@
+import { expect, it } from 'vitest'
 import { onChange } from './onChange'
 import { writable } from 'svelte/store'
 

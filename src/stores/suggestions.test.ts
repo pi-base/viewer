@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest'
 import { Writable, get, writable } from 'svelte/store'
 import { SuggestionStore, suggestionStore } from './suggestions'
 

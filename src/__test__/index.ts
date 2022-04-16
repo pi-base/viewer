@@ -1,12 +1,8 @@
-import jestFetchMock from 'jest-fetch-mock'
-
-import { Bundle, bundle, formula } from '@pi-base/core'
+import { bundle, formula } from '@pi-base/core'
 import { Store } from '../models/Store'
 
 import { property, space, theorem } from '@pi-base/core/lib/testUtils'
 export { property, space, trait, theorem } from '@pi-base/core/lib/testUtils'
-
-export const fetch = jestFetchMock
 
 // From https://github.com/enzymejs/enzyme/issues/2073#issuecomment-531488981
 export function wait(amount = 0) {
@@ -43,8 +39,4 @@ export const defaultStore: Store = {
   },
   checked: new Set(),
   error: null,
-}
-
-export function mockBundleFetch(b: Bundle) {
-  fetchMock.once(JSON.stringify(bundle.serialize(b)))
 }

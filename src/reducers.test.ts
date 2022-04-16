@@ -1,8 +1,13 @@
+import { describe, expect, it } from 'vitest'
 import { reducer } from './reducers'
 
-import { Action } from './actions'
+import type { Action } from './actions'
 import { Store, initial, status } from './models/Store'
 import { defaultStore } from './__test__'
+
+import * as immer from 'immer'
+
+immer.enableMapSet()
 
 describe('reducer', () => {
   function reduce(initial: Store, ...actions: Action[]) {
@@ -19,7 +24,11 @@ describe('reducer', () => {
 
   describe('fetch.started', () => {
     it('replaces the store', () => {
-      const next = reduce(defaultStore, { action: 'fetch.started', branch: 'test', host: 'http://example.com' })
+      const next = reduce(defaultStore, {
+        action: 'fetch.started',
+        branch: 'test',
+        host: 'http://example.com',
+      })
 
       expect(status(next)).toEqual({ state: 'fetching' })
       expect(next.remote.branch).toEqual('test')
@@ -29,7 +38,8 @@ describe('reducer', () => {
 
   describe('fetch.error', () => {
     it('is no longer fetching', () => {
-      const next = reduce(defaultStore,
+      const next = reduce(
+        defaultStore,
         { action: 'fetch.started', branch: 'test', host: 'http://example.com' },
         { action: 'fetch.error', error: new Error('Not found') }
       )
@@ -38,8 +48,9 @@ describe('reducer', () => {
     })
   })
 
-  describe('check', () => {
-    const next = reduce(defaultStore,
+  it('check', () => {
+    const next = reduce(
+      defaultStore,
       { action: 'check', space: defaultStore.bundle.spaces.get('S1')! },
       { action: 'check', space: defaultStore.bundle.spaces.get('S2')! }
     )

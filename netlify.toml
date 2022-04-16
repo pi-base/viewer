@@ -1,3 +1,12 @@
+# Netlify and pnpm don't currently play nicely together
+# - https://github.com/netlify/build/issues/1633
+[build.environment]
+  NODE_VERSION = "16"
+  NPM_FLAGS = "--version" # prevent Netlify npm install
+[build]
+  command = "npx pnpm i --store=node_modules/.pnpm-store && npx pnpm build"
+  publish = "dist"
+
 [[redirects]]
   # Allow the frontend to handle all routing
   from = "/*"
