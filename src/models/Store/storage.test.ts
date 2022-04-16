@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest'
 import { Store, initial } from './state'
 import { deserialize, serialize } from './storage'
 

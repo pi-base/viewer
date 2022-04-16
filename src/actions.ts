@@ -1,6 +1,6 @@
-import { bundle } from '@pi-base/core'
-import { Space } from './models'
-import { Handler } from './errors'
+import { Bundle, bundle } from '@pi-base/core'
+import type { Space } from './models'
+import type { Handler } from './errors'
 import { Store, uncheckedSpaces } from './models/Store'
 import { load } from './models/Store'
 import { defaultHost } from './models/Store'
@@ -70,12 +70,14 @@ export async function check({
 export async function refresh({
   branch,
   dispatch,
+  fetch = bundle.fetch,
   host,
   store,
   handler,
 }: {
   branch: string
   dispatch: Dispatch
+  fetch?: Fetcher
   host: string
   store: Store | undefined
   handler: Handler
@@ -83,7 +85,7 @@ export async function refresh({
   dispatch({ action: 'fetch.started', branch, host })
 
   try {
-    const next = await sync(store, { branch, host })
+    const next = await sync(store, { branch, host }, fetch)
     dispatch({ action: 'fetch.done' })
     if (!next) {
       return
@@ -101,6 +103,10 @@ export async function refresh({
   }
 }
 
+type Fetcher = (
+  opts: FetchOpts
+) => Promise<{ bundle: Bundle; etag: string } | null>
+
 type FetchOpts = {
   branch: string
   host: string
@@ -109,9 +115,10 @@ type FetchOpts = {
 
 async function sync(
   store: Store | undefined,
-  { branch, host }: FetchOpts
+  { branch, host }: FetchOpts,
+  fetch: Fetcher = bundle.fetch
 ): Promise<Store | undefined> {
-  const fetched = await bundle.fetch({
+  const fetched = await fetch({
     branch,
     host,
     etag: store?.etag || undefined,

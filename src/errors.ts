@@ -15,24 +15,6 @@ export function log() {
   }
 }
 
-export function inMemory() {
-  const errors: { error: any; meta: Object }[] = []
-
-  return {
-    error(e: any, meta: Object = {}) {
-      errors.push({ error: e, meta })
-    },
-
-    reset() {
-      errors.splice(0, errors.length)
-    },
-
-    get errors() {
-      return errors
-    },
-  }
-}
-
 export function sentry(dsn: string) {
   Sentry.init({
     dsn,

@@ -1,3 +1,4 @@
+import { expect, it } from 'vitest'
 import { get } from 'svelte/store'
 import { reducerStore } from './reducer'
 

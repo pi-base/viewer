@@ -7,10 +7,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Cached install
-        uses: bahmutov/npm-install@v1
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: v1-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            v1-${{ runner.os }}-
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.1.0
+        with:
+          version: 6.16.1
+          run_install: true
+
       - name: Test
-        run: yarn test --coverage
+        run: pnpm test:cov
+
       - uses: codecov/codecov-action@v2
         with:
           fail_ci_if_error: true

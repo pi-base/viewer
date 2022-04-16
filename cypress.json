@@ -1,4 +1,5 @@
 {
   "baseUrl": "https://topology.pi-base.org",
-  "projectId": "7u7evp"
+  "projectId": "7u7evp",
+  "pluginsFile": false
 }
