@@ -1,6 +1,6 @@
-import * as P from '@pi-base/core'
+import type * as P from '@pi-base/core'
 import store from './Store'
-import { Search as search } from './Store'
+import type { Search as search } from './Store'
 
 export const Store = store
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Writable } from 'svelte/store'
+  import type { Writable } from 'svelte/store'
   import FormulaInput from '../../Shared/FormulaInput.svelte'
   import { syncOnMount } from '../../../stores/query'
 

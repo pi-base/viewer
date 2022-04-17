@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Property } from '../../models'
+  import type { Property } from '../../models'
   import { Filtered, Id, Preview, Table, Tex } from '../Shared'
 
   export let properties: Property[]

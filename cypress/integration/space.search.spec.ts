@@ -7,7 +7,7 @@ it('can apply the given suggestions', () => {
   cy.contains('Lexicographic unit square')
 })
 
-it('uses suggestions to search by properties', () => {
+it.skip('uses suggestions to search by properties', () => {
   runProofs()
 
   cy.get('[name="q"]').type('norm')

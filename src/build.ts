@@ -1,4 +1,6 @@
-export const branch = import.meta.env.REACT_APP_BRANCH || 'dev'
-export const commitRef = import.meta.env.REACT_APP_COMMIT_REF || 'head'
-export const context = import.meta.env.REACT_APP_CONTEXT || 'dev'
-export const netlify = import.meta.env.REACT_APP_NETLIFY || false
+const env = (import.meta as any).env
+
+export const branch = env.REACT_APP_BRANCH || 'dev'
+export const commitRef = env.REACT_APP_COMMIT_REF || 'head'
+export const context = env.REACT_APP_CONTEXT || 'dev'
+export const netlify = env.REACT_APP_NETLIFY || false

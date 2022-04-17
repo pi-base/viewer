@@ -1,6 +1,6 @@
 import { Readable, Writable, derived, writable } from 'svelte/store'
 import { Formula, formula as F } from '@pi-base/core'
-import { Property } from '../models'
+import type { Property } from '../models'
 import { resolveProperty, Store } from '../models/Store/state'
 
 export type Query = {
@@ -54,6 +54,6 @@ function parse(store: Store, q: string): Formula<Property> | null {
     (p: string) => resolveProperty(store, p),
     parsed
   )
-  const formula = F.compact(resolved)
+  const formula = F.compact(resolved) as Formula<Property>
   return formula || null
 }

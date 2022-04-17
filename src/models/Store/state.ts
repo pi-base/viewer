@@ -196,11 +196,11 @@ export const searchProperties = (store: Store, term: string) => {
   return searchIndex(propertyIndex(store), term)
 }
 
-export const searchSpaces = (store: Store, term: string) => {
+export const searchSpaces = (store: Store, term: string): Space[] => {
   if (!term) {
     return spaces(store)
   }
-  return searchIndex(spaceIndex(store), term)
+  return searchIndex<Space, number>(spaceIndex(store), term)
 }
 
 export function spacesMatching(

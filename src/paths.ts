@@ -1,4 +1,4 @@
-import { Property, Space, Theorem, Trait } from './models'
+import type { Property, Space, Theorem, Trait } from './models'
 
 export const property = (property: Property) => `/properties/${property.uid}`
 

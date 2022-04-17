@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Readable } from 'svelte/store'
+  import type { Readable } from 'svelte/store'
   import { formula as F } from '@pi-base/core'
 
-  import { Formula } from '../../../models'
+  import type { Formula } from '../../../models'
   import ShowFormula from '../../Shared/Formula.svelte'
   import { Store, search as searchStore } from '../../../models/Store'
   import Spaces from '../List.svelte'

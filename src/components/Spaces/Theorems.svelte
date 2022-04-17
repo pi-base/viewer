@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Space } from '../../models'
+  import type { Space } from '../../models'
   import { Tex } from '../Shared'
   import { theoremsWithCounterexample } from '../../models/Store'
   import Theorems from '../Theorems/SummaryList.svelte'

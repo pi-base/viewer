@@ -13,8 +13,8 @@
   import Theorem from './Theorems/Theorem.svelte'
   import Theorems from './Theorems/Theorems.svelte'
 
-  import { Dispatch } from '../actions'
-  import { Handler } from '../errors'
+  import type { Dispatch } from '../actions'
+  import type { Handler } from '../errors'
 
   export let dispatch: Dispatch
   export let handler: Handler

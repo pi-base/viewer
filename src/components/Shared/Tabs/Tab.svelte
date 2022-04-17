@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TabStore } from '../../../stores/tabs'
+  import type { TabStore } from '../../../stores/tabs'
 
   export let tabs: TabStore<string>
   export let path: string

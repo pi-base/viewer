@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Space } from '../../models'
+  import type { Space } from '../../models'
   import { Id, Preview, Table, Tex } from '../Shared'
 
   export let spaces: Space[]

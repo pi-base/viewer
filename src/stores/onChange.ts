@@ -1,4 +1,4 @@
-import { Readable } from 'svelte/store'
+import type { Readable } from 'svelte/store'
 
 export function onChange<S>(
   store: Readable<S>,

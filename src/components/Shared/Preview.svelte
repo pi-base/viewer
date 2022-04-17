@@ -1,17 +1,21 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { render as renderer, previewParser } from './render-utils'
+  import { render as renderer } from './render-utils'
 
   export let body: string
 
   let container: HTMLElement
 
-  onMount(async () => {
-    const rendered = await renderer(previewParser, body)
+  async function render(text: string) {
     if (container) {
-      container.innerHTML = rendered.innerHTML
+      container.innerHTML = await renderer(text, true)
     }
-  })
+  }
+
+  // TODO: unify w/ Tex.svelte HOC
+  onMount(() => render(body))
+
+  $: render(body)
 </script>
 
 <span bind:this={container} />

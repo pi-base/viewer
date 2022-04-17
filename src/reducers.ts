@@ -2,7 +2,7 @@ import produce from 'immer'
 
 import { check } from '@pi-base/core'
 
-import { Action } from './actions'
+import type { Action } from './actions'
 import { Store, initial as initialStore, theoremIndex } from './models/Store'
 
 export const initial = initialStore

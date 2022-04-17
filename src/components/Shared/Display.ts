@@ -33,6 +33,8 @@ function gather(nodes: any[], to: number) {
 export function truncate(this: any, to: number = 100) {
   return function transformer(tree: any) {
     const node = tree.children[0]
-    return { ...node, children: gather(node.children, to) }
+    if (node) {
+      return { ...node, children: gather(node.children || [], to) }
+    }
   }
 }

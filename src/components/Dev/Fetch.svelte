@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Dispatch, refresh } from '../../actions'
-  import { Handler } from '../../errors'
+  import type { Handler } from '../../errors'
   import { Store, status } from '../../models/Store'
   import { Spinner } from '../Icons'
 

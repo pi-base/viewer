@@ -23,7 +23,7 @@ const errorHandler: Error.Handler =
 const app = new App({
   target: document.getElementById('root')!,
   props: {
-    errorHandler,
+    handler: errorHandler,
   },
 })
 

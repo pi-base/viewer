@@ -1,5 +1,5 @@
 import { onDestroy, onMount } from 'svelte'
-import { Unsubscriber, Writable } from 'svelte/store'
+import type { Unsubscriber, Writable } from 'svelte/store'
 
 export function syncOnMount(param: string, store: Writable<string>) {
   let unsubscribe: Unsubscriber

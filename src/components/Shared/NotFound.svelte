@@ -2,7 +2,7 @@
   import { getContext } from 'svelte'
   import paths from '../../paths'
   import { getStore } from '../../context'
-  import { Handler } from '../../errors'
+  import type { Handler } from '../../errors'
   import { loaded } from '../../models/Store'
 
   const store = getStore()
@@ -44,5 +44,5 @@
   </div>
 {:else}
   <div role="status" class="spinner-border" />
-   Loading ...
+  Loading ...
 {/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
-  import { Property, Space } from '../../models'
+  import type { Property, Space } from '../../models'
   import { default as S, Store } from '../../models/Store'
   import * as Icons from '../Icons'
   import * as paths from '../../paths'

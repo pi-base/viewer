@@ -5,7 +5,7 @@
   import { boot, save } from './actions'
   import { status } from './models/Store'
   import { reducer, initial } from './reducers'
-  import { Handler } from './errors'
+  import type { Handler } from './errors'
   import { onChange } from './stores/onChange'
   import { reducerStore } from './stores/reducer'
   import { debounce } from './util'

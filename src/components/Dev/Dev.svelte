@@ -5,8 +5,8 @@
   import Fetch from './Fetch.svelte'
   import { Col, Row } from '../Layout'
 
-  import { Dispatch } from '../../actions'
-  import { Handler } from '../../errors'
+  import type { Dispatch } from '../../actions'
+  import type { Handler } from '../../errors'
   import { getStore } from '../../context'
 
   export let dispatch: Dispatch

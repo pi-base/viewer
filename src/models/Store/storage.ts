@@ -1,6 +1,6 @@
 import { Id, SerializedBundle, bundle } from '@pi-base/core'
 
-import { Store } from './state'
+import type { Store } from './state'
 
 const storageKey = 'pibase.bundle'
 
@@ -32,7 +32,7 @@ export function serialize(store: Store): Serialized {
 
 export function deserialize(serialized: Serialized): Store {
   return {
-    bundle: bundle.deserialize(serialized.bundle || {}),
+    bundle: bundle.deserialize(serialized.bundle || ({} as any)),
     etag: serialized.etag || null,
     remote: {
       ...serialized.remote,
