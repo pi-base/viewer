@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
-  import { Property, Space, Trait } from '../../models'
+  import type { Property, Space, Trait } from '../../models'
   import * as paths from '../../paths'
   import { getStore } from '../../context'
   import { Check } from '../Icons'
@@ -15,7 +15,7 @@
 </script>
 
 <Table collection={traits} key={(t) => t.property.uid}>
-  <tr slot="header" let:sort>
+  <tr slot="header">
     <th>Property</th>
     <th>Value</th>
     <th>Deduced</th>

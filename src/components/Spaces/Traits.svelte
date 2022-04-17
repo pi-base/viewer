@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Property, Space, Trait } from '../../models'
+  import type { Property, Space, Trait } from '../../models'
   import { traitsForSpace } from '../../models/Store'
   import { getStore } from '../../context'
   import { Filtered } from '../Shared'
-  import { Weights } from '../../stores/filter'
+  import type { Weights } from '../../stores/filter'
   import List from './TraitSummary.svelte'
 
   export let space: Space

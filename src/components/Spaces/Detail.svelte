@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Space } from '../../models'
+  import type { Space } from '../../models'
   import * as paths from '../../paths'
   import { References, Tab, Tabs, Tex, Title } from '../Shared'
   import Theorems from './Theorems.svelte'

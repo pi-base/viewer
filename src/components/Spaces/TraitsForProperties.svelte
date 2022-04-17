@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Property, Space } from '../../models'
+  import type { Property, Space } from '../../models'
   import { traitsForSpace } from '../../models/Store'
   import { getStore } from '../../context'
   import List from './TraitSummary.svelte'

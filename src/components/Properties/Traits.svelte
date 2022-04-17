@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
-  import { Property, Space, Trait } from '../../models'
+  import type { Property, Space, Trait } from '../../models'
   import * as paths from '../../paths'
   import { traitsForProperty } from '../../models/Store'
   import { getStore } from '../../context'
   import { Check } from '../Icons'
   import { Filtered, Table, Tex } from '../Shared'
-  import { Weights } from '../../stores/filter'
+  import type { Weights } from '../../stores/filter'
   import Value from '../Traits/Value.svelte'
 
   export let property: Property
@@ -26,7 +26,7 @@
 
 <Filtered collection={traits} {weights} let:filtered>
   <Table collection={filtered} key={(t) => t.space.uid}>
-    <tr slot="header" let:sort>
+    <tr slot="header">
       <th>Space</th>
       <th>Value</th>
       <th>Deduced</th>

@@ -14,7 +14,6 @@
     />
   </div>
   <div class="col-6">
-    <!-- FIXME: this component currently only renders on mount -->
     <Tex {body} />
   </div>
 </div>

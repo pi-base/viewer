@@ -1,7 +1,7 @@
 <script lang="ts">
   import { hardReset } from '../actions'
   import { viewerIssues } from '../paths'
-  import { Status } from '../models/Store'
+  import type { Status } from '../models/Store'
   import { ProgressBar, Notice } from './Layout'
 
   export let status: Status

@@ -1,42 +1,49 @@
-import { Processor } from 'unified'
-import { Parser } from '@pi-base/core'
-import { map } from 'unist-util-map'
-import { toH } from 'hast-to-hyperscript'
-import h from 'hyperscript'
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkMath from 'remark-math'
+import remarkRehype from 'remark-rehype'
+import rehypeKatex from 'rehype-katex'
+import rehypeStringify from 'rehype-stringify'
+import { links } from './links'
 import { truncate } from './Display'
 
-function shim() {
-  return function transformer(tree: any) {
-    return map(tree, (node) => {
-      switch (node.tagName) {
-        case 'inlineMath':
-          return {
-            ...node,
-            tagName: 'inline-math',
-          }
-        case 'citation':
-          return {
-            ...node,
-            tagName: 'external-link',
-          }
-        case 'internalLink':
-          // FIXME: these don't actually render, although many of the examples
-          // in the repo appear to be data formatting / parsing errors
-          return {
-            ...node,
-            tagName: 'internal-link',
-          }
+const unnest = () => {
+  return function transformer(tree) {
+    if (
+      tree &&
+      tree.children.length === 1 &&
+      tree.children[0].type === 'paragraph' &&
+      tree.children[0].children.length === 1
+    ) {
+      return {
+        ...tree,
+        children: tree.children[0].children,
       }
+    }
 
-      return node
-    })
+    return tree
   }
 }
 
-export const fullParser = Parser().use(shim)
-export const previewParser = Parser().use(shim).use(truncate)
+function parser() {
+  return unified().use([
+    remarkParse,
+    links,
+    unnest,
+    remarkMath,
+    remarkRehype,
+    rehypeKatex,
+    rehypeStringify,
+  ])
+}
 
-export async function render(parser: Processor<unknown>, body: string) {
-  const parsed = await parser.run(parser.parse(body))
-  return toH(h, parsed)
+const full = parser()
+const truncated = parser().use([truncate])
+
+export async function render(body: string, truncate: boolean = false) {
+  const parser = truncate ? truncated : full
+
+  const file = await parser.process(body)
+
+  return String(file)
 }

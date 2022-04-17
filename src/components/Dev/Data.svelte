@@ -1,6 +1,6 @@
 <script lang="ts">
   import { hardReset } from '../../actions'
-  import { Store } from '../../models/Store'
+  import type { Store } from '../../models/Store'
 
   export let store: Store
 </script>

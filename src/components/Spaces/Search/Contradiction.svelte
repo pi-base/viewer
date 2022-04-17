@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Formula as F } from '@pi-base/core'
+  import type { Formula as F } from '@pi-base/core'
   import { mapProperty } from '@pi-base/core/lib/Formula'
 
-  import { Property, Theorem } from '../../../models'
+  import type { Property, Theorem } from '../../../models'
   import { Formula } from '../../Shared'
   import TheoremSummary from '../../Theorems/SummaryList.svelte'
 

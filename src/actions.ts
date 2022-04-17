@@ -23,7 +23,7 @@ export async function boot(
   handler: Handler,
   loader = load
 ) {
-  let loaded
+  let loaded: Store
   try {
     loaded = loader()
   } catch (error) {

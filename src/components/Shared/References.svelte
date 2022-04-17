@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref } from '@pi-base/core'
+  import type { Ref } from '@pi-base/core'
   import { tag } from '@pi-base/core/lib/Ref'
   import { render as link } from './ExternalLink'
 

@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Writable } from 'svelte/store'
+  import type { Writable } from 'svelte/store'
   import { getStore } from '../../context'
   import { suggestionStore } from '../../stores/suggestions'
   import { searchProperties } from '../../models/Store/state'
   import Suggestions from './FormulaInput/Suggestions.svelte'
+  import type { Property } from '@pi-base/core'
 
   export let value: Writable<string>
   export let name: string
@@ -13,7 +14,7 @@
   $: suggestions = suggestionStore(value, (term) =>
     searchProperties($store, term)
       .slice(0, 10)
-      .map((p) => p.name)
+      .map((p: Property) => p.name)
   )
 
   function onkeydown(event: KeyboardEvent) {

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Atom from './Formula/Atom.svelte'
-  import { Formula } from '@pi-base/core'
+  import type { Formula } from '@pi-base/core'
 
   export let value: Formula<string>
 </script>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
-  import { Property, Space } from '../../models'
+  import type { Property, Space } from '../../models'
   import { getStore } from '../../context'
   import Tex from '../Shared/Tex.svelte'
   import Value from './Value.svelte'

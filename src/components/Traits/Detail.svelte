@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Link } from 'svelte-routing'
-  import { Property, Space, Trait } from '../../models'
+  import type { Property, Space, Trait } from '../../models'
   import paths from '../../paths'
   import { References, Tex } from '../Shared'
   import Proof from './Proof.svelte'

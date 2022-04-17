@@ -1,6 +1,6 @@
 import * as F from '@pi-base/core/lib/Formula'
-import { Space, Property, Theorem } from './index'
-import { Store } from './Store/state'
+import type { Space, Property, Theorem } from './index'
+import type { Store } from './Store/state'
 import { default as S, spacesMatching } from './Store'
 
 export type ConverseResults =

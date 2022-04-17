@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Theorem } from '../../models'
+  import type { Theorem } from '../../models'
   import * as paths from '../../paths'
   import SummaryList from './SummaryList.svelte'
   import TraitTable from '../Traits/Table.svelte'

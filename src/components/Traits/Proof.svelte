@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Space } from '../../models'
+  import type { Space } from '../../models'
   import { Proof, default as S } from '../../models/Store'
   import Theorems from '../Theorems/SummaryList.svelte'
   import Traits from '../Spaces/TraitsForProperties.svelte'

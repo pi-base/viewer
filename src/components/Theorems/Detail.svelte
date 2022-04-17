@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Theorem } from '../../models'
+  import type { Theorem } from '../../models'
   import { Tabs, Tab } from '../Shared/Tabs'
   import Formula from '../Shared/Formula.svelte'
   import Tex from '../Shared/Tex.svelte'

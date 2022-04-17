@@ -1,5 +1,5 @@
 import { bundle, formula } from '@pi-base/core'
-import { Store } from '../models/Store'
+import type { Store } from '../models/Store'
 
 import { property, space, theorem } from '@pi-base/core/lib/testUtils'
 export { property, space, trait, theorem } from '@pi-base/core/lib/testUtils'

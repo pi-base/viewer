@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Writable } from 'svelte/store'
+  import type { Writable } from 'svelte/store'
   import { Search } from '../Icons'
 
   export let filter: Writable<string>
