@@ -17,7 +17,7 @@ const dataRepo = `https://github.com/pi-base/data`
 const viewerRepo = `https://github.com/pi-base/viewer`
 
 export function contributeExample() {
-  return `${dataRepo}/new/master`
+  return `${dataRepo}/new/main`
 }
 
 export function resolveId(id: string) {
@@ -40,7 +40,7 @@ export function viewerIssues({ body, title }: { body: string; title: string }) {
 }
 
 export function contributingGuide() {
-  return `${dataRepo}/blob/master/CONTRIBUTING.md`
+  return `${dataRepo}/blob/main/CONTRIBUTING.md`
 }
 
 export default {

@@ -18,7 +18,7 @@ import {
   TraitId,
 } from '@pi-base/core'
 
-export const MAIN_BRANCH = 'master'
+export const MAIN_BRANCH = 'main'
 
 export type Proof = {
   properties: Id[]
