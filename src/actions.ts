@@ -36,7 +36,7 @@ export async function boot(
 
   await refresh({
     dispatch,
-    branch: loaded?.remote?.branch || 'master',
+    branch: loaded?.remote?.branch || 'main',
     host: loaded?.remote?.host || defaultHost,
     store: loaded,
     handler,
