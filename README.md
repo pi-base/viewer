@@ -1,3 +1,9 @@
+# 🛑 DEPRECATED 🛑
+
+➡️ This package is now managed in the [`pi-base/web` monorepo](https://github.com/pi-base/web/tree/main/packages/viewer)
+
+---
+
 [![build-test](https://github.com/pi-base/viewer/workflows/build-test/badge.svg)](https://github.com/pi-base/viewer/actions?query=branch%3Amaster)
 [![codecov](https://codecov.io/gh/pi-base/viewer/branch/master/graph/badge.svg?token=zJeVgy9LyJ)](https://codecov.io/gh/pi-base/viewer)
 [![viewer](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/7u7evp/main&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/7u7evp/runs)
