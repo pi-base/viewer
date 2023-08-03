@@ -21,7 +21,7 @@
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
     "reselect": "^4.0.0",
-    "svelte": "^3.42.6",
+    "svelte": "^3.49.0",
     "svelte-routing": "^1.6.0",
     "unified": "^10.1.2"
   },
@@ -79,7 +79,7 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.9",
     "prettier": "2.0.5",
-    "svelte": "^3.44.0",
+    "svelte": "^3.49.0",
     "svelte-check": "^2.2.7",
     "svelte-loader": "^3.1.2",
     "svelte-preprocess": "^4.9.8",
